@@ -1,63 +1,87 @@
 # CO5177 · PFDAV
 
-Landing page giới thiệu bài tập lớn môn **Nền tảng lập trình cho phân tích và trực quan dữ liệu**. HTML/CSS/JavaScript thuần, không cần npm hoặc build.
+Website bài tập lớn học phần **Nền tảng lập trình cho phân tích và trực quan dữ liệu**.
 
-- Huỳnh Thành Đạt — **2570161**
-- Lương Minh Duy — **2570083**
+**[Truy cập website](https://dathuynh1108.github.io/CO5177-PFDAV/)**
 
-Ba bài đã chọn: **Tabular** (bắt buộc), **Text** (bắt buộc), **Image** (tự chọn).
+## Thông tin học phần
 
-## GitHub Pages
+| Nội dung | Thông tin |
+| --- | --- |
+| Trường | Đại học Bách Khoa – ĐHQG-HCM |
+| Khoa | Khoa Khoa học và Kỹ thuật Máy tính |
+| Mã học phần | CO5177 |
+| Giảng viên | Lê Thành Sách |
+| Học kỳ | 261 · Năm học 2026–2027 |
 
-Website: https://dathuynh1108.github.io/CO5177-PFDAV/
+## Thành viên
 
-Trong repo: **Settings → Pages → Build and deployment → Source: Deploy from a branch → Branch: main → /(root) → Save**.
+| MSSV | Họ và tên |
+| --- | --- |
+| 2570161 | Huỳnh Thành Đạt |
+| 2570083 | Lương Minh Duy |
 
-Không cần custom domain, Jekyll, backend hay token. Đường dẫn tài nguyên nội bộ là đường dẫn tương đối, tương thích project site `/CO5177-PFDAV/`.
+## Các bài tập lớn
 
-Tài liệu GitHub: https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
+| Bài | Loại dữ liệu | Hình thức | Nội dung |
+| --- | --- | --- | --- |
+| 01 | Tabular | Bắt buộc | Khám phá, tiền xử lý và mô hình hóa dữ liệu bảng. |
+| 02 | Text | Bắt buộc | Xử lý văn bản, biểu diễn đặc trưng và phân tích dữ liệu ngôn ngữ. |
+| 03 | Image | Tự chọn | Khám phá dữ liệu ảnh, trích xuất đặc trưng và đánh giá mô hình. |
 
-## Chạy tại máy
+Website hiện giới thiệu học phần, thành viên và yêu cầu của ba bài tập. Tập dữ liệu cụ thể, notebook, báo cáo và video sẽ được bổ sung trong quá trình thực hiện.
 
-Mở `index.html` trực tiếp, hoặc chạy từ thư mục dự án:
+## Công nghệ
+
+HTML5, CSS3 và JavaScript thuần. Website tĩnh, không cần backend hoặc bước build; triển khai bằng GitHub Pages.
+
+## Cấu trúc thư mục
+
+```text
+.
+├── index.html                # Trang giới thiệu
+├── requirements.html         # Yêu cầu bài tập lớn
+├── assignments/
+│   ├── tabular.html          # Bài 01 · Tabular
+│   ├── text.html             # Bài 02 · Text
+│   └── image.html            # Bài 03 · Image
+├── assets/
+│   ├── styles.css            # Giao diện và responsive
+│   ├── site-config.js        # Thông tin nhóm và liên kết tài liệu
+│   ├── app.js                # Điều hướng và tương tác
+│   └── favicon.svg
+└── .nojekyll
+```
+
+## Chạy cục bộ
 
 ```bash
+git clone https://github.com/dathuynh1108/CO5177-PFDAV.git
+cd CO5177-PFDAV
 python3 -m http.server 8000
 ```
 
-Truy cập `http://localhost:8000`.
+Mở `http://localhost:8000` trên trình duyệt.
 
-## Cấu trúc
+## Triển khai
+
+Trong **Settings → Pages**, cấu hình:
 
 ```text
-index.html                  # Landing page
-requirements.html           # Tóm lược đề bài v4.0
-assignments/
-  tabular.html              # Bài 01
-  text.html                 # Bài 02
-  image.html                # Bài 03
-assets/
-  styles.css                # Design tokens, responsive, print
-  site-config.js            # Tên nhóm, phân công, link tài liệu
-  app.js                    # Menu mobile, điều hướng, liên kết
-  favicon.svg
-.nojekyll
+Source: Deploy from a branch
+Branch: main
+Folder: / (root)
 ```
+
+GitHub Pages xuất bản website từ nhánh `main`. Các đường dẫn tài nguyên sử dụng dạng tương đối để hoạt động tại `/CO5177-PFDAV/`.
 
 ## Cập nhật nội dung
 
-Chỉnh `assets/site-config.js` để thêm tên nhóm đã đăng ký, phân công, GitHub của Duy, dataset, notebook, báo cáo và video. Để trống các trường chưa có dữ liệu; website hiện “Sẽ cập nhật” thay vì tạo liên kết giả.
+- Chỉnh thông tin nhóm, phân công và liên kết tài liệu trong `assets/site-config.js`.
+- Chỉnh nội dung giới thiệu và yêu cầu tại các trang HTML tương ứng.
+- Liên kết notebook, báo cáo PDF và video từ trang của từng bài tập khi tài liệu sẵn sàng.
+- Để trống các trường chưa có tài liệu; website hiển thị trạng thái chờ cập nhật.
 
-Link ngoài dùng URL HTTPS đầy đủ. Link nội bộ dùng đường dẫn tương đối như `reports/tabular.pdf`, không bắt đầu bằng `/`. Không đưa token hoặc thông tin bí mật vào file cấu hình công khai.
+## Yêu cầu học phần
 
-Các tiêu đề và mô tả chính nằm trong HTML: trang vẫn có nội dung và điều hướng khi tắt JavaScript. Khi chốt nội dung, cập nhật phần HTML tương ứng để giữ trạng thái no-JS đồng bộ với cấu hình.
-
-## Thiết kế
-
-Editorial hiện đại: nền giấy sáng, xanh rừng, cam đất; Manrope và Lora từ Google Fonts. Có font hệ thống dự phòng khi offline, không đính kèm font. Hỗ trợ menu mobile, bàn phím, Escape, skip link, reduced motion và kiểu in. Không có analytics, cookie, ảnh thành viên giả, metric giả hoặc link tài liệu giả.
-
-## Nguồn
-
-Yêu cầu dựa trên `assignment-vne-v4.pdf` người dùng cung cấp: v4.0 ngày 14/09/2026, học kỳ 261. `requirements.html` là bản tóm lược, không thay thế đề bài gốc hoặc cập nhật trên LMS.
-
-Trang tham khảo do người dùng cung cấp: https://cuong111111.github.io/PF4DS — công cụ không truy cập được trang trong lần thực hiện, nên nội dung dựa trên PDF và giao diện được thiết kế mới.
+Nội dung yêu cầu được tổng hợp từ **Đề bài bài tập lớn v4.0, ngày 14/09/2026**. Thông báo và thời hạn chính thức theo LMS của học phần.
