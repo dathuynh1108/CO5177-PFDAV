@@ -1,59 +1,60 @@
 # CO5177 · PFDAV
 
-Website bài tập lớn học phần **Nền tảng lập trình cho phân tích và trực quan dữ liệu**.
+Course project website for **Programming Foundations for Data Analysis and Visualization**.
 
-**[Truy cập website](https://dathuynh1108.github.io/CO5177-PFDAV/)**
+**[Visit the website](https://dathuynh1108.github.io/CO5177-PFDAV/)**
 
-## Thông tin học phần
+## Course
 
-| Nội dung | Thông tin |
+| Field | Details |
 | --- | --- |
-| Trường | Đại học Bách Khoa – ĐHQG-HCM |
-| Khoa | Khoa Khoa học và Kỹ thuật Máy tính |
-| Mã học phần | CO5177 |
-| Giảng viên | Lê Thành Sách |
-| Học kỳ | 261 · Năm học 2026–2027 |
+| University | Ho Chi Minh City University of Technology, VNU-HCM |
+| Faculty | Computer Science and Engineering |
+| Course code | CO5177 |
+| Instructor | Lê Thành Sách |
+| Semester | 261 · Academic year 2026–2027 |
 
-## Thành viên
+## Team
 
-| MSSV | Họ và tên |
+| Student ID | Name |
 | --- | --- |
 | 2570161 | Huỳnh Thành Đạt |
 | 2570083 | Lương Minh Duy |
 
-## Các bài tập lớn
+## Selected assignments
 
-| Bài | Loại dữ liệu | Hình thức | Nội dung |
+| Assignment | Data type | Track | Overview |
 | --- | --- | --- | --- |
-| 01 | Tabular | Bắt buộc | Khám phá, tiền xử lý và mô hình hóa dữ liệu bảng. |
-| 02 | Text | Bắt buộc | Xử lý văn bản, biểu diễn đặc trưng và phân tích dữ liệu ngôn ngữ. |
-| 03 | Image | Tự chọn | Khám phá dữ liệu ảnh, trích xuất đặc trưng và đánh giá mô hình. |
+| 01 | [Tabular](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/tabular.html) | Required | Structured-data exploration, preprocessing and modeling. |
+| 02 | [Text](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/text.html) | Required | Corpus exploration, text representations and analysis. |
+| 03 | [Image](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/image.html) | Selected elective | Visual exploration, feature extraction and model evaluation. |
 
-Website hiện giới thiệu học phần, thành viên và yêu cầu của ba bài tập. Tập dữ liệu cụ thể, notebook, báo cáo và video sẽ được bổ sung trong quá trình thực hiện.
+The website currently introduces the course, team and assignment requirements. Specific datasets, experiments, notebooks, reports and presentation videos will be added as the projects develop.
 
-## Công nghệ
+## Technology
 
-HTML5, CSS3 và JavaScript thuần. Website tĩnh, không cần backend hoặc bước build; triển khai bằng GitHub Pages.
+Static HTML5, CSS3 and vanilla JavaScript. No backend, package installation or build step is required. The interface and documentation are in English; member names retain their Vietnamese spelling.
 
-## Cấu trúc thư mục
+## Repository structure
 
 ```text
 .
-├── index.html                # Trang giới thiệu
-├── requirements.html         # Yêu cầu bài tập lớn
+├── index.html                 # Course and team landing page
+├── requirements.html          # Assignment brief summary
 ├── assignments/
-│   ├── tabular.html          # Bài 01 · Tabular
-│   ├── text.html             # Bài 02 · Text
-│   └── image.html            # Bài 03 · Image
+│   ├── tabular.html           # Assignment 01
+│   ├── text.html              # Assignment 02
+│   └── image.html             # Assignment 03
 ├── assets/
-│   ├── styles.css            # Giao diện và responsive
-│   ├── site-config.js        # Thông tin nhóm và liên kết tài liệu
-│   ├── app.js                # Điều hướng và tương tác
+│   ├── styles.css             # Design system and responsive styles
+│   ├── site-config.js         # Team settings and resource links
+│   ├── app.js                 # Navigation and configuration handling
 │   └── favicon.svg
+├── .gitignore
 └── .nojekyll
 ```
 
-## Chạy cục bộ
+## Run locally
 
 ```bash
 git clone https://github.com/dathuynh1108/CO5177-PFDAV.git
@@ -61,11 +62,11 @@ cd CO5177-PFDAV
 python3 -m http.server 8000
 ```
 
-Mở `http://localhost:8000` trên trình duyệt.
+Open **http://localhost:8000**. Core page content is also readable by opening `index.html` directly.
 
-## Triển khai
+## Deploy to GitHub Pages
 
-Trong **Settings → Pages**, cấu hình:
+In **Settings → Pages → Build and deployment**, select:
 
 ```text
 Source: Deploy from a branch
@@ -73,15 +74,24 @@ Branch: main
 Folder: / (root)
 ```
 
-GitHub Pages xuất bản website từ nhánh `main`. Các đường dẫn tài nguyên sử dụng dạng tương đối để hoạt động tại `/CO5177-PFDAV/`.
+Save the settings. GitHub Pages publishes the files from `main`. No custom GitHub Actions workflow is needed. Internal assets and links use relative paths compatible with the `/CO5177-PFDAV/` project URL. The `.nojekyll` file disables Jekyll processing.
 
-## Cập nhật nội dung
+## Update content
 
-- Chỉnh thông tin nhóm, phân công và liên kết tài liệu trong `assets/site-config.js`.
-- Chỉnh nội dung giới thiệu và yêu cầu tại các trang HTML tương ứng.
-- Liên kết notebook, báo cáo PDF và video từ trang của từng bài tập khi tài liệu sẵn sàng.
-- Để trống các trường chưa có tài liệu; website hiển thị trạng thái chờ cập nhật.
+Edit `assets/site-config.js` to set the registered group name, member contributions, GitHub profiles and assignment resource links. For example, after a report is available:
 
-## Yêu cầu học phần
+```js
+report: 'reports/tabular.pdf'
+```
 
-Nội dung yêu cầu được tổng hợp từ **Đề bài bài tập lớn v4.0, ngày 14/09/2026**. Thông báo và thời hạn chính thức theo LMS của học phần.
+Use HTTPS URLs for external resources and project-relative paths for repository files. Leave unavailable resources empty; the page displays their publication status without creating broken links. Do not put credentials or private information in this public configuration file.
+
+Main page copy and requirement summaries live in the corresponding HTML files. Keep these in sync with the configuration when updating published content so that the no-JavaScript view remains accurate.
+
+## Accessibility and presentation
+
+The site includes responsive layouts, keyboard-accessible navigation, a skip link, visible focus states, reduced-motion support and print styles. Core content is available without JavaScript. Fonts are loaded from Google Fonts with local system fallbacks; font files are not stored in the repository.
+
+## Assignment reference
+
+Requirements are summarized from **Course Assignment v4.0, dated 14 September 2026**, for Semester 261. The official assignment brief and course LMS announcements determine final requirements and deadlines.
