@@ -29,7 +29,7 @@ Course project website for **Programming Foundations for Data Analysis and Visua
 | 02 | [Text](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/text.html) | Required | Corpus exploration, text representations and analysis. |
 | 03 | [Image](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/image.html) | Selected elective | Visual exploration, feature extraction and model evaluation. |
 
-The website currently introduces the course, team and assignment requirements. Specific datasets, experiments, notebooks, reports and presentation videos will be added as the projects develop.
+The Image track now uses full CIFAR-100 and includes a runnable analysis notebook, ported training source, a separate LaTeX/PDF report and verified reused results. Tabular/Text datasets and all presentation videos are still pending.
 
 ## Technology
 
@@ -95,3 +95,11 @@ The site includes responsive layouts, keyboard-accessible navigation, a skip lin
 ## Assignment reference
 
 Requirements are summarized from **Course Assignment v4.0, dated 14 September 2026**, for Semester 261. The official assignment brief and course LMS announcements determine final requirements and deadlines.
+
+## Image study
+
+[Image notebook](notebooks/image.ipynb) · [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/image.ipynb) · [PDF](reports/image/image.pdf) · [LaTeX](reports/image/report.tex) · [Source](src/image/) · [Reuse protocol](docs/IMAGE_REUSE.md)
+
+The Image study reuses the **same** 24 CO5085 A1 runs at commit `1250e56`; no additional training was performed. Six pretrained configurations are the primary CO5177 comparisons. Data inspection and result analysis are specific to this Image report. CIFAR-100 original images are 32px, measured input is 96px, below the recommended 128px short edge; this limitation is explained. Exact-pixel duplicates cross the measured splits (2 train/validation, 10 train/test shared image contents); the report includes a fixed-prediction sensitivity check and does not claim leakage-free retraining.
+
+Python code is organized under `src/image/`, with `configs/image.json`, `notebooks/`, `tests/`, and separate `reports/image/`. The static site still runs without Python dependencies or a build. See `docs/IMAGE_REUSE.md` for Python setup and audit commands. `python -m image.analysis` verifies the import hashes and reproduces all 24 metrics from held-out predictions. `AI_USE_REPORT.md` records the assistance used.
