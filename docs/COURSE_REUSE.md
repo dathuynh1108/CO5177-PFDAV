@@ -14,7 +14,7 @@ The CO5177 requirements below come from the brief summary in [requirements.html]
 | E3 | Fashion-MNIST; LSTM/GRU over image rows or patches, including initialization/regularization extensions | Text requires at least 2,000 actual text samples | Do not label the image-sequence runs as Text results. |
 | A2 | Paper has not been selected; no implementation or measurements | No completed study to compare | No transfer. |
 
-CO5085 has no tabular experiment with at least 2,000 records, 10 columns, numerical/categorical features and missing values. Prediction CSVs and training logs are evaluation artifacts, not a substitute for that dataset. Tabular and Text still require their own datasets, preprocessing, models and evaluation. Shared metrics or plotting functions can be adapted when those studies have concrete inputs; unused training modules have not been copied into placeholder tracks.
+CO5085 has no tabular experiment with at least 2,000 records, 10 columns, numerical/categorical features and missing values. Prediction CSVs and training logs are evaluation artifacts, not a substitute for that dataset. Tabular and Text now have separate new experiments using UCI Adult and VietnamNet; see [STUDIES_PROTOCOL.md](STUDIES_PROTOCOL.md). Shared metrics or plotting functions can be adapted when those studies have concrete inputs; unused training modules have not been copied into placeholder tracks.
 
 ## Transferred Image material
 
@@ -45,5 +45,5 @@ The original images are 32×32; 96×96 input remains below the recommended 128px
 ## Remaining deliverables
 
 - **Image:** the notebook reruns data inspection and prediction analysis on CPU; training is a separate explicit command. This review did not verify a fresh Google Colab session or rerun GPU training. The presentation video is pending.
-- **Tabular and Text:** datasets, experiments, notebooks, reports and videos are pending.
-- **Course submission:** registered group name, confirmed member contributions and the consolidated LMS PDF still need the corresponding project information and remaining tracks.
+- **Tabular and Text:** new experiments, notebooks and separate reports are available; videos are pending. These measurements do not come from CO5085.
+- **Course submission:** registered group name, confirmed member contributions and the consolidated LMS PDF still need the corresponding project information and presentation materials.

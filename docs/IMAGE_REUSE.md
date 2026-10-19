@@ -34,7 +34,7 @@ python3.12 -m venv .venv
 
 Training mới là lệnh riêng: `python -m image.run_suite --device cuda --num-workers 8 --output-root runs/image-new`. Cần chuẩn bị CIFAR-100 trước; code không tự tải dữ liệu khi train. Chỉ đánh giá test sau khi cố định protocol bằng `--phase test --confirm-test`. Không dùng source identity mới để resume checkpoint của CO5085.
 
-Nguồn raw data có tình trạng license chưa rõ; không phân phối raw data hoặc checkpoint trong Git. Bộ notebook có nguồn tải public và kiểm tra pixel/label hashes khớp dữ liệu của phép đo gốc. Không tuning sau khi xem test. Video và PDF tổng hợp toàn môn vẫn cần các phần Tabular/Text; không đánh dấu đã hoàn thành toàn bộ học phần.
+Nguồn raw data có tình trạng license chưa rõ; không phân phối raw data hoặc checkpoint trong Git. Bộ notebook có nguồn tải public và kiểm tra pixel/label hashes khớp dữ liệu của phép đo gốc. Không tuning sau khi xem test. Video và PDF tổng hợp toàn môn vẫn chưa có. Hai bài Tabular/Text có thực nghiệm riêng, được mô tả trong `docs/STUDIES_PROTOCOL.md`.
 
 ## Kết quả kiểm tra bổ sung
 

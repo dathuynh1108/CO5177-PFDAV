@@ -1,0 +1,112 @@
+{
+  "checked_at_utc": "2026-10-19T10:25:40+00:00",
+  "tests_passed": 25,
+  "notebooks": {
+    "tabular": {
+      "cells": 16,
+      "executed_code_cells": 7,
+      "errors": 0,
+      "stderr": [],
+      "seconds": 7.61
+    },
+    "text": {
+      "cells": 16,
+      "executed_code_cells": 7,
+      "errors": 0,
+      "stderr": [],
+      "seconds": 46.24
+    }
+  },
+  "saved_classifier_replay": [
+    {
+      "track": "tabular",
+      "model": "majority",
+      "heldout_rows": 7317,
+      "saved_classifier_predictions_match": true
+    },
+    {
+      "track": "tabular",
+      "model": "logistic",
+      "heldout_rows": 7317,
+      "saved_classifier_predictions_match": true
+    },
+    {
+      "track": "tabular",
+      "model": "balanced",
+      "heldout_rows": 7317,
+      "saved_classifier_predictions_match": true
+    },
+    {
+      "track": "tabular",
+      "model": "histogram",
+      "heldout_rows": 7317,
+      "saved_classifier_predictions_match": true
+    },
+    {
+      "track": "text",
+      "model": "majority",
+      "heldout_rows": 1140,
+      "saved_classifier_predictions_match": true
+    },
+    {
+      "track": "text",
+      "model": "word",
+      "heldout_rows": 1140,
+      "saved_classifier_predictions_match": true
+    },
+    {
+      "track": "text",
+      "model": "character",
+      "heldout_rows": 1140,
+      "saved_classifier_predictions_match": true
+    },
+    {
+      "track": "text",
+      "model": "phobert",
+      "heldout_rows": 1140,
+      "saved_classifier_predictions_match": true
+    }
+  ],
+  "relative_site_links": 124,
+  "fresh_colab_execution_verified": false,
+  "paid_gpu_jobs_created": 0,
+  "ui": {
+    "viewports": [
+      1280,
+      390
+    ],
+    "pages": [
+      "index.html",
+      "assignments/text.html",
+      "assignments/tabular.html"
+    ],
+    "mobile_menu_open_and_escape_close": true,
+    "horizontal_page_overflow": false
+  },
+  "studies": {
+    "tabular": {
+      "track": "tabular",
+      "models": 4,
+      "test_rows": 7317,
+      "verified_artifacts": 8,
+      "pdf_pages": 9,
+      "pdf_sha256": "4590059151a0ae6d08b3f7a140f57e6e5d3856e955b7361f4e0f8fa88553df04",
+      "pdf_rendered_and_reviewed": true,
+      "model_artifacts": 4
+    },
+    "text": {
+      "track": "text",
+      "models": 4,
+      "test_rows": 1140,
+      "verified_artifacts": 9,
+      "pdf_pages": 9,
+      "pdf_sha256": "510e3456b403bdd754c5ffa23b9dfa4e44663ca4f9907c06f74d64985f39838b",
+      "pdf_rendered_and_reviewed": true,
+      "model_artifacts": 4
+    }
+  },
+  "image_preserved": {
+    "verified_runs": 24,
+    "pdf_unchanged": true
+  }
+}

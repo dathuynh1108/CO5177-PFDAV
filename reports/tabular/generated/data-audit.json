@@ -1,0 +1,32 @@
+{
+  "raw_rows": 48842,
+  "feature_columns": 14,
+  "missing_by_column": {
+    "age": 0,
+    "fnlwgt": 0,
+    "education_num": 0,
+    "capital_gain": 0,
+    "capital_loss": 0,
+    "hours_per_week": 0,
+    "workclass": 2799,
+    "education": 0,
+    "marital_status": 0,
+    "occupation": 2809,
+    "relationship": 0,
+    "race": 0,
+    "sex": 0,
+    "native_country": 857
+  },
+  "conflicting_label_rows_removed": 10,
+  "duplicate_rows_removed_after_conflicts": 52,
+  "retained_rows": 48780,
+  "selected_class_counts": {
+    "<=50K": 37104,
+    ">50K": 11676
+  },
+  "split_sizes": {
+    "train": 34146,
+    "validation": 7317,
+    "test": 7317
+  }
+}

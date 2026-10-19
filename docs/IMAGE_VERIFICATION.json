@@ -13,7 +13,7 @@
     "32px original / 96px input below recommended 128px",
     "2 exact shared contents train-validation and 10 train-test",
     "near duplicates not tested",
-    "Tabular, Text and presentation video still pending"
+    "Image presentation video still pending; new Tabular/Text checks are in docs/STUDIES_VERIFICATION.json"
   ],
   "checked_at_utc": "2026-10-19T08:45:47+00:00",
   "notebook_code_cells_executed": 10,

@@ -1,0 +1,22 @@
+{
+  "model": "vinai/phobert-base-v2",
+  "revision": "86cd7fd4c148980922ac11a2cf5e257f2ba639e1",
+  "device": "mps",
+  "feature_cache_key": "bdc0521dfbbe93ecc863011dde7ca0af3ad6ebf1777d2256a545abfb3157b30e",
+  "encoder_source_sha256": "b5bdbb568d8a57bb8545be75dca31d45cf90a2906eb97f2da5e44c08b0c6e88c",
+  "features_sha256": "b193895d9044bfd62b672aaed436c23bafe000fb320082eb7a82562e701c9501",
+  "rows": 7600,
+  "max_length": 128,
+  "batch_size": 16,
+  "pooling": "Attention-mask mean including BOS/EOS",
+  "frozen": true,
+  "model_artifacts_sha256": {
+    "pytorch_model.bin": "7ba09eb4c244a5b3a49ad76d52d129ac085b61f5c6287de7f99508b02be589f9",
+    "config.json": "26d21a304fdea8fada88e7c6b7c7fef15c902c690bfb0fa47f60bdb61c68307a",
+    "vocab.txt": "dffd7543c401fb6567253ae7c3313004532c33d062525250049c616544bad777",
+    "bpe.codes": "9dfe53fb8abbddd3387da99641c36e00bee757a3679aad9cf0a7cdc4b30f6ef8"
+  },
+  "segmentation": "pyvi.ViTokenizer",
+  "truncated_headlines": 0,
+  "encoding_seconds": 19.190076958038844
+}

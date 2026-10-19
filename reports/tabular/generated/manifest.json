@@ -1,0 +1,52 @@
+{
+  "track": "tabular",
+  "config": {
+    "dataset": "UCI Adult",
+    "url": "https://archive.ics.uci.edu/static/public/2/adult.zip",
+    "sha256": "7537312dd56c2b98035880805ce99e68183a30ee468aa5329d6df0fbb3cc21bb",
+    "split_seed": 2026,
+    "model_seed": 42,
+    "logistic_c": [
+      0.1,
+      1.0,
+      10.0
+    ],
+    "protocol": "Combine official files, remove conflicting/equal feature rows before a new stratified 70/15/15 split. Fit preprocessing on train only. Select C by validation macro-F1; evaluate test once after all choices."
+  },
+  "source_sha256": {
+    "configs/tabular.json": "58edf1793c86d03a05e042574f7d134cabf21fc6898cf437856a52c036cd3626",
+    "src/studies/__init__.py": "bcdc91280a398496583faca9434384379281295f577e600418a317a92ee84c1e",
+    "src/studies/audit.py": "85ef6b7a0d6f8d8bfc068bef2ab72057c1b79adfaec7720d249a6d31a66837d3",
+    "src/studies/evidence.py": "e117763238bf351d03a7b76fb85b6915d51f5e0134bf06814b8105c526c4c436",
+    "src/studies/tabular.py": "e46dcb7ba059acef9681d78b51716ddb2c818e375a99e4613e443adf414d6530",
+    "src/studies/text.py": "b5bdbb568d8a57bb8545be75dca31d45cf90a2906eb97f2da5e44c08b0c6e88c"
+  },
+  "artifacts_sha256": {
+    "class_counts.png": "284f3cbc0247bfe4937c0c5438ec13e8f563b2b800f6f0f703cc2f7607e3587c",
+    "confusion.png": "45dab043803ca799467fba650160fab7bf48358b44225c90e57677daebcbf368",
+    "data-audit.json": "7f6ba7d9e802f8b953559346cf90bfcd7522f183abbb2df362510d218c4b29b7",
+    "missing.png": "6aec38a1d52d9860f1e3e65ca4d71cd2cfb6a0d9a17b01336c75c95b10206aa5",
+    "predictions.csv": "15cfdb095c4287b9fa7d06c73b02acd614cea47b588d95d2e2071ee4c14c5c5c",
+    "scores.png": "a05eb97b8cee2bcaab8bfef50b290fbefcd0c1a1ea8896cd03dcc8c9f54aa849",
+    "splits.json": "639bedc92671553ae314708e7d1674e67cecf858f062eb6f6b11ea4bd8fa63df",
+    "summary.json": "077de1590169eaafd53380663c89ef79f872502ba908ea4d3dd3efc431d9b852"
+  },
+  "python": "3.12.0",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "packages": {
+    "numpy": "2.5.4",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.8.0",
+    "pyarrow": "26.0.0",
+    "torch": "2.10.0",
+    "transformers": "4.57.6",
+    "pyvi": "0.1.1"
+  },
+  "runtime": {},
+  "model_artifacts_sha256": {
+    "runs/tabular/majority.joblib": "2af25b23a1a0639d3bd1d9180a92eaf82624bdaf69a3c7fbef0e170acbac7102",
+    "runs/tabular/logistic.joblib": "78b92f1a70246dd6c9c1d40597b44f2664bb5d52b219d19dc018645491a4eef9",
+    "runs/tabular/balanced.joblib": "8d29a43d982fcdfa533008212d9d1c60f1df092d90775fef1e5448c5ea0648da",
+    "runs/tabular/histogram.joblib": "09b9e07ebddff7800ee887eb6e82420f17dfbdd72b322f34883ed3199dc1e5d1"
+  }
+}

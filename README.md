@@ -29,11 +29,11 @@ Course project website for **Programming Foundations for Data Analysis and Visua
 | 02 | [Text](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/text.html) | Required | Corpus exploration, text representations and analysis. |
 | 03 | [Image](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/image.html) | Selected elective | Visual exploration, feature extraction and model evaluation. |
 
-The Image track uses full CIFAR-100 and reuses the code and 24 measured runs from CO5085 A1. It includes an analysis notebook, training source and a separate LaTeX/PDF report. The [cross-course comparison](docs/COURSE_REUSE.md) explains this match and why E1–E3 image experiments do not supply the Tabular or Text assignments. Tabular/Text datasets and all presentation videos are still pending.
+All three tracks have source code, an executed notebook and a separate LaTeX/PDF report. Tabular and Text are new CO5177 experiments; Image reuses the code and 24 measured runs from CO5085 A1. The [cross-course comparison](docs/COURSE_REUSE.md) documents that match. Presentation videos and the consolidated LMS report are still pending.
 
 ## Technology
 
-The website uses static HTML5, CSS3 and vanilla JavaScript; it needs no backend, package installation or build step. The interface is in English. The Image notebook and report are in Vietnamese. Python dependencies are needed only for the study and its checks.
+The website uses static HTML5, CSS3 and vanilla JavaScript; it needs no backend, package installation or build step. The interface is in English. Notebooks and reports are in Vietnamese. Python dependencies are needed for the experiments and their checks.
 
 ## Repository structure
 
@@ -50,15 +50,17 @@ The website uses static HTML5, CSS3 and vanilla JavaScript; it needs no backend,
 │   ├── site-config.js         # Team settings and resource links
 │   ├── app.js                 # Navigation and configuration handling
 │   └── favicon.svg
-├── src/image/                 # Training, evaluation and result audit
-├── configs/image.json         # Original measured configuration
-├── notebooks/image.ipynb      # Data exploration and analysis
-├── reports/image/             # Image PDF, LaTeX, figures and evidence
+├── src/image/                 # Ported Image training and evidence audit
+├── src/studies/               # New Tabular/Text studies and evidence audit
+├── configs/                   # Separate image, tabular and text configurations
+├── notebooks/                 # One executed notebook per track
+├── reports/                   # Separate image/, tabular/ and text/ reports
 ├── docs/                      # Requirements mapping and reuse provenance
 ├── scripts/                   # Report compilation and site checks
 ├── tests/                     # Training contracts and evidence checks
 ├── .github/workflows/         # CPU checks
 ├── requirements.txt
+├── requirements-studies.txt   # Additional dependencies for Tabular/Text
 ├── pyproject.toml
 ├── AI_USE_REPORT.md
 ├── .gitignore
@@ -106,6 +108,32 @@ The site includes responsive layouts, keyboard-accessible navigation, a skip lin
 ## Assignment reference
 
 Requirements are summarized from **Course Assignment v4.0, dated 14 September 2026**, for Semester 261. The official assignment brief and course LMS announcements determine final requirements and deadlines.
+
+## Tabular and Text studies
+
+| Study | Modeling data | Model selected by validation | Test accuracy | Test macro-F1 |
+| --- | --- | --- | --- | --- |
+| Tabular | 48,780 deduplicated Adult rows, 14 features | Histogram gradient boosting | 87.48% | 0.8185 |
+| Text | 7,600 VietnamNet headlines, 19 classes | Frozen PhoBERT + logistic regression | 77.54% | 0.7738 |
+
+Both use one fixed stratified split and model seed. Text audits all 212,705 source articles before selecting its balanced cohort; it does not train on the entire corpus. The frozen encoder is pinned VinAI PhoBERT, since the old user model repository has no weights. These results are new measurements and do not reuse NER evaluation scores.
+
+[Tabular notebook](notebooks/tabular.ipynb) · [Tabular PDF](reports/tabular/tabular.pdf) · [Tabular LaTeX](reports/tabular/report.tex)
+[Text notebook](notebooks/text.ipynb) · [Text PDF](reports/text/text.pdf) · [Text LaTeX](reports/text/report.tex)
+[Data, models and protocol](docs/STUDIES_PROTOCOL.md)
+
+```bash
+.venv/bin/python -m pip install -r requirements-studies.txt
+.venv/bin/python -m pip install --no-deps -e .
+.venv/bin/python -m studies.tabular
+.venv/bin/python -m studies.text
+.venv/bin/python -m studies.audit --models
+.venv/bin/python scripts/write_study_reports.py
+.venv/bin/python scripts/build_report.py --track tabular
+.venv/bin/python scripts/build_report.py --track text
+```
+
+Raw data, PhoBERT features and fitted classifiers remain outside Git in `data/` and `runs/`. Published predictions, source/config hashes, dataset checksums, class metrics and figures are in `reports/<track>/generated/`. The notebooks rerun training; local execution has been checked, while a fresh Google Colab session has not been tested here.
 
 ## Image study
 

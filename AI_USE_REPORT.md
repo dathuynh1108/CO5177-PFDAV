@@ -9,3 +9,7 @@ AI hỗ trợ tính lại accuracy/macro-F1 từ prediction, kiểm tra hash và
 Các yêu cầu về dữ liệu, protocol và pretrained được đối chiếu với nội dung brief hiện có trong repo. Việc sử dụng lại kết quả giữa hai môn được nêu trong `reports/image/reuse-manifest.json` và báo cáo Image; không tạo số liệu hoặc video chưa có.
 
 Trong lần rà soát ngày 19/10/2026, AI đối chiếu E1–E3/A1/A2 với ba track CO5177, bổ sung sáu hình đường cong pretrained từ commit gốc có kiểm tra SHA256, cập nhật notebook, báo cáo và trang Image. Code huấn luyện và các kết quả đo không thay đổi; không phát sinh lượt huấn luyện GPU mới.
+
+Theo yêu cầu bổ sung, AI hiện thực hai bài Tabular và Text bằng scikit-learn, PyTorch và Transformers; chọn UCI Adult cho Tabular và sử dụng corpus VietnamNet đã thu thập cho Text. AI viết quy trình làm sạch, loại trùng, chia tập, chọn cấu hình theo validation, huấn luyện, tính chỉ số, lưu classifier và kiểm tra bằng chứng. PhoBERT VinAI được dùng làm encoder đóng băng vì repo PhoBERT cũ chưa có trọng số. Các mô hình mới được chạy trên máy hiện tại, không thuê GPU hoặc phát sinh phép đo giả.
+
+AI hỗ trợ viết hai notebook, báo cáo LaTeX/PDF riêng, phần phân tích kết quả và rà lại nội dung UI theo văn phong trực tiếp của báo cáo. Notebook được chạy từ đầu; báo cáo và website được kiểm tra sau khi tạo. Nguồn dữ liệu/model, cấu hình và giới hạn được ghi trong `docs/STUDIES_PROTOCOL.md` cùng manifest từng bài.
