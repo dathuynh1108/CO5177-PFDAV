@@ -41,7 +41,7 @@
   "pdf": {
     "path": "reports/text/text.pdf",
     "pages": 19,
-    "sha256": "0c3880258c3b8c216ab5c3e16db736522b7561de072f8d4336a8369fa2206bbd",
+    "sha256": "af9079dedb4648c4ef0f3d521b0efea45d14910a5587b5be9070459694af89bf",
     "all_pages_rendered_and_visually_reviewed": true,
     "overfull_boxes": 0
   },
@@ -63,5 +63,14 @@
     "image_runs": 24,
     "image_report_unchanged": true
   },
-  "fresh_colab_execution_verified": false
+  "fresh_colab_execution_verified": false,
+  "editorial_revision": {
+    "checked_at_utc": "2026-10-19T13:25:28.603876+00:00",
+    "scope": "Text report and website copy",
+    "experimental_evidence_unchanged": true,
+    "all_notebook_steps_retained": true,
+    "report_rendered_and_reviewed": true,
+    "relative_links_verified": 132,
+    "training_rerun": false
+  }
 }
