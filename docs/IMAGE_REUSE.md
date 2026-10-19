@@ -11,7 +11,7 @@ Image dùng lại thí nghiệm A1 của CO5085 tại commit `1250e569c6ce055391
 | Split, tránh leakage, augmentation | Train/validation/test 45k/5k/10k; split phân tầng seed 2026, crop/flip chỉ train; validation chọn checkpoint |
 | Khám phá, trực quan và giải thích | Notebook kiểm tra dữ liệu và phân tích prediction/confusion; báo cáo Image riêng |
 
-Căn cứ hiện có là bản tóm tắt brief trong `requirements.html` và `assignments/image.html`, không phải PDF đề gốc chưa có trong repo. Nếu LMS bổ sung ràng buộc khác, cần đối chiếu lại; không coi reuse là tự động được công nhận bởi giảng viên.
+Căn cứ hiện có là bản tóm tắt brief trong `requirements.html` và `assignments/image.html`; PDF đề gốc chưa có trong repo. Theo thông tin Huỳnh Thành Đạt cung cấp ngày 19/10/2026, giảng viên cho phép dùng lại kết quả cho bài tương tự. Phạm vi đối chiếu E1–E3/A1/A2 với cả ba track được ghi trong [COURSE_REUSE.md](COURSE_REUSE.md). Các ràng buộc về dữ liệu, pretrained và nội dung nộp bài vẫn được đối chiếu riêng cho CO5177.
 
 ## Bố cục
 
@@ -19,7 +19,7 @@ Căn cứ hiện có là bản tóm tắt brief trong `requirements.html` và `a
 - `configs/image.json`: protocol gốc byte-identical.
 - `reports/image/`: PDF, LaTeX, figures và evidence riêng của track Image.
 - `notebooks/image.ipynb`: notebook phân tích từ trên xuống, không tự thuê GPU hay chạy lại training.
-- `reports/image/reuse-manifest.json`: provenance bất biến; `python -m image.analysis` kiểm tra hash và tính lại 24 confusion/accuracy/macro-F1 từ predictions.
+- `reports/image/reuse-manifest.json`: nguồn và hash của 186 tệp nhập cùng chín module được chuyển; `python -m image.analysis` kiểm tra hash và tính lại 24 confusion/accuracy/macro-F1 từ predictions. Sáu hình đường cong pretrained được bổ sung từ đúng commit gốc, với đường dẫn nguồn ở `additional_figure_sources`.
 
 ## Chạy
 
@@ -38,4 +38,4 @@ Nguồn raw data có tình trạng license chưa rõ; không phân phối raw da
 
 ## Kết quả kiểm tra bổ sung
 
-Notebook đã chạy trọn 19 cell trên CPU, với đầy đủ 60.000 ảnh qua mirror revision cố định và pixel/label hashes khớp archive Toronto. Exact-pixel audit: 2 nội dung chung train–validation, 10 nội dung chung train–test, không có validation–test. Chỉ số phụ trên 9.990 prediction giữ lại không phải thí nghiệm train mới hay bảo đảm loại hết leakage. `reports/image/analysis/` lưu kết quả, danh sách indices và đồ thị. Các unit/protocol checks được chuyển theo source và kiểm tra lại ở module `image`.
+Notebook kiểm tra đầy đủ 60.000 ảnh qua mirror revision cố định và pixel/label hashes khớp archive Toronto. Exact-pixel audit: 2 nội dung chung train–validation, 10 nội dung chung train–test, không có validation–test. Chỉ số phụ trên 9.990 prediction giữ lại không phải thí nghiệm train mới hay bảo đảm loại hết leakage. Phần đường cong hiển thị cả sáu cấu hình pretrained ở seed 42. `reports/image/analysis/` lưu kết quả, danh sách indices và đồ thị. Các unit/protocol checks được chuyển theo source và kiểm tra lại ở module `image`; trạng thái chạy kiểm tra nằm trong `docs/IMAGE_VERIFICATION.json`.

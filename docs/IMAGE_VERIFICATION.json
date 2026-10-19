@@ -1,18 +1,40 @@
 {
   "cpu_tests": 18,
-  "notebook_cells_executed": 19,
+  "notebook_cells_executed": 21,
   "verified_reused_runs": 24,
   "new_training_runs": 0,
   "full_data_images": 60000,
   "ordered_pixels_labels_match_original": true,
-  "relative_site_links": 109,
+  "relative_site_links": 112,
   "source_commit": "1250e569c6ce055391b5670e2f9a31faedb44b20",
-  "pdf_pages": 17,
-  "pdf_sha256": "a6f3b1fdd5b8a9de30f4062265933d99485e1a1792884a24bcf1e97e0d4734f2",
+  "pdf_pages": 18,
+  "pdf_sha256": "916eac0b788036228181a7cfc1a5fff982781f0e583718b9b5757be3e6862b32",
   "limitations": [
     "32px original / 96px input below recommended 128px",
     "2 exact shared contents train-validation and 10 train-test",
     "near duplicates not tested",
     "Tabular, Text and presentation video still pending"
-  ]
+  ],
+  "checked_at_utc": "2026-10-19T08:45:47+00:00",
+  "notebook_code_cells_executed": 10,
+  "notebook_stderr_outputs": 0,
+  "notebook_runtime": "Fresh local CPU kernel, complete cached public dataset; no GPU training",
+  "fresh_colab_execution_verified": false,
+  "imported_artifacts_verified": 186,
+  "ported_sources_verified": 9,
+  "pretrained_learning_curves": 6,
+  "pdf_rendered_and_reviewed": true,
+  "site_review_viewports": [
+    {
+      "width": 1280,
+      "height": "default"
+    },
+    {
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "main_pretrained_configurations": 6,
+  "main_pretrained_runs": 18,
+  "cross_course_mapping": "docs/COURSE_REUSE.md"
 }

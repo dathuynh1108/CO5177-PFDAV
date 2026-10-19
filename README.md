@@ -29,11 +29,11 @@ Course project website for **Programming Foundations for Data Analysis and Visua
 | 02 | [Text](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/text.html) | Required | Corpus exploration, text representations and analysis. |
 | 03 | [Image](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/image.html) | Selected elective | Visual exploration, feature extraction and model evaluation. |
 
-The Image track now uses full CIFAR-100 and includes a runnable analysis notebook, ported training source, a separate LaTeX/PDF report and verified reused results. Tabular/Text datasets and all presentation videos are still pending.
+The Image track uses full CIFAR-100 and reuses the code and 24 measured runs from CO5085 A1. It includes an analysis notebook, training source and a separate LaTeX/PDF report. The [cross-course comparison](docs/COURSE_REUSE.md) explains this match and why E1–E3 image experiments do not supply the Tabular or Text assignments. Tabular/Text datasets and all presentation videos are still pending.
 
 ## Technology
 
-Static HTML5, CSS3 and vanilla JavaScript. No backend, package installation or build step is required. The interface and documentation are in English; member names retain their Vietnamese spelling.
+The website uses static HTML5, CSS3 and vanilla JavaScript; it needs no backend, package installation or build step. The interface is in English. The Image notebook and report are in Vietnamese. Python dependencies are needed only for the study and its checks.
 
 ## Repository structure
 
@@ -50,6 +50,17 @@ Static HTML5, CSS3 and vanilla JavaScript. No backend, package installation or b
 │   ├── site-config.js         # Team settings and resource links
 │   ├── app.js                 # Navigation and configuration handling
 │   └── favicon.svg
+├── src/image/                 # Training, evaluation and result audit
+├── configs/image.json         # Original measured configuration
+├── notebooks/image.ipynb      # Data exploration and analysis
+├── reports/image/             # Image PDF, LaTeX, figures and evidence
+├── docs/                      # Requirements mapping and reuse provenance
+├── scripts/                   # Report compilation and site checks
+├── tests/                     # Training contracts and evidence checks
+├── .github/workflows/         # CPU checks
+├── requirements.txt
+├── pyproject.toml
+├── AI_USE_REPORT.md
 ├── .gitignore
 └── .nojekyll
 ```
@@ -81,7 +92,7 @@ Save the settings. GitHub Pages publishes the files from `main`. No custom GitHu
 Edit `assets/site-config.js` to set the registered group name, member contributions, GitHub profiles and assignment resource links. For example, after a report is available:
 
 ```js
-report: 'reports/tabular.pdf'
+report: 'reports/tabular/tabular.pdf'
 ```
 
 Use HTTPS URLs for external resources and project-relative paths for repository files. Leave unavailable resources empty; the page displays their publication status without creating broken links. Do not put credentials or private information in this public configuration file.
@@ -99,6 +110,13 @@ Requirements are summarized from **Course Assignment v4.0, dated 14 September 20
 ## Image study
 
 [Image notebook](notebooks/image.ipynb) · [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/image.ipynb) · [PDF](reports/image/image.pdf) · [LaTeX](reports/image/report.tex) · [Source](src/image/) · [Reuse protocol](docs/IMAGE_REUSE.md)
+
+| Pretrained model | Head-only test accuracy | Partial test accuracy | Full test accuracy |
+| --- | --- | --- | --- |
+| ResNet18 | 60.95 ± 0.29% | 73.96 ± 0.12% | 78.97 ± 0.04% |
+| Swin-T | 71.67 ± 0.09% | 78.25 ± 0.22% | 86.63 ± 0.22% |
+
+Mean ± sample SD over seeds 42, 43, 44. The notebook includes learning curves for all six pretrained configurations; the PDF compares both full fine-tuning curves with the scratch controls.
 
 The Image study reuses the **same** 24 CO5085 A1 runs at commit `1250e56`; no additional training was performed. Six pretrained configurations are the primary CO5177 comparisons. Data inspection and result analysis are specific to this Image report. CIFAR-100 original images are 32px, measured input is 96px, below the recommended 128px short edge; this limitation is explained. Exact-pixel duplicates cross the measured splits (2 train/validation, 10 train/test shared image contents); the report includes a fixed-prediction sensitivity check and does not claim leakage-free retraining.
 

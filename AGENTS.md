@@ -1,7 +1,7 @@
 # Working on CO5177 PFDAV
 
 - Static site: root HTML and `assets/`; preserve its English UI, paper/moss palette, mobile navigation and no-JavaScript content.
-- Read `docs/IMAGE_REUSE.md` before changing the Image study. Tabular/Text have no selected datasets or measured results yet.
+- Read `docs/IMAGE_REUSE.md` and `docs/COURSE_REUSE.md` before changing the Image study. Tabular/Text have no selected datasets or measured results yet. E3 image sequences do not constitute a text corpus; experiment CSVs do not meet the Tabular data requirements.
 - Image uses all CIFAR-100 images, 100 classes, split 45,000/5,000/10,000. The original 32px short edge is below the 128px recommendation; justify the 96px experimental input explicitly.
 - Reused CO5085 A1 metrics are the SAME measurements, not another independent training study. Preserve `reports/image/reuse-manifest.json` and imported CSV/JSON bytes. No pretrained prohibition applies to this track; pretrained is required when using deep learning.
 - Main Image comparisons are six pretrained configurations; scratch runs are context. Ported source only changes imports/layout and has new source guards; do not bypass them to resume old checkpoints.

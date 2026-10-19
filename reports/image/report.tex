@@ -32,7 +32,7 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
 \newcommand{\code}[1]{\texttt{\detokenize{#1}}}
-\newcommand{\resultfigure}[3]{\IfFileExists{generated/figures/#1.png}{\begin{figure}[htbp]\centering\includegraphics[width=#3\textwidth]{generated/figures/#1.png}\caption{#2}\end{figure}}{}}
+\newcommand{\resultfigure}[3]{\begin{figure}[htbp]\centering\includegraphics[width=#3\textwidth]{generated/figures/#1.png}\caption{#2}\end{figure}}
 \hypersetup{pdftitle={CO5177 - Bao cao Image},pdfauthor={Huynh Thanh Dat; Luong Minh Duy}}
 \emergencystretch=2em
 \begin{document}
@@ -79,9 +79,10 @@ khởi tạo pretrained và mức độ đóng băng backbone. Hai kiến trúc 
 ResNet18 và Swin-T của torchvision. Mỗi kiến trúc có bốn chế độ huấn luyện,
 chạy với ba seed 42, 43 và 44, tổng cộng 24 lượt chạy.
 
-Các so sánh chính gồm huấn luyện từ đầu với pretrained, và head-only với
-partial/full fine-tuning. Accuracy, macro-F1, thời gian và bộ nhớ được dùng
-để đánh giá hiệu quả cùng chi phí của từng chế độ.
+So sánh chính của bài Image gồm sáu cấu hình pretrained: head-only, partial
+và full fine-tuning của mỗi kiến trúc, tương ứng 18 lượt chạy. Hai cấu hình
+scratch với sáu lượt chạy còn lại là đối chứng bổ sung. Accuracy, macro-F1,
+thời gian và bộ nhớ được dùng để đánh giá hiệu quả cùng chi phí của từng chế độ.
 
 \section{CIFAR-100 và tình trạng license}
 CIFAR-100 gồm 60.000 ảnh màu $32\times32$, 100 nhãn chi tiết (fine classes)
@@ -261,6 +262,11 @@ Danh sách lượt chạy và checkpoint tương ứng được lưu trong manif
 Các hình dùng seed 42 đã định trước, không chọn seed theo kết quả test.
 Ma trận lỗi dùng chỉ số lớp 0--99; danh sách tên lớp và số đếm đầy đủ nằm
 trong các tệp CSV kèm báo cáo.
+Notebook trình bày đường cong của cả sáu cấu hình pretrained. Các hình dưới
+đối chiếu scratch và full fine-tuning; các tệp hình được dùng lại cùng lịch sử
+20 epoch của phép đo gốc, với SHA256 trong manifest. Ở các bản full, accuracy
+train tiếp tục tăng trong khi validation cải thiện chậm hơn. Khoảng cách này
+phù hợp với dấu hiệu overfit đã nêu ở phần thảo luận.
 \resultfigure{resnet18_scratch_curves}{ResNet18 scratch: train/val CE và accuracy ở seed 42.}{0.95}
 \resultfigure{swin_t_scratch_curves}{Swin-T scratch: train/val CE và accuracy ở seed 42.}{0.95}
 \resultfigure{resnet18_full_curves}{ResNet18 pretrained full: đường cong ở seed 42.}{0.95}
@@ -276,9 +282,12 @@ trong các tệp CSV kèm báo cáo.
 
 \section{Tổ chức mã nguồn và tái lập}
 Mã được chuyển sang \code{src/image/}, cấu hình ở \code{configs/image.json}.
+
 Notebook \code{notebooks/image.ipynb} chạy lại kiểm tra dữ liệu và phân tích prediction bằng CPU.
+
 \code{python -m image.analysis} kiểm tra provenance và tính lại chỉ số.
 Training mới dùng \code{image.run_suite}; chữ ký nguồn mới không resume checkpoint của CO5085.
+
 \code{python scripts/build_report.py} biên dịch LaTeX thành PDF.
 Các lệnh đầy đủ được ghi trong \code{docs/IMAGE_REUSE.md}.
 

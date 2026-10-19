@@ -243,10 +243,42 @@
     "reports/image/generated/figures/swin_t_scratch_curves.png": "b23a58bfd1aa3a61b67bb70f4e2a765ff3c4e830fa0d83dded4a5b39a04f7311",
     "reports/image/generated/figures/resnet18_full_errors_test.png": "a876530334caab7cf44878dc99688f95108163f475bbd334c2844b57f7cf20ea",
     "reports/image/generated/analysis.tex": "860a9f7d1d460332994356743400cff5650626daf55fbface81df0d06ac398ab",
-    "reports/image/generated/conclusion.tex": "89be6940367994d865825a235431001deb67f454a60d08b3b26508ba1926d3d6"
+    "reports/image/generated/conclusion.tex": "89be6940367994d865825a235431001deb67f454a60d08b3b26508ba1926d3d6",
+    "reports/image/generated/figures/resnet18_head_curves.png": "1fe5c62b1c0dcf30d728146cce3f35e8d6d8e377ab5636857a2fad312f68cf32",
+    "reports/image/generated/figures/resnet18_partial_curves.png": "d18c7fac876b530abd2babbb055870bb051313f4a07441aec7128431e0772e44",
+    "reports/image/generated/figures/resnet18_full_curves.png": "016cda8fb3952ea3a84ed98374edc73cd681a78d99ea56809092c18943dc8602",
+    "reports/image/generated/figures/swin_t_head_curves.png": "e5121c6d8f3864e45ca2d98e6dc78f4230e2d70ce757090dcbfeb6a9e24fbccf",
+    "reports/image/generated/figures/swin_t_partial_curves.png": "2ac01635497116fdad8ddb1aa714d2c7c1f4ab7cf6cc66f05f30311bf2fe750b",
+    "reports/image/generated/figures/swin_t_full_curves.png": "a658ffed51d12bced4f4b4409fd0e8ed47202d7f36dd774fa1c417e15ad3789b"
   },
   "runs": 24,
   "pretrained_runs": 18,
   "new_training_runs": 0,
-  "note": "The same CO5085 A1 measurements are reused for CO5177 Image. Imported evidence is byte-identical. Ported source has a new identity and cannot resume old checkpoints. Scratch is contextual; all six main CO5177 comparisons use pretrained weights."
+  "note": "The same CO5085 A1 measurements are reused for CO5177 Image. Imported evidence is byte-identical. Ported source has a new identity and cannot resume old checkpoints. Scratch is contextual; all six main CO5177 comparisons use pretrained weights.",
+  "additional_figure_sources": {
+    "reports/image/generated/figures/resnet18_head_curves.png": {
+      "source_path": "A1/reports/generated/figures/resnet18_head_curves.png",
+      "sha256": "1fe5c62b1c0dcf30d728146cce3f35e8d6d8e377ab5636857a2fad312f68cf32"
+    },
+    "reports/image/generated/figures/resnet18_partial_curves.png": {
+      "source_path": "A1/reports/generated/figures/resnet18_partial_curves.png",
+      "sha256": "d18c7fac876b530abd2babbb055870bb051313f4a07441aec7128431e0772e44"
+    },
+    "reports/image/generated/figures/resnet18_full_curves.png": {
+      "source_path": "A1/reports/generated/figures/resnet18_full_curves.png",
+      "sha256": "016cda8fb3952ea3a84ed98374edc73cd681a78d99ea56809092c18943dc8602"
+    },
+    "reports/image/generated/figures/swin_t_head_curves.png": {
+      "source_path": "A1/reports/generated/figures/swin_t_head_curves.png",
+      "sha256": "e5121c6d8f3864e45ca2d98e6dc78f4230e2d70ce757090dcbfeb6a9e24fbccf"
+    },
+    "reports/image/generated/figures/swin_t_partial_curves.png": {
+      "source_path": "A1/reports/generated/figures/swin_t_partial_curves.png",
+      "sha256": "2ac01635497116fdad8ddb1aa714d2c7c1f4ab7cf6cc66f05f30311bf2fe750b"
+    },
+    "reports/image/generated/figures/swin_t_full_curves.png": {
+      "source_path": "A1/reports/generated/figures/swin_t_full_curves.png",
+      "sha256": "a658ffed51d12bced4f4b4409fd0e8ed47202d7f36dd774fa1c417e15ad3789b"
+    }
+  }
 }
