@@ -41,14 +41,14 @@
   "pdf": {
     "path": "reports/text/text.pdf",
     "pages": 19,
-    "sha256": "af9079dedb4648c4ef0f3d521b0efea45d14910a5587b5be9070459694af89bf",
+    "sha256": "4b7c67b439dd83c8f7a6ef5eb326332684b0c21c991bef63cb99b2b8d24d2b59",
     "all_pages_rendered_and_visually_reviewed": true,
     "overfull_boxes": 0
   },
   "baseline_pdf": {
     "path": "reports/text/baselines.pdf",
     "pages": 9,
-    "sha256": "ed4e3da3aa422f63dc181aa52cd5fcecf4346bcc516db125de8fc01ab3168696"
+    "sha256": "bc6166755808c223380c01714795981aff9490d74102b8ca0039a2d55e6e65c9"
   },
   "site": {
     "relative_links_verified": 132,
@@ -70,6 +70,23 @@
     "experimental_evidence_unchanged": true,
     "all_notebook_steps_retained": true,
     "report_rendered_and_reviewed": true,
+    "relative_links_verified": 132,
+    "training_rerun": false
+  },
+  "group_attribution_revision": {
+    "checked_at_utc": "2026-10-19T13:36:33.727501+00:00",
+    "scope": "Group dataset collection credit in both Text reports and the website",
+    "experimental_evidence_unchanged": true,
+    "affected_pdf_pages_rendered_and_reviewed": {
+      "text": [
+        4,
+        19
+      ],
+      "baselines": [
+        3,
+        9
+      ]
+    },
     "relative_links_verified": 132,
     "training_rerun": false
   }

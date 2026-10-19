@@ -106,7 +106,7 @@ Bài toán phân loại chuyên mục của bài báo từ tiêu đề tiếng V
 trên cùng dữ liệu và split: TF-IDF từ, TF-IDF ký tự và đặc trưng PhoBERT đóng băng.
 Baseline lớp đa số cung cấp mức đối chứng; mô hình không dùng URL, body hoặc tên chuyên mục làm input.
 \section{Nguồn VietnamNet}
-Bộ \code{dathuynh1108/vietnamnet-news} do Huỳnh Thành Đạt thu thập chứa 212.705 bài trong 19 tệp chuyên mục.
+Bộ \code{dathuynh1108/vietnamnet-news} do nhóm thu thập chứa 212.705 bài trong 19 tệp chuyên mục.
 Bài này dùng các tệp parquet gốc, không dùng config NER có nhãn thực thể.
 Revision nguồn được cố định ở \code{d70a9601f36dcb1e5c534d30e2d3921c2ba16284}; SHA256 từng tệp nằm trong config.
 Dataset card không nêu license phân phối nội dung báo chí; tình trạng license được ghi là chưa rõ.
@@ -252,7 +252,7 @@ Báo cáo sử dụng AI được đính kèm tại tệp \code{AI_USE_REPORT.md
         parts.append(r"""\bibitem{adult} B. Becker và R. Kohavi. \emph{Adult}. UCI Machine Learning Repository, 1996. DOI: 10.24432/C5XW20. \url{https://archive.ics.uci.edu/dataset/2/adult}. License CC BY 4.0.
 """)
     else:
-        parts.append(r"""\bibitem{vietnamnet} Huỳnh Thành Đạt. \emph{VietnamNet News}. \url{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}. Revision và checksums trong config.
+        parts.append(r"""\bibitem{vietnamnet} Nhóm thực hiện. \emph{VietnamNet News}. \url{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}. Revision và checksums trong config.
 \bibitem{phobert} D. Q. Nguyen và A. T. Nguyen. \emph{PhoBERT: Pre-trained language models for Vietnamese}. Findings of EMNLP, 2020. \url{https://huggingface.co/vinai/phobert-base-v2}. Model card nêu license AGPL-3.0 cho phiên bản base-v2.
 \bibitem{pyvi} PyVi 0.1.1. Vietnamese word segmentation. \url{https://pypi.org/project/pyvi/}.
 """)

@@ -27,7 +27,7 @@ Bước & Nội dung & Công việc thực hiện\\\midrule
 
 \chapter{Dữ liệu và đặc điểm bài báo}
 \section{Bộ dữ liệu VietnamNet}
-Bộ dữ liệu do Huỳnh Thành Đạt thu thập từ VietnamNet, gồm tiêu đề, nội dung, URL và chuyên mục của bài báo \cite{vietnamnet}. Dữ liệu được lưu trong 19 tệp parquet, mỗi tệp tương ứng với một chuyên mục. Khi nạp, nhãn được ánh xạ từ tên tệp sang tên chuyên mục tiếng Việt; văn bản dùng cho mô hình chỉ gồm tiêu đề và nội dung bài viết.
+Bộ dữ liệu do nhóm thu thập từ VietnamNet, gồm tiêu đề, nội dung, URL và chuyên mục của bài báo \cite{vietnamnet}. Dữ liệu được lưu trong 19 tệp parquet, mỗi tệp tương ứng với một chuyên mục. Khi nạp, nhãn được ánh xạ từ tên tệp sang tên chuyên mục tiếng Việt; văn bản dùng cho mô hình chỉ gồm tiêu đề và nội dung bài viết.
 
 Tổng số bài là 212.705, trong đó 1.167 bài thiếu tiêu đề và 7 bài thiếu nội dung. Không có bài nào thiếu đồng thời cả hai trường. Vì vậy, những bài thiếu tiêu đề vẫn được giữ để khai thác nội dung còn lại; tương tự, bài thiếu nội dung được biểu diễn bằng tiêu đề. Sau tiền xử lý, toàn bộ 212.705 bài vẫn có văn bản hợp lệ.
 
@@ -267,7 +267,7 @@ Lệnh \code{python -m text_reuse.analysis} kiểm tra chữ ký các tệp và 
 Notebook chứa toàn bộ quy trình huấn luyện; khi chạy lại cần thiết lập đường dẫn ở Section 0.3 và xóa cache nếu thay dữ liệu. Bộ mã kiểm tra và tài liệu nguồn được trình bày chi tiết trong \code{docs/TEXT_REUSE.md}.
 
 \begin{thebibliography}{9}\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
-\bibitem{vietnamnet} Huỳnh Thành Đạt. \emph{VietnamNet News}. \url{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}.
+\bibitem{vietnamnet} Nhóm thực hiện. \emph{VietnamNet News}. \url{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}.
 \bibitem{application} Huỳnh Thành Đạt. \emph{PhoBERT News Classification App}. Mã nguồn và gói mô hình tại commit e171688. \url{https://github.com/dathuynh1108/phobert-news-classification-app}.
 \bibitem{phobert} D. Q. Nguyen và A. T. Nguyen. \emph{PhoBERT: Pre-trained language models for Vietnamese}. Findings of EMNLP, 2020. \url{https://huggingface.co/vinai/phobert-base-v2}.
 \bibitem{pyvi} PyVi. Vietnamese word segmentation. \url{https://pypi.org/project/pyvi/}.
