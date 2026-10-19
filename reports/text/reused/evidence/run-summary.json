@@ -1,0 +1,96 @@
+{
+  "dataset": {
+    "train": 180799,
+    "test": 31906,
+    "total": 212705
+  },
+  "source_class_counts": {
+    "Bạn đọc": 12402,
+    "Bảo vệ người tiêu dùng": 3873,
+    "Bất động sản": 12472,
+    "Chính trị": 12501,
+    "Công nghệ": 11684,
+    "Dân tộc - Tôn giáo": 3355,
+    "Đời sống": 12506,
+    "Du lịch": 10631,
+    "Giáo dục": 12506,
+    "Kinh doanh": 12500,
+    "Ô tô - Xe máy": 12490,
+    "Pháp luật": 12506,
+    "Sức khỏe": 12498,
+    "Thế giới": 12506,
+    "Thể thao": 12506,
+    "Thị trường tiêu dùng": 9302,
+    "Thời sự": 12504,
+    "Tuần Việt Nam": 11460,
+    "Văn hóa - Giải trí": 12503
+  },
+  "hardware": {
+    "platform": "Kaggle",
+    "gpus": [
+      "Tesla T4",
+      "Tesla T4"
+    ],
+    "vram_gib_each_printed": 14.6,
+    "python": "3.12.12",
+    "torch": "2.10.0+cu128"
+  },
+  "execution": {
+    "default_parameters": {},
+    "duration": 39660.357823,
+    "end_time": "2026-04-26T22:02:16.647393+00:00",
+    "environment_variables": {},
+    "exception": null,
+    "input_path": "__notebook__.ipynb",
+    "output_path": "__notebook__.ipynb",
+    "parameters": {},
+    "start_time": "2026-04-26T11:01:16.28957+00:00",
+    "version": "2.7.0"
+  },
+  "training_seconds_rounded": 38115.0,
+  "settings": {
+    "epochs": 7,
+    "max_length": 256,
+    "raw_content_head_words": 220,
+    "raw_content_tail_words": 80,
+    "batch_per_gpu": 16,
+    "gradient_accumulation": 2,
+    "global_effective_batch": 64,
+    "eval_batch_per_gpu": 32,
+    "learning_rate": 2e-05,
+    "weight_decay": 0.01,
+    "warmup_steps": 200,
+    "split_seed": 42,
+    "fp16": true,
+    "bf16": false,
+    "early_stopping_patience": 3
+  },
+  "metrics_before": {
+    "accuracy": 0.9051902463486492,
+    "f1_weighted": 0.9053077531329193,
+    "f1_macro": 0.898580852568712
+  },
+  "metrics_after": {
+    "accuracy": 0.9086378737541528,
+    "f1_weighted": 0.9084569729579833,
+    "f1_macro": 0.9016264097768871
+  },
+  "temperature": 1.4583027026633524,
+  "calibration": {
+    "nll": {
+      "before": 0.3828,
+      "after_temperature": 0.3237,
+      "printed_decimals": 4
+    },
+    "ece": {
+      "before": 0.0608,
+      "after_temperature": 0.0218,
+      "printed_decimals": 4
+    }
+  },
+  "evaluation_role": "same_31906_rows_used_for_checkpoint_selection_temperature_and_thresholds",
+  "raw_predictions_available": false,
+  "data_revision_logged_by_original_run": false,
+  "layernorm_reload_warning_present": true,
+  "new_training_performed_for_import": false
+}

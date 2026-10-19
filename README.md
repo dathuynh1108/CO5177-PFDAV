@@ -29,7 +29,7 @@ Course project website for **Programming Foundations for Data Analysis and Visua
 | 02 | [Text](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/text.html) | Required | Corpus exploration, text representations and analysis. |
 | 03 | [Image](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/image.html) | Selected elective | Visual exploration, feature extraction and model evaluation. |
 
-All three tracks have source code, an executed notebook and a separate LaTeX/PDF report. Tabular and Text are new CO5177 experiments; Image reuses the code and 24 measured runs from CO5085 A1. The [cross-course comparison](docs/COURSE_REUSE.md) documents that match. Presentation videos and the consolidated LMS report are still pending.
+All three tracks have source code, an executed notebook and a separate LaTeX/PDF report. Tabular is a new CO5177 experiment. Main Text reuses the supplied full-training PhoBERT notebook and matching application model metadata; the newer headline baseline remains separate. Image reuses the code and 24 measured runs from CO5085 A1. The [cross-course comparison](docs/COURSE_REUSE.md) documents that match. Presentation videos and the consolidated LMS report are still pending.
 
 ## Technology
 
@@ -51,9 +51,10 @@ The website uses static HTML5, CSS3 and vanilla JavaScript; it needs no backend,
 │   ├── app.js                 # Navigation and configuration handling
 │   └── favicon.svg
 ├── src/image/                 # Ported Image training and evidence audit
-├── src/studies/               # New Tabular/Text studies and evidence audit
+├── src/studies/               # New Tabular/headline baseline studies
+├── src/text_reuse/            # Full PhoBERT notebook provenance and result audit
 ├── configs/                   # Separate image, tabular and text configurations
-├── notebooks/                 # One executed notebook per track
+├── notebooks/                 # Main notebooks plus the separate Text baseline
 ├── reports/                   # Separate image/, tabular/ and text/ reports
 ├── docs/                      # Requirements mapping and reuse provenance
 ├── scripts/                   # Report compilation and site checks
@@ -111,29 +112,32 @@ Requirements are summarized from **Course Assignment v4.0, dated 14 September 20
 
 ## Tabular and Text studies
 
-| Study | Modeling data | Model selected by validation | Test accuracy | Test macro-F1 |
+| Study | Data and model | Accuracy | Macro-F1 | Evaluation |
 | --- | --- | --- | --- | --- |
-| Tabular | 48,780 deduplicated Adult rows, 14 features | Histogram gradient boosting | 87.48% | 0.8185 |
-| Text | 7,600 VietnamNet headlines, 19 classes | Frozen PhoBERT + logistic regression | 77.54% | 0.7738 |
+| Tabular | 48,780 deduplicated Adult rows; histogram gradient boosting | 87.48% | 0.8185 | Independent test within a new 70/15/15 split |
+| Text · main | 212,705 VietnamNet articles; full PhoBERT fine-tuning | 90.52% | 0.8986 | 31,906 rows also used for checkpoint selection |
+| Text · calibrated | Same full model with temperature and class thresholds | 90.86% | 0.9016 | Same rows also used to fit calibration |
+| Text · separate baseline | 7,600 headlines; frozen PhoBERT + logistic regression | 77.54% | 0.7738 | Separate audited cohort and 70/15/15 split |
 
-Both use one fixed stratified split and model seed. Text audits all 212,705 source articles before selecting its balanced cohort; it does not train on the entire corpus. The frozen encoder is pinned VinAI PhoBERT, since the old user model repository has no weights. These results are new measurements and do not reuse NER evaluation scores.
+The main Text notebook contains the complete historical Kaggle run on two Tesla T4 GPUs: 36 cells, 25 executed code cells, seven figures and seven training epochs. Its pipeline covers source inspection, PyVi, compact article text, Head–Tail tokenization, weighted loss, fine-tuning, checkpoint export, temperature scaling, per-class threshold search and class diagnostics. The report follows all Sections 0–9. These are reused April 2026 results, not new training on Vast or this Mac.
+
+Temperature is 1.4583; printed NLL changes from .3828 to .3237 and 15-bin ECE from .0608 to .0218 on calibration data. Temperature alone preserves argmax. The per-class thresholds change classification decisions. The historical split is not an untouched independent test, and its checkpoint reload logs contain LayerNorm compatibility warnings. Full provenance and limits are in [TEXT_REUSE.md](docs/TEXT_REUSE.md). The headline baseline is not directly comparable because its inputs, volume, priors and split differ.
 
 [Tabular notebook](notebooks/tabular.ipynb) · [Tabular PDF](reports/tabular/tabular.pdf) · [Tabular LaTeX](reports/tabular/report.tex)
-[Text notebook](notebooks/text.ipynb) · [Text PDF](reports/text/text.pdf) · [Text LaTeX](reports/text/report.tex)
-[Data, models and protocol](docs/STUDIES_PROTOCOL.md)
+
+[Full Text notebook](notebooks/text.ipynb) · [Text PDF](reports/text/text.pdf) · [Text LaTeX](reports/text/report.tex) · [Text report chapters](reports/text/chapters/study.tex) · [Text reuse manifest](reports/text/reuse-manifest.json)
+
+[Headline baseline notebook](notebooks/text_baselines.ipynb) · [Baseline PDF](reports/text/baselines.pdf) · [Baseline LaTeX](reports/text/baselines.tex) · [New-study protocol](docs/STUDIES_PROTOCOL.md)
 
 ```bash
 .venv/bin/python -m pip install -r requirements-studies.txt
 .venv/bin/python -m pip install --no-deps -e .
-.venv/bin/python -m studies.tabular
-.venv/bin/python -m studies.text
-.venv/bin/python -m studies.audit --models
-.venv/bin/python scripts/write_study_reports.py
-.venv/bin/python scripts/build_report.py --track tabular
+.venv/bin/python -m text_reuse.analysis --export
 .venv/bin/python scripts/build_report.py --track text
+.venv/bin/python -m studies.audit --models
 ```
 
-Raw data, PhoBERT features and fitted classifiers remain outside Git in `data/` and `runs/`. Published predictions, source/config hashes, dataset checksums, class metrics and figures are in `reports/<track>/generated/`. The notebooks rerun training; local execution has been checked, while a fresh Google Colab session has not been tested here.
+Opening `text.ipynb` displays the supplied historical output. **Run All in a fresh runtime can perform full fine-tuning**; review Section 0.3 and use an isolated workspace first. No notebook rents hardware. A fresh Kaggle/Colab rerun has not been performed during this import. `python -m studies.text` still runs only the separate headline baseline; `python -m studies.tabular` reruns Adult. Raw data, feature caches and model weights stay outside Git. The verified old checkpoint is stored locally under ignored `runs/text-full/model/`.
 
 ## Image study
 

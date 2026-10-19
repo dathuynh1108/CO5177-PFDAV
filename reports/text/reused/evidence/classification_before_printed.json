@@ -1,0 +1,119 @@
+{
+  "printed_decimals": 4,
+  "per_class": {
+    "Bạn đọc": {
+      "precision": 0.9598,
+      "recall": 0.9505,
+      "f1-score": 0.9552,
+      "support": 1860
+    },
+    "Bảo vệ người tiêu dùng": {
+      "precision": 0.9106,
+      "recall": 0.8589,
+      "f1-score": 0.884,
+      "support": 581
+    },
+    "Bất động sản": {
+      "precision": 0.9059,
+      "recall": 0.9107,
+      "f1-score": 0.9083,
+      "support": 1871
+    },
+    "Chính trị": {
+      "precision": 0.8789,
+      "recall": 0.8939,
+      "f1-score": 0.8863,
+      "support": 1875
+    },
+    "Công nghệ": {
+      "precision": 0.8999,
+      "recall": 0.9076,
+      "f1-score": 0.9037,
+      "support": 1753
+    },
+    "Du lịch": {
+      "precision": 0.8556,
+      "recall": 0.8878,
+      "f1-score": 0.8714,
+      "support": 1595
+    },
+    "Dân tộc - Tôn giáo": {
+      "precision": 0.7437,
+      "recall": 0.8191,
+      "f1-score": 0.7796,
+      "support": 503
+    },
+    "Giáo dục": {
+      "precision": 0.9407,
+      "recall": 0.9216,
+      "f1-score": 0.9311,
+      "support": 1876
+    },
+    "Kinh doanh": {
+      "precision": 0.8242,
+      "recall": 0.8224,
+      "f1-score": 0.8233,
+      "support": 1875
+    },
+    "Pháp luật": {
+      "precision": 0.9049,
+      "recall": 0.8982,
+      "f1-score": 0.9016,
+      "support": 1876
+    },
+    "Sức khỏe": {
+      "precision": 0.9501,
+      "recall": 0.9349,
+      "f1-score": 0.9425,
+      "support": 1875
+    },
+    "Thế giới": {
+      "precision": 0.9633,
+      "recall": 0.9792,
+      "f1-score": 0.9712,
+      "support": 1876
+    },
+    "Thể thao": {
+      "precision": 0.9899,
+      "recall": 0.9904,
+      "f1-score": 0.9901,
+      "support": 1876
+    },
+    "Thị trường tiêu dùng": {
+      "precision": 0.8396,
+      "recall": 0.8294,
+      "f1-score": 0.8345,
+      "support": 1395
+    },
+    "Thời sự": {
+      "precision": 0.8186,
+      "recall": 0.8225,
+      "f1-score": 0.8205,
+      "support": 1876
+    },
+    "Tuần Việt Nam": {
+      "precision": 0.9538,
+      "recall": 0.9005,
+      "f1-score": 0.9264,
+      "support": 1719
+    },
+    "Văn hóa - Giải trí": {
+      "precision": 0.9317,
+      "recall": 0.9536,
+      "f1-score": 0.9425,
+      "support": 1875
+    },
+    "Ô tô - Xe máy": {
+      "precision": 0.9729,
+      "recall": 0.9765,
+      "f1-score": 0.9747,
+      "support": 1873
+    },
+    "Đời sống": {
+      "precision": 0.8285,
+      "recall": 0.8241,
+      "f1-score": 0.8263,
+      "support": 1876
+    }
+  }
+}

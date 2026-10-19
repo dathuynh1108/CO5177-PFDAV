@@ -238,7 +238,7 @@ Không có nhiều split/seed để mô tả độ bất định. PhoBERT không
         f"Mã nguồn ở {code('src/studies/' + track + '.py')}; cấu hình ở {code('configs/' + track + '.json')}.\n\n"
     )
     parts.append(
-        f"{code('python -m studies.' + track)} chạy lại toàn bộ thí nghiệm.\n\nNotebook {code('notebooks/' + track + '.ipynb')} thực hiện cùng quy trình.\n\n"
+        f"{code('python -m studies.' + track)} chạy lại toàn bộ thí nghiệm.\n\nNotebook {code('notebooks/' + ('text_baselines' if track == 'text' else track) + '.ipynb')} thực hiện cùng quy trình.\n\n"
     )
     parts.append(r"""\code{python -m studies.audit --models} kiểm tra checksum và tính lại chỉ số từ predictions,
 đồng thời kiểm tra classifier đã lưu ngoài Git. Chữ ký nguồn/config được kiểm tra không đổi trong lúc đo.
@@ -259,10 +259,14 @@ Báo cáo sử dụng AI được đính kèm tại tệp \code{AI_USE_REPORT.md
     parts.append(r"""\bibitem{sklearn} Scikit-learn documentation: Pipeline, ColumnTransformer, TfidfVectorizer và classification metrics. \url{https://scikit-learn.org/stable/}.
 \end{thebibliography}\end{document}
 """)
-    (directory / "report.tex").write_text("".join(parts))
-    print(directory / "report.tex")
+    filename = "report.tex" if track == "tabular" else "baselines.tex"
+    (directory / filename).write_text("".join(parts))
+    print(directory / filename)
 
 
 if __name__ == "__main__":
     for track in ["tabular", "text"]:
         write(track)
+    from text_reuse.analysis import export_tables
+
+    export_tables()

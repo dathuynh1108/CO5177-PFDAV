@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/dathuynh1108/phobert-news-classification-app",
+  "source_commit": "e17168883b8a80a5c77b670018dd9ac8afb15913",
+  "notebook_sha256": "32a22cbe811bc8f1035cd80b819a5eb8da0e2390ca3b5d6ca32dbcca9c238c66",
+  "all_36_cell_sources_match_pinned_repository": true,
+  "imported_files": {
+    "notebooks/text.ipynb": {
+      "sha256": "32a22cbe811bc8f1035cd80b819a5eb8da0e2390ca3b5d6ca32dbcca9c238c66",
+      "kind": "user_attachment",
+      "filename": "notebookb4f8845517.ipynb"
+    },
+    "reports/text/reused/evidence/config.json": {
+      "sha256": "88fad461a00e432b78f215ebfa5dca45b59a991e434198b6c8ccb4ad6bcbb899",
+      "kind": "git_blob",
+      "source_path": "train/artifacts/active/config.json"
+    },
+    "reports/text/reused/evidence/label_config.json": {
+      "sha256": "ce54069793310e32de549d059dc399c97b4f75aeaabf07109d9d1b6814699d8b",
+      "kind": "git_blob",
+      "source_path": "train/artifacts/active/label_config.json"
+    },
+    "reports/text/reused/evidence/metrics.json": {
+      "sha256": "7f9887994082c0c58338dbf7b385b07daba3027fb2402148844ac0471852bd25",
+      "kind": "git_blob",
+      "source_path": "train/artifacts/active/metrics.json"
+    },
+    "reports/text/reused/evidence/thresholds.json": {
+      "sha256": "b368c2d53b2e208c4fcef638b4fcb91c1e475cf8eb815bd855f5cf93b51389e2",
+      "kind": "git_blob",
+      "source_path": "train/artifacts/active/thresholds.json"
+    },
+    "reports/text/reused/evidence/confusion_matrix.json": {
+      "sha256": "6acd6ac0d283d0e84595d16c1653d5c1fbc6dbde22e6f7ecbeb438da5e5530c5",
+      "kind": "git_blob",
+      "source_path": "train/artifacts/active/confusion_matrix.json"
+    },
+    "reports/text/reused/evidence/classification_report.json": {
+      "sha256": "04fb980b299e15bbe866a400b0dd8a384d502c2ebfaf0a2d22ab90464e9b63b0",
+      "kind": "git_blob",
+      "source_path": "train/artifacts/active/classification_report.json"
+    },
+    "reports/text/reused/figures/01_class_distribution.png": {
+      "sha256": "7a7c06e9ab165b92aceba2e41eacd405abae587297fdae6f1e0344639b0e684a",
+      "kind": "notebook_output",
+      "cell": 9,
+      "output": 1
+    },
+    "reports/text/reused/figures/02_text_length.png": {
+      "sha256": "ae09aeaa14408ae32ee18360e2da60a9519327254a304304f59d4ca24afa2e2b",
+      "kind": "notebook_output",
+      "cell": 10,
+      "output": 1
+    },
+    "reports/text/reused/figures/03_confusion_matrix.png": {
+      "sha256": "670c9bfca9c4ad68a29f991c6d4951309332a9a1c18cee1842bc559c23afbb95",
+      "kind": "notebook_output",
+      "cell": 23,
+      "output": 1
+    },
+    "reports/text/reused/figures/04_f1_per_class.png": {
+      "sha256": "68e5f6936f13bd1988354d59da20674ea386c3ec357b141b59f92cdfed6ecb8e",
+      "kind": "notebook_output",
+      "cell": 24,
+      "output": 1
+    },
+    "reports/text/reused/figures/07_support_vs_f1.png": {
+      "sha256": "2b888f5f618990899e13d72cd1bc7ec84656ebd7263b0f351c396dfcd7554ab4",
+      "kind": "notebook_output",
+      "cell": 24,
+      "output": 3
+    },
+    "reports/text/reused/figures/05_training_curves.png": {
+      "sha256": "c256d76d0eabd4cfc591ea8c15cb4f134d43f25d00050d383e03d8cc13ce9364",
+      "kind": "notebook_output",
+      "cell": 25,
+      "output": 1
+    },
+    "reports/text/reused/figures/06_threshold_calibration.png": {
+      "sha256": "c3f7b787fbe399b833a70a3a45d412ad5b99cd5e7dc7c0b1838c81bbbe35d7f3",
+      "kind": "notebook_output",
+      "cell": 32,
+      "output": 1
+    },
+    "reports/text/reused/evidence/epochs.json": {
+      "sha256": "53107ab07222e3d347bd512854fe607824b1806613fcc703430b017ff465c999",
+      "kind": "parsed_notebook_output",
+      "cell": 19
+    },
+    "reports/text/reused/evidence/classification_before_printed.json": {
+      "sha256": "d5dd97ccdbf676287890d975f11fd4ebc80723906a8ebee2b65e48b6be4e8095",
+      "kind": "parsed_notebook_output",
+      "cell": 22
+    },
+    "reports/text/reused/evidence/run-summary.json": {
+      "sha256": "7486cdebc517862eb187419b983c2db2b0bfddb5d22e2d3231c26fe6f0ad9ba6",
+      "kind": "parsed_notebook_and_matching_package"
+    }
+  },
+  "checkpoint_files": {
+    "model.safetensors": {
+      "source_path": "train/artifacts/active/model.safetensors",
+      "sha256": "5e5292b50308797ef0f65993bf66e0f9becfa89fc35d39d36d551298ccc634b1",
+      "bytes": 540075652
+    },
+    "bpe.codes": {
+      "source_path": "train/artifacts/active/bpe.codes",
+      "sha256": "9dfe53fb8abbddd3387da99641c36e00bee757a3679aad9cf0a7cdc4b30f6ef8",
+      "bytes": 1135173
+    },
+    "vocab.txt": {
+      "source_path": "train/artifacts/active/vocab.txt",
+      "sha256": "dffd7543c401fb6567253ae7c3313004532c33d062525250049c616544bad777",
+      "bytes": 895321
+    },
+    "tokenizer_config.json": {
+      "source_path": "train/artifacts/active/tokenizer_config.json",
+      "sha256": "1e3cb891e2fec2c25b3b7d1b1055407c763040ee2ceff2364ed8973c77a83566",
+      "bytes": 1213
+    },
+    "added_tokens.json": {
+      "source_path": "train/artifacts/active/added_tokens.json",
+      "sha256": "956163bbe8b0625fcc779207447308285eab218ffe0551d3e0deeae5538da326",
+      "bytes": 22
+    }
+  },
+  "baseline_notebook": "notebooks/text_baselines.ipynb",
+  "comparison_policy": "Headline baselines and full-article fine-tuning have different inputs and splits; no paired superiority claim."
+}

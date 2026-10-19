@@ -22,4 +22,5 @@ jobs:
       - run: python -m pytest -q
       - run: python -m image.analysis > /tmp/image-audit.json
       - run: python -m studies.audit
+      - run: python -m text_reuse.analysis
       - run: python scripts/check_site.py

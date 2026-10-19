@@ -1,0 +1,67 @@
+{
+  "checked_at_utc": "2026-10-19T12:47:00.256091+00:00",
+  "main_text": {
+    "verified_files": 17,
+    "notebook_cells": 36,
+    "observed_code_cells": 25,
+    "original_figures": 7,
+    "evaluation_rows": 31906,
+    "calibrated_metrics_recomputed": {
+      "accuracy": 0.9086378737541528,
+      "f1_macro": 0.9016264097768871,
+      "f1_weighted": 0.9084569729579832
+    },
+    "new_training_performed": false,
+    "independent_test": false
+  },
+  "tests_passed": 28,
+  "new_training_performed": false,
+  "new_paid_gpu_jobs": 0,
+  "notebook_checks": {
+    "main_attachment_byte_identical": true,
+    "36_cell_sources_match_pinned_repository": true,
+    "main_code_cells_syntax_checked": 25,
+    "historical_error_outputs": 0,
+    "full_training_rerun_in_this_import": false,
+    "headline_notebook_preserved_from_previous_commit": true
+  },
+  "local_checkpoint_smoke": {
+    "verified_checkpoint_files": 5,
+    "tensor_load_missing_keys": [],
+    "tensor_load_unexpected_keys": [],
+    "parameters": 135012883,
+    "synthetic_smoke_logit_shape": [
+      3,
+      19
+    ],
+    "device": "cpu",
+    "new_training_performed": false,
+    "historical_scores_re_evaluated": false
+  },
+  "pdf": {
+    "path": "reports/text/text.pdf",
+    "pages": 19,
+    "sha256": "0c3880258c3b8c216ab5c3e16db736522b7561de072f8d4336a8369fa2206bbd",
+    "all_pages_rendered_and_visually_reviewed": true,
+    "overfull_boxes": 0
+  },
+  "baseline_pdf": {
+    "path": "reports/text/baselines.pdf",
+    "pages": 9,
+    "sha256": "ed4e3da3aa422f63dc181aa52cd5fcecf4346bcc516db125de8fc01ab3168696"
+  },
+  "site": {
+    "relative_links_verified": 132,
+    "desktop_inspected": true,
+    "figure_images_loaded": true,
+    "390px_dom_horizontal_overflow": false,
+    "console_errors_or_warnings": []
+  },
+  "preserved_other_studies": {
+    "adult_models": 4,
+    "headline_models": 4,
+    "image_runs": 24,
+    "image_report_unchanged": true
+  },
+  "fresh_colab_execution_verified": false
+}

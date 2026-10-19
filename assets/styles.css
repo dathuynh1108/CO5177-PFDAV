@@ -14,3 +14,6 @@
 .hero{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:center;gap:64px;padding-block:64px}.hero h1{font-size:clamp(42px,4.6vw,64px);letter-spacing:-.045em}.study-overview{border:1px solid var(--line);padding:28px;background:#f1f0e9}.study-overview>h2{font-size:24px;margin:12px 0 22px}.study-row{display:grid;grid-template-columns:24px minmax(0,1fr) 15px;gap:14px;padding:22px 0;border-top:1px solid var(--line)}.study-row h3{font-size:21px;letter-spacing:-.025em}.study-row p{font-size:12px;margin:5px 0}.study-row div>span{font-size:11px;color:var(--muted)}.study-row:hover h3{color:var(--rust)}
 @media(max-width:800px){.hero{grid-template-columns:1fr;gap:32px;padding-block:38px}.study-overview{padding:22px}.hero h1{font-size:clamp(42px,8vw,60px)}}
 @media print{.study-overview{background:white;margin-top:24px}.hero{display:block}}
+
+/* Measured study figures retain their intrinsic aspect ratio. */
+.experiment-figure{margin:2rem 0}.experiment-figure img{display:block;width:100%;height:auto}.experiment-figure figcaption{margin-top:.8rem;font-size:.875rem;line-height:1.65;color:var(--muted,#657068)}

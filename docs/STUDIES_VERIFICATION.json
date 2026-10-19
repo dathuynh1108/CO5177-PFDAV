@@ -9,12 +9,13 @@
       "stderr": [],
       "seconds": 7.61
     },
-    "text": {
+    "text_baselines": {
       "cells": 16,
       "executed_code_cells": 7,
       "errors": 0,
       "stderr": [],
-      "seconds": 46.24
+      "seconds": 46.24,
+      "path": "notebooks/text_baselines.ipynb"
     }
   },
   "saved_classifier_replay": [
@@ -100,9 +101,11 @@
       "test_rows": 1140,
       "verified_artifacts": 9,
       "pdf_pages": 9,
-      "pdf_sha256": "510e3456b403bdd754c5ffa23b9dfa4e44663ca4f9907c06f74d64985f39838b",
+      "pdf_sha256": "ed4e3da3aa422f63dc181aa52cd5fcecf4346bcc516db125de8fc01ab3168696",
       "pdf_rendered_and_reviewed": true,
-      "model_artifacts": 4
+      "model_artifacts": 4,
+      "role": "separate_headline_baseline",
+      "pdf_path": "reports/text/baselines.pdf"
     }
   },
   "image_preserved": {
