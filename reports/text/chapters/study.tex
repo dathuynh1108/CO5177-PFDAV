@@ -6,25 +6,6 @@ Thực nghiệm sử dụng PhoBERT Base v2 để phân loại 212.705 bài báo
 
 Báo cáo tập trung vào ba vấn đề: cách biểu diễn bài báo dài trong giới hạn đầu vào của PhoBERT, kết quả phân loại khi dữ liệu mất cân bằng, và ảnh hưởng của calibration đến từng chuyên mục. Một thực nghiệm riêng trên 7.600 tiêu đề được trình bày ở phụ lục để bổ sung góc nhìn về việc sử dụng đặc trưng văn bản.
 
-\section{Quy trình thực nghiệm}
-Quá trình xử lý bắt đầu từ khảo sát dữ liệu, sau đó lần lượt thực hiện làm sạch, tách từ, xây dựng đầu vào và huấn luyện. Kết quả được phân tích qua các chỉ số tổng hợp, đường cong học và lỗi theo chuyên mục. Phần hiệu chỉnh được thực hiện sau khi mô hình đã hoàn tất huấn luyện.
-\begin{table}[htbp]\centering\footnotesize
-\begin{tabularx}{\textwidth}{clX}\toprule
-Bước & Nội dung & Công việc thực hiện\\\midrule
-0 & Thiết lập & Kiểm tra thư viện, thiết bị và cấu hình huấn luyện.\\
-1 & Nạp dữ liệu & Đọc 19 tệp parquet, kiểm tra số bài và dữ liệu thiếu.\\
-2 & Khảo sát & Phân tích phân bố lớp và độ dài văn bản.\\
-3 & Tiền xử lý & Làm sạch, tách từ bằng PyVi và lưu kết quả.\\
-4 & Tạo dataset & Chia tập, mã hóa Head--Tail và tính trọng số lớp.\\
-5 & Huấn luyện & Fine-tune PhoBERT, theo dõi và chọn checkpoint.\\
-6 & Đánh giá & Tính accuracy, F1 và phân tích ma trận nhầm lẫn.\\
-7 & Xuất mô hình & Lưu trọng số, tokenizer và cấu hình suy luận.\\
-8 & Hiệu chỉnh & Tìm temperature và ngưỡng riêng cho từng lớp.\\
-9 & Phân tích lỗi & Xem xét lớp khó và đánh đổi precision--recall.\\\bottomrule
-\end{tabularx}
-\caption{Các bước thực nghiệm, tương ứng với Section 0--9 của notebook.}
-\end{table}
-
 \chapter{Dữ liệu và đặc điểm bài báo}
 \section{Bộ dữ liệu VietnamNet}
 Bộ dữ liệu do nhóm thu thập từ VietnamNet, gồm tiêu đề, nội dung, URL và chuyên mục của bài báo \cite{vietnamnet}. Dữ liệu được lưu trong 19 tệp parquet, mỗi tệp tương ứng với một chuyên mục. Khi nạp, nhãn được ánh xạ từ tên tệp sang tên chuyên mục tiếng Việt; văn bản dùng cho mô hình chỉ gồm tiêu đề và nội dung bài viết.
@@ -137,11 +118,6 @@ Với quy tắc chọn lớp có logit lớn nhất, mô hình đạt accuracy 9
 
 Thể thao đạt F1 0,9901, còn Dân tộc -- Tôn giáo đạt 0,7796 với 503 bài đánh giá. Các chuyên mục Kinh doanh, Thời sự, Đời sống và Thị trường tiêu dùng nằm quanh mức 0,82--0,83. Vì đây đều là những nhóm có nội dung rộng hoặc gần với các nhóm khác, phần phân tích lỗi sẽ xem xét cụ thể các cặp nhầm lẫn, thay vì chỉ xếp hạng chuyên mục theo F1.
 
-\section{Lưu mô hình và kiểm tra suy luận}
-Trọng số được lưu dưới dạng safetensors, kèm cấu hình kiến trúc, tokenizer, ánh xạ nhãn và thông số tiền xử lý. Nhờ đó, đầu vào khi suy luận có thể được chuẩn bị theo cùng cách đã dùng trong huấn luyện.
-
-Ba bài lấy từ dữ liệu nguồn được dùng để kiểm tra nhanh quá trình nạp mô hình và dự đoán. Phép thử này chỉ kiểm tra đường suy luận; chất lượng phân loại vẫn được đánh giá trên tập 31.906 bài. Sau calibration, gói mô hình được bổ sung temperature, ngưỡng theo lớp và các tệp kết quả tương ứng.
-
 \chapter{Hiệu chỉnh xác suất và ngưỡng phân loại}
 \section{Temperature scaling}
 Accuracy và F1 phản ánh nhãn được chọn, nhưng chưa mô tả đầy đủ mức độ tin cậy của xác suất dự đoán. Khi mô hình chọn sai một nhãn với xác suất rất cao, sai lệch đó thể hiện rõ hơn qua NLL. Temperature scaling được dùng để điều chỉnh độ sắc của phân bố xác suất mà vẫn giữ nguyên thứ tự giữa các lớp.
@@ -190,11 +166,6 @@ Pháp luật là trường hợp thể hiện rõ đánh đổi sau hiệu chỉ
 \includegraphics[width=\textwidth]{reused/figures/06_threshold_calibration.png}
 \caption{Thay đổi F1 và ngưỡng sau hiệu chỉnh theo chuyên mục.}\end{figure}
 
-\section{Lưu tham số hiệu chỉnh}
-Temperature, ngưỡng của từng lớp và thông số tìm kiếm được lưu trong \code{thresholds.json}. Tệp \code{label_config.json} chứa đường dẫn đến cấu hình ngưỡng và cờ sử dụng calibration. Các chỉ số tổng hợp, báo cáo theo lớp và ma trận nhầm lẫn được xuất thành JSON cùng gói mô hình.
-
-Ma trận nhầm lẫn trong các tệp JSON phản ánh kết quả sau hiệu chỉnh; hình ở phần đánh giá ban đầu phản ánh kết quả trước hiệu chỉnh. Phân biệt hai thời điểm này là cần thiết khi đối chiếu số lỗi và chỉ số của từng lớp.
-
 \chapter{Phân tích lỗi và kết luận}
 \section{Những chuyên mục còn khó phân biệt}
 Sau hiệu chỉnh, Dân tộc -- Tôn giáo vẫn có F1 thấp nhất, đạt 0,7813, với precision 0,7372 và recall 0,8310. Mức thay đổi nhỏ so với trước hiệu chỉnh cho thấy chỉ điều chỉnh ngưỡng chưa đủ để cải thiện đáng kể lớp này. Việc khảo sát thêm các bài bị nhầm và độ đa dạng của mẫu huấn luyện sẽ giúp xác định nguyên nhân cụ thể hơn.
@@ -204,7 +175,7 @@ Sau hiệu chỉnh, Dân tộc -- Tôn giáo vẫn có F1 thấp nhất, đạt 
 
 Cặp Thời sự $\rightarrow$ Pháp luật có 236 lỗi, chiếm 12,58\% số bài Thời sự trong tập đánh giá. Đây cũng là cặp cần xem xét khi đánh giá tác động của ngưỡng Pháp luật thấp. Hai nhóm lỗi lớn tiếp theo là Thị trường tiêu dùng $\rightarrow$ Kinh doanh với 127 bài và Đời sống $\rightarrow$ Du lịch với 125 bài.
 
-Các cặp này cho thấy việc đọc kết quả theo từng chuyên mục có giá trị hơn chỉ nhìn vào accuracy tổng. Để cải thiện tiếp, cần đọc những bài thuộc đúng các nhóm lỗi trên, xem nội dung nào khiến mô hình chuyển lớp và đối chiếu với cách phân chuyên mục của nguồn dữ liệu. Ma trận nhầm lẫn giúp chọn nơi cần khảo sát, nhưng tự nó chưa đủ để kết luận nguyên nhân nằm ở mô hình hay ở nhãn.
+Ba cặp trên tập trung ở các chuyên mục có phạm vi nội dung gần nhau. Ma trận nhầm lẫn xác định hướng nhầm và số lỗi. Việc quy lỗi cho nội dung bài hoặc cách gán nhãn cần đối chiếu từng bản ghi.
 
 \section{Giới hạn thực nghiệm}
 Giới hạn quan trọng nhất là cách sử dụng tập đánh giá. Cùng 31.906 bài đã tham gia chọn checkpoint, tìm temperature và tìm ngưỡng. Vì vậy, các chỉ số sau hiệu chỉnh phản ánh kết quả trên dữ liệu đã được dùng để lựa chọn tham số, chưa phải ước lượng trên một tập test độc lập. Một thiết kế ba tập, trong đó validation dùng cho lựa chọn và calibration còn test chỉ dùng ở cuối, sẽ cho phép đánh giá rõ hơn khả năng khái quát hóa.
@@ -218,7 +189,7 @@ PhoBERT đạt accuracy 90,52\% và macro-F1 0,8986 trên tập đánh giá củ
 
 Kết quả còn hạn chế ở các lớp Dân tộc -- Tôn giáo, Thời sự, Kinh doanh và những cặp có nội dung gần nhau. Hướng đánh giá tiếp theo cần ưu tiên chia tập độc lập sau khi xử lý trùng, rồi chọn checkpoint và tham số calibration trên validation. Trên cơ sở đó mới có thể xác định mức cải thiện giữ được khi gặp bài báo chưa tham gia quá trình lựa chọn mô hình.
 
-Báo cáo sử dụng AI được đính kèm tại tệp \code{AI_USE_REPORT.md} trong repository.
+Báo cáo sử dụng AI được trình bày trong \href{https://github.com/dathuynh1108/CO5177-PFDAV/blob/main/AI\_USE\_REPORT.md}{tệp AI\_USE\_REPORT.md}.
 
 \appendix
 \chapter{Thực nghiệm bổ sung trên tiêu đề}
@@ -247,24 +218,8 @@ Các hình dưới đây bổ sung thống kê độ dài, ma trận nhầm lẫ
 \includegraphics[width=.9\textwidth]{reused/figures/05_training_curves.png}
 \caption{Đường cong lưu trong notebook. Ở ô loss, mốc của đường đánh giá là epoch còn mốc của đường huấn luyện là step; hình ở Chương 4 đã thống nhất lại trục epoch.}\end{figure}
 
-\chapter{Mã nguồn và đối chiếu kết quả}
-\section{Môi trường và cấu hình}
-Mô hình được huấn luyện trên Kaggle với hai GPU Tesla T4, mỗi GPU có khoảng 14,6 GiB bộ nhớ. Môi trường sử dụng Python 3.12.12 và PyTorch 2.10.0+cu128. Các thư viện chính gồm Transformers, Accelerate, scikit-learn và PyVi. FP16 được dùng để giảm bộ nhớ và tận dụng khả năng tính toán của T4.
-
-Đường dẫn dữ liệu, thư mục lưu mô hình và các tham số được khai báo tập trung. Dữ liệu được tải từ Hugging Face khi chưa có bản cục bộ. Giới hạn số mẫu mỗi lớp được đặt bằng 0 để sử dụng toàn bộ dữ liệu đã nạp.
-
-\section{Tệp thực nghiệm và kết quả}
-
-Mô hình được huấn luyện trên Kaggle từ ngày 26 đến 27/4/2026 theo giờ Việt Nam. Notebook thực nghiệm gồm 36 cell, trong đó có 25 cell code đã chạy. File \code{notebooks/text.ipynb} giữ đầy đủ mã nguồn, kết quả và hình của lần chạy này. Mã nguồn các cell khớp với notebook trong repository ứng dụng tại commit \code{e171688} \cite{application}.
-
-Gói mô hình gồm trọng số khoảng 540 MB, tokenizer và cấu hình phân loại. Danh sách tệp cùng SHA256 được lưu tại \code{reports/text/reuse-manifest.json}. Dữ liệu thô, trọng số và cache được giữ ngoài Git; các bảng, hình và kết quả tổng hợp nằm trong thư mục báo cáo.
-
-Lệnh \code{python -m text_reuse.analysis} kiểm tra chữ ký các tệp và tính lại accuracy, macro-F1, weighted-F1 cùng precision/recall/F1 theo lớp từ ma trận nhầm lẫn sau hiệu chỉnh. Các giá trị trước hiệu chỉnh, bảng epoch và NLL/ECE được đối chiếu với kết quả đã lưu trong notebook. Để xuất lại bảng và biên dịch báo cáo, sử dụng:
-\begin{quote}\small
-\code{python -m text_reuse.analysis --export}\\[.3em]
-\code{python scripts/build_report.py --track text}
-\end{quote}
-Notebook chứa toàn bộ quy trình huấn luyện; khi chạy lại cần thiết lập đường dẫn ở Section 0.3 và xóa cache nếu thay dữ liệu. Bộ mã kiểm tra và tài liệu nguồn được trình bày chi tiết trong \code{docs/TEXT_REUSE.md}.
+\chapter{Nguồn gốc thực nghiệm}
+Các kết quả chính được trích từ notebook huấn luyện đã lưu, thực hiện trên Kaggle với hai GPU Tesla T4 trong các ngày 26--27/4/2026 theo giờ Việt Nam. Notebook gồm mã nguồn, đầu ra và hình của lần chạy lịch sử; nghiên cứu này không ghi nhận một lần huấn luyện mới. Notebook đi kèm ứng dụng phân loại tin tức VietnamNet \cite{application}. Các cảnh báo khi nạp lại checkpoint và giới hạn của phép đối chiếu kết quả được nêu tại Chương 6.
 
 \begin{thebibliography}{9}\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
 \bibitem{vietnamnet} Nhóm thực hiện. \emph{VietnamNet News}. \url{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}.

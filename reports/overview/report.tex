@@ -1,0 +1,102 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\IfFontExistsTF{TeX Gyre Termes}{\setmainfont{TeX Gyre Termes}}{\setmainfont{Liberation Serif}}
+\usepackage[vietnamese]{babel}
+\usepackage[a4paper,margin=24mm]{geometry}
+\usepackage{graphicx,booktabs,tabularx,caption}
+\usepackage[hidelinks]{hyperref}
+\captionsetup{font=small,labelfont=bf}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+\hypersetup{pdftitle={CTG - Bao cao tong hop CO5177},pdfauthor={Huynh Thanh Dat, Luong Minh Duy}}
+\begin{document}
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+\centering
+{\large ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH\par}
+{\large\bfseries TRƯỜNG ĐẠI HỌC BÁCH KHOA\par}
+{\large KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH\par}
+\vspace{1cm}
+\includegraphics[width=3cm]{../image/assets/hcmut-logo.png}\par
+\vspace{1cm}
+{\large\bfseries NỀN TẢNG LẬP TRÌNH CHO PHÂN TÍCH\par}
+{\large\bfseries VÀ TRỰC QUAN DỮ LIỆU\par}
+{\large CO5177 · Học kỳ 261 · Năm học 2026–2027\par}
+\vspace{1cm}
+\rule{\textwidth}{.6pt}\par\vspace{.5cm}
+{\LARGE\bfseries BÁO CÁO TỔNG HỢP BÀI TẬP LỚN\par}
+\vspace{.35cm}
+{\large Phân loại thu nhập, tin tức tiếng Việt và ảnh\par}
+\vspace{.5cm}\rule{\textwidth}{.6pt}\par
+\vspace{1cm}
+\begin{tabular}{@{}lll@{}}
+Giảng viên & Lê Thành Sách & \\[.4em]
+Nhóm & CTG & \\[.4em]
+Thành viên & Huỳnh Thành Đạt · 2570161 & 50\%\\
+& Lương Minh Duy · 2570083 & 50\%
+\end{tabular}
+\vfill
+{\small Thành phố Hồ Chí Minh, tháng 11 năm 2026\par}
+\end{titlepage}
+\hypersetup{pageanchor=true}
+
+\section{Tabular — Phân loại thu nhập trên UCI Adult}
+UCI Adult gồm 48.842 bản ghi và 14 thuộc tính. Ba cột có giá trị thiếu là nghề nghiệp, loại hình việc làm và quốc gia xuất xứ. Sau khi loại nhóm trùng có nhãn mâu thuẫn và gộp các bản ghi lặp còn lại, 48.780 bản ghi được chia phân tầng theo tỷ lệ 70/15/15. Giá trị điền thiếu, tham số chuẩn hóa và ánh xạ mã hóa được ước lượng trên tập huấn luyện.
+
+Thí nghiệm so sánh dự đoán lớp đa số, hồi quy logistic thường, hồi quy logistic cân bằng lớp và histogram gradient boosting. Các mô hình logistic dùng mã hóa one-hot và chuẩn hóa thuộc tính số. Gradient boosting phân nhánh trên các thuộc tính số và thuộc tính phân loại đã mã hóa.
+
+\begin{table}[htbp]\centering
+\begin{tabular}{@{}lrr@{}}\toprule
+Mô hình & Độ chính xác (\%) & Macro-F1\\\midrule
+Dự đoán lớp đa số & 76,06 & 0,4320\\
+Hồi quy logistic & 85,24 & 0,7815\\
+Hồi quy logistic cân bằng lớp & 81,43 & 0,7769\\
+Histogram gradient boosting & 87,48 & 0,8185\\\bottomrule
+\end{tabular}
+\caption{Kết quả trên 7.317 bản ghi kiểm tra của cách chia mới.}
+\end{table}
+
+Gradient boosting tăng 2,24 điểm phần trăm độ chính xác so với hồi quy logistic. Khi thêm trọng số cân bằng lớp, hồi quy logistic nhận ra nhiều bản ghi thu nhập trên 50.000 USD hơn. Recall tăng từ 59,08\% lên 84,59\% và precision giảm từ 74,03\% xuống 57,64\%. Đây là sự đánh đổi giữa bỏ sót lớp ít mẫu và dự đoán nhầm vào lớp đó. Dữ liệu điều tra năm 1994 giới hạn khả năng áp dụng kết quả cho phân bố thu nhập hiện nay.
+
+\section{Text — Phân loại chuyên mục VietnamNet}
+Bộ dữ liệu do nhóm thu thập có 212.705 bài thuộc 19 chuyên mục. Thí nghiệm toàn văn kết hợp tiêu đề, phần mở đầu và phần cuối bài, rồi dùng PyVi để tách từ. PhoBERT giữ token ở hai đầu chuỗi và được tinh chỉnh với cross-entropy có trọng số lớp. Trên 31.906 bài dùng cho đánh giá, độ chính xác là 90,52\% trước hiệu chỉnh và 90,86\% sau khi áp dụng temperature và ngưỡng theo lớp. Cùng tập này đã được dùng để chọn checkpoint và tham số hiệu chỉnh, nên hai điểm số mô tả chính tập đánh giá đó.
+
+Một thí nghiệm riêng trên 7.600 tiêu đề dùng ba tập phân tầng gồm 5.320 mẫu huấn luyện, 1.140 mẫu xác thực và 1.140 mẫu kiểm tra. Bộ phân loại và tham số được chọn trước khi đánh giá tập kiểm tra.
+
+\begin{table}[htbp]\centering
+\begin{tabular}{@{}lrr@{}}\toprule
+Biểu diễn và bộ phân loại & Độ chính xác (\%) & Macro-F1\\\midrule
+TF-IDF theo từ, SVM tuyến tính & 66,32 & 0,6582\\
+TF-IDF theo ký tự, SVM tuyến tính & 67,28 & 0,6676\\
+PhoBERT đóng băng, hồi quy logistic & 77,54 & 0,7738\\\bottomrule
+\end{tabular}
+\caption{Kết quả của thí nghiệm tiêu đề trên tập kiểm tra độc lập.}
+\end{table}
+
+Đặc trưng PhoBERT kết hợp hồi quy logistic đạt độ chính xác cao hơn 10,26 điểm phần trăm so với TF-IDF ký tự kết hợp SVM trên cùng tập tiêu đề. Mức chênh lệch phản ánh đồng thời cách biểu diễn và bộ phân loại. Thí nghiệm toàn văn dùng đầu vào và cách chia khác, nên được phân tích riêng. Sau hiệu chỉnh toàn văn, Thời sự bị dự đoán thành Pháp luật ở 236 bài, cho thấy hai chuyên mục vẫn khó phân biệt.
+
+\section{Image — Tinh chỉnh ResNet18 và Swin-T trên CIFAR-100}
+CIFAR-100 có 60.000 ảnh thuộc 100 lớp. Cách chia thực nghiệm gồm 45.000 ảnh huấn luyện, 5.000 ảnh xác thực và 10.000 ảnh kiểm tra. Ảnh gốc 32×32 được nội suy lên 96×96 để giữ thiết lập của A1 CO5085. Độ phân giải này thấp hơn mức cạnh ngắn 128 px được đề khuyến nghị. Đệm, cắt ngẫu nhiên và lật ngang được áp dụng trên tập huấn luyện. Hai bộ mã hóa dùng trọng số ImageNet trong sáu cấu hình chính.
+
+\begin{table}[htbp]\centering
+\begin{tabular}{@{}lrrr@{}}\toprule
+Kiến trúc & Chỉ học đầu ra & Tinh chỉnh khối cuối & Tinh chỉnh toàn bộ\\\midrule
+ResNet18 & 60,95 & 73,96 & 78,97\\
+Swin-T & 71,67 & 78,25 & 86,63\\\bottomrule
+\end{tabular}
+\caption{Độ chính xác kiểm tra trung bình (\%) qua ba hạt giống, mỗi lượt 20 epoch.}
+\end{table}
+
+Tinh chỉnh khối cuối cải thiện kết quả của cả hai kiến trúc so với chỉ học bộ phân loại. Swin-T tinh chỉnh toàn bộ đạt độ chính xác cao nhất trong thiết lập này, đồng thời cần thời gian huấn luyện gấp 2,81 lần và bộ nhớ cấp phát cực đại gấp 4,70 lần ResNet18 tinh chỉnh toàn bộ. Kết quả thuộc cùng 24 lượt chạy đã báo cáo trong A1 CO5085, kể cả đối chứng huấn luyện từ đầu.
+
+Đối chiếu pixel cho thấy hai ảnh xác thực và mười ảnh kiểm tra trùng với ảnh huấn luyện. Khi bỏ mười ảnh trùng khỏi các dự đoán kiểm tra, thứ hạng hai mô hình tinh chỉnh toàn bộ được giữ nguyên. Phép tính này dùng checkpoint gốc và chỉ kiểm tra độ nhạy của điểm số trên tập kiểm tra.
+
+\section{Tài liệu của từng bài}
+\begin{itemize}
+\item \href{https://dathuynh1108.github.io/CO5177-PFDAV/assignments/tabular.html}{Tabular — UCI Adult}.
+\item \href{https://dathuynh1108.github.io/CO5177-PFDAV/assignments/text.html}{Text — VietnamNet}.
+\item \href{https://dathuynh1108.github.io/CO5177-PFDAV/assignments/image.html}{Image — CIFAR-100}.
+\end{itemize}
+
+Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5177-PFDAV/blob/main/AI\_USE\_REPORT.md}{AI\_USE\_REPORT.md}.
+\end{document}

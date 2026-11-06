@@ -26,9 +26,9 @@
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{\small CO5177 · Text}
-\rhead{\small Học kỳ 261 · Text}
+\rhead{\small Học kỳ 261 · CTG}
 \cfoot{\thepage}
-\fancypagestyle{plain}{\fancyhf{}\lhead{\small CO5177 · Text}\rhead{\small Học kỳ 261 · Text}\cfoot{\thepage}}
+\fancypagestyle{plain}{\fancyhf{}\lhead{\small CO5177 · Text}\rhead{\small Học kỳ 261 · CTG}\cfoot{\thepage}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
 \newcommand{\code}[1]{\texttt{\detokenize{#1}}}
@@ -49,7 +49,8 @@
 {\Huge\bfseries BÁO CÁO TEXT\par}\vspace{.5cm}
 {\Large Phân loại tiêu đề VietnamNet với TF-IDF và PhoBERT\par}\vspace{.4cm}\rule{\textwidth}{.6pt}\par
 \vspace{.8cm}{\large Học kỳ 261 · Năm học 2026–2027\par}\vspace{.7cm}
-\begin{tabular}{ll}Giảng viên: & Lê Thành Sách\\[.5em]
+\begin{tabular}{ll}Nhóm: & CTG\\[.5em]
+Giảng viên: & Lê Thành Sách\\[.5em]
 Thành viên: & Huỳnh Thành Đạt · 2570161\\ & Lương Minh Duy · 2570083\end{tabular}
 \vfill{\small Thành phố Hồ Chí Minh, tháng 10 năm 2026\par}
 \end{titlepage}\hypersetup{pageanchor=true}
@@ -65,7 +66,7 @@ Bộ \code{dathuynh1108/vietnamnet-news} do nhóm thu thập chứa 212.705 bài
 Bài này dùng các tệp parquet gốc, không dùng config NER có nhãn thực thể.
 Revision nguồn được cố định ở \code{d70a9601f36dcb1e5c534d30e2d3921c2ba16284}; SHA256 từng tệp nằm trong config.
 Dataset card không nêu license phân phối nội dung báo chí; tình trạng license được ghi là chưa rõ.
-Raw corpus và checkpoint không được đưa vào Git \cite{vietnamnet}.
+Dữ liệu thô và trọng số mô hình không được đưa vào Git \cite{vietnamnet}.
 \section{Làm sạch và tập mô hình}
 Tiêu đề được chuẩn hóa NFC và khoảng trắng. URL được bỏ query/fragment để nhận diện bài.
 Các bản ghi có cùng URL hoặc cùng tiêu đề đã casefold được nối thành nhóm liên thông;
@@ -102,7 +103,7 @@ Logistic regression trên đặc trưng cố định chọn cùng tập C bằng
 Các vector test được tạo bằng encoder cố định, không dùng để học từ vựng, thống kê chuẩn hóa hoặc tham số classifier.
 \section{Đánh giá}
 Tất cả lựa chọn classifier hoàn tất bằng validation trước khi dự đoán test.
-Đo accuracy, macro-F1 và F1 theo chuyên mục trên cùng 1.140 tiêu đề; không chọn model hoặc checkpoint theo test.
+Đo accuracy, macro-F1 và F1 theo chuyên mục trên cùng 1.140 tiêu đề; không chọn mô hình theo test.
 Thời gian classifier gồm toàn bộ fit/validation của các ứng viên, tách khỏi thời gian mã hóa PhoBERT.
 Lần mã hóa đã đo dùng \code{mps} trên Apple M1 Pro, mất 19.19 giây cho 7.600 tiêu đề. Các feature được cache cùng hash; tải model, tách từ và fit classifier nằm ngoài khoảng thời gian này.
 Số mẫu train/validation/test là 5,320/1,140/1,140. Indices/ID và chữ ký nguồn được lưu cùng kết quả.
@@ -111,42 +112,31 @@ Số mẫu train/validation/test là 5,320/1,140/1,140. Indices/ID và chữ ký
 \section{So sánh mô hình}
 \begin{table}[htbp]\centering\small\setlength{\tabcolsep}{4pt}
 \begin{tabularx}{\textwidth}{Xrrrr}\toprule
-Mô hình & C & Val F1 & Test acc. & Test F1\\\midrule
+Mô hình & C & Val macro-F1 & Test accuracy & Test macro-F1\\\midrule
 Majority baseline & -- & 0.0053 & 5.26\% & 0.0053 \\
 Word TF-IDF + Linear SVM & 0.5 & 0.6326 & 66.32\% & 0.6582 \\
 Character TF-IDF + Linear SVM & 0.5 & 0.6435 & 67.28\% & 0.6676 \\
 Frozen PhoBERT + Logistic regression & 0.5 & 0.7625 & 77.54\% & 0.7738 \\
 \bottomrule\end{tabularx}
-\caption{C được chọn theo validation macro-F1. Test accuracy theo phần trăm; F1 theo thang 0--1.}\end{table}
+\caption{Siêu tham số $C$ được chọn theo macro-F1 trên validation; các cột test là kết quả trên tập giữ riêng. Accuracy trình bày theo phần trăm, macro-F1 theo thang 0--1.}\end{table}
 \begin{figure}[htbp]\centering\includegraphics[width=.95\textwidth]{generated/scores.png}
-\caption{Accuracy và macro-F1 trên cùng tập test. Không có error bar vì chỉ đo một split/seed.}\end{figure}
+\caption{Độ chính xác và macro-F1 của bốn mô hình trên cùng tập kiểm tra. Kết quả tính trên một cách chia và một hạt giống.}\end{figure}
 \section{Nhận xét}
-PhoBERT đóng băng với logistic regression đạt accuracy 77.54\% và macro-F1 0.7738. So với TF-IDF ký tự, accuracy tăng 10.26 điểm phần trăm. Kết quả phù hợp với lợi ích của biểu diễn ngữ cảnh pretrained khi tiêu đề ngắn và nhiều cách diễn đạt khác nhau. Thực nghiệm chưa tách riêng ảnh hưởng của encoder, pooling và classifier.
+PhoBERT đóng băng với logistic regression đạt accuracy 77.54\% và macro-F1 0.7738. So với TF-IDF ký tự, accuracy tăng 10.26 điểm phần trăm và macro-F1 tăng 0.1061. Đây là so sánh giữa toàn bộ pipeline đã đo; thí nghiệm chưa cô lập ảnh hưởng của encoder, pooling hoặc classifier.
 
 TF-IDF ký tự đạt 67.28\%, so với 66.32\% của TF-IDF từ. Chênh lệch quan sát được nhỏ hơn mức tăng từ PhoBERT; một split chưa đủ để suy ra ưu thế ổn định giữa hai baseline.
 Ba lớp có F1 thấp nhất của mô hình chọn bằng validation là \code{kinh-doanh} (0.537), \code{thi-truong-tieu-dung} (0.554), \code{thoi-su} (0.667). Các chuyên mục gần nhau hoặc chuyên mục rộng có thể gây nhầm lẫn; cần đối chiếu nhãn và bài nguồn trước khi gán nguyên nhân cho mô hình.
 
 \begin{figure}[htbp]\centering\includegraphics[width=.9\textwidth]{generated/confusion.png}
-\caption{Confusion test của mô hình có validation macro-F1 cao nhất; hàng là nhãn thực, cột là dự đoán.}\end{figure}
-\chapter{Kết luận và tái lập}
+\caption{Ma trận nhầm lẫn trên test của mô hình có macro-F1 validation cao nhất; hàng là nhãn thực, cột là nhãn dự đoán.}\end{figure}
+\chapter{Kết luận và giới hạn}
 \section{Giới hạn}
 Chỉ dùng tiêu đề trên cohort cân bằng, nên kết quả không mô tả việc đọc toàn bài hoặc phân bố triển khai tự nhiên.
 Chuyên mục nguồn có thể giao nhau; 3.628 dòng có mâu thuẫn trong nhóm trùng đã bị loại, nhưng chưa kiểm tra nhãn từng bài.
 Đã xử lý exact URL/headline duplicates; near duplicates và split theo thời gian chưa được khảo sát.
 Không có nhiều split/seed để mô tả độ bất định. PhoBERT không được fine-tune trong thực nghiệm này.
-\section{Mã nguồn và lệnh chạy}
-Mã nguồn ở \code{src/studies/text.py}; cấu hình ở \code{configs/text.json}.
 
-\code{python -m studies.text} chạy lại toàn bộ thí nghiệm.
-
-Notebook \code{notebooks/text_baselines.ipynb} thực hiện cùng quy trình.
-
-\code{python -m studies.audit --models} kiểm tra checksum và tính lại chỉ số từ predictions,
-đồng thời kiểm tra classifier đã lưu ngoài Git. Chữ ký nguồn/config được kiểm tra không đổi trong lúc đo.
-JSON/CSV, split IDs và biểu đồ nằm trong thư mục generated; dữ liệu nguồn, feature cache và model ở data/runs ngoài Git.
-Các unit checks kiểm tra loại trùng liên thông, nhãn mâu thuẫn, biến phân loại chưa gặp, thống kê imputer và sửa đổi evidence.
-
-Báo cáo sử dụng AI được đính kèm tại tệp \code{AI_USE_REPORT.md} trong repository.
+Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5177-PFDAV/blob/main/AI\_USE\_REPORT.md}{AI\_USE\_REPORT.md}.
 \begin{thebibliography}{9}\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
 \bibitem{vietnamnet} Nhóm thực hiện. \emph{VietnamNet News}. \url{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}. Revision và checksums trong config.
 \bibitem{phobert} D. Q. Nguyen và A. T. Nguyen. \emph{PhoBERT: Pre-trained language models for Vietnamese}. Findings of EMNLP, 2020. \url{https://huggingface.co/vinai/phobert-base-v2}. Model card nêu license AGPL-3.0 cho phiên bản base-v2.

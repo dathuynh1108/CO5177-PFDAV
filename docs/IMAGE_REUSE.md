@@ -11,7 +11,7 @@ Image dùng lại thí nghiệm A1 của CO5085 tại commit `1250e569c6ce055391
 | Split, tránh leakage, augmentation | Train/validation/test 45k/5k/10k; split phân tầng seed 2026, crop/flip chỉ train; validation chọn checkpoint |
 | Khám phá, trực quan và giải thích | Notebook kiểm tra dữ liệu và phân tích prediction/confusion; báo cáo Image riêng |
 
-Căn cứ hiện có là bản tóm tắt brief trong `requirements.html` và `assignments/image.html`; PDF đề gốc chưa có trong repo. Theo thông tin Huỳnh Thành Đạt cung cấp ngày 19/10/2026, giảng viên cho phép dùng lại kết quả cho bài tương tự. Phạm vi đối chiếu E1–E3/A1/A2 với cả ba track được ghi trong [COURSE_REUSE.md](COURSE_REUSE.md). Các ràng buộc về dữ liệu, pretrained và nội dung nộp bài vẫn được đối chiếu riêng cho CO5177.
+Các tiêu chí Image được đối chiếu với Mục 4.4 của đề v4.0 do sinh viên cung cấp. Bản tóm tắt nằm trong `requirements.html` và `assignments/image.html`. Theo thông tin Huỳnh Thành Đạt cung cấp ngày 19/10/2026, giảng viên cho phép dùng lại kết quả cho bài tương tự. Phạm vi đối chiếu E1–E3/A1/A2 với cả ba track được ghi trong [COURSE_REUSE.md](COURSE_REUSE.md). Các ràng buộc về dữ liệu, pretrained và nội dung nộp bài vẫn được đối chiếu riêng cho CO5177.
 
 ## Bố cục
 
@@ -34,7 +34,7 @@ python3.12 -m venv .venv
 
 Training mới là lệnh riêng: `python -m image.run_suite --device cuda --num-workers 8 --output-root runs/image-new`. Cần chuẩn bị CIFAR-100 trước; code không tự tải dữ liệu khi train. Chỉ đánh giá test sau khi cố định protocol bằng `--phase test --confirm-test`. Không dùng source identity mới để resume checkpoint của CO5085.
 
-Nguồn raw data có tình trạng license chưa rõ; không phân phối raw data hoặc checkpoint trong Git. Bộ notebook có nguồn tải public và kiểm tra pixel/label hashes khớp dữ liệu của phép đo gốc. Không tuning sau khi xem test. Video và PDF tổng hợp toàn môn vẫn chưa có. Hai bài Tabular/Text có thực nghiệm riêng, được mô tả trong `docs/STUDIES_PROTOCOL.md`.
+Nguồn raw data có tình trạng license chưa rõ; không phân phối raw data hoặc checkpoint trong Git. Bộ notebook có nguồn tải public và kiểm tra pixel/label hashes khớp dữ liệu của phép đo gốc. Không tuning sau khi xem test. PDF tổng hợp nằm tại [CTG-report.pdf](../reports/overview/CTG-report.pdf). Link video còn trống. Hai bài Tabular/Text có thực nghiệm riêng, được mô tả trong `docs/STUDIES_PROTOCOL.md`.
 
 ## Kết quả kiểm tra bổ sung
 

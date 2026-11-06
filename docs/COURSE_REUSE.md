@@ -2,7 +2,7 @@
 
 The CIFAR-100 study in **CO5085 A1** matches the selected **Image** track in CO5177. Its training code, configuration and 24 measured runs are available here. The instructor permits reuse for equivalent work, as reported by Huỳnh Thành Đạt on 19 October 2026. The two courses therefore cite the same measurements.
 
-## Assignment comparison
+## Assignment comparison at the original reuse review
 
 The CO5177 requirements below come from the brief summary in [requirements.html](../requirements.html). CO5085 coverage was checked against its assignment PDFs, `docs/REQUIREMENTS.md`, source and saved experiment configurations at commit `7fa80cef7e53e79846a2a1714ce08626ff65c4b4`.
 
@@ -46,4 +46,4 @@ The original images are 32×32; 96×96 input remains below the recommended 128px
 
 - **Image:** the notebook reruns data inspection and prediction analysis on CPU; training is a separate explicit command. This review did not verify a fresh Google Colab session or rerun GPU training. The presentation video is pending.
 - **Tabular and Text:** separate notebooks/reports are available; videos are pending. Main Text reuses the supplied Kaggle PhoBERT run; Tabular and the headline-only Text baseline are new local measurements. These measurements do not come from CO5085.
-- **Course submission:** registered group name, confirmed member contributions and the consolidated LMS PDF still need the corresponding project information and presentation materials.
+- **Course submission:** see the [current submission checklist](SUBMISSION_REVIEW.md) for the group information, consolidated PDF and remaining items.

@@ -1,5 +1,5 @@
 \section{Khám phá dữ liệu và kiểm tra ảnh trùng}
-Phần khám phá dùng mirror \code{uoft-cs/cifar100} tại revision cố định. Hash toàn bộ pixel và nhãn theo thứ tự của cả 50.000 ảnh development và 10.000 ảnh test khớp với dữ liệu Toronto trong metadata của các lượt chạy. Tất cả ảnh đều là RGB $32\times32$. Mỗi lớp có 450 ảnh train, 50 ảnh validation và 100 ảnh test, nên không có mất cân bằng theo số lượng fine classes. Tuy nhiên, cân bằng số mẫu không bảo đảm các lớp có độ khó tương đương.
+Tập CIFAR-100 cân bằng theo số ảnh. Mỗi lớp có 450 ảnh huấn luyện, 50 ảnh xác thực và 100 ảnh kiểm tra. Tuy vậy, các lớp có hình dáng hoặc kết cấu gần nhau vẫn có thể khó phân biệt ở kích thước ảnh gốc. Bản dữ liệu dùng để khám phá có cùng thứ tự, pixel và nhãn với bản dùng trong thí nghiệm A1.
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=.92\textwidth]{analysis/class_counts.png}
@@ -10,8 +10,6 @@ Phần khám phá dùng mirror \code{uoft-cs/cifar100} tại revision cố đị
 \caption{Hai mươi ảnh train chọn bằng seed 2026, kèm nhãn và chỉ số gốc. Ảnh được phóng lớn để quan sát; chi tiết phân biệt một số lớp vẫn hạn chế.}
 \end{figure}
 
-Kiểm tra SHA256 trên RGB bytes phát hiện 14 ảnh lặp nội dung trong tập development 50.000 ảnh. Trong split đã đo có 2 nội dung ảnh trùng giữa train và validation, 10 nội dung trùng giữa train và test, không có trùng validation--test. Test có 9.998 nội dung ảnh duy nhất trên 10.000 bản ghi. Đây là kiểm tra trùng pixel hoàn toàn, chưa đánh giá near duplicates. Vì vậy, các split tách rời về chỉ số nhưng không hoàn toàn tách rời về nội dung ảnh.
+Đối chiếu theo pixel phát hiện 14 ảnh lặp nội dung trong 50.000 ảnh dùng để huấn luyện và xác thực. Hai ảnh xác thực và mười ảnh kiểm tra có nội dung trùng với ảnh huấn luyện. Phép đối chiếu chỉ bao gồm ảnh trùng pixel chính xác.
 
-Bộ split và checkpoint đã công bố được giữ nguyên. Kiểm tra độ nhạy bổ sung loại 10 ảnh test trùng train, giữ 9990 prediction của cùng các checkpoint. ResNet18 full đạt 79.009\%, so với 78.970\% ban đầu; Swin-T full đạt 86.677\%, so với 86.630\% ban đầu. Chênh lệch nhỏ trong kiểm tra này không chứng minh quy trình hoàn toàn không có leakage: hai nội dung trùng train--validation vẫn có thể ảnh hưởng chọn checkpoint. Không gọi đây là kết quả train lại sau loại trùng.
-
-Một protocol tiếp theo cần nhóm các ảnh trùng trước khi chia dữ liệu và đo lại toàn bộ đối chứng. Không thay split sau khi xem test rồi gộp phép đo mới với bảng cũ. Các chỉ số và danh sách ảnh trùng nằm trong \code{analysis/dataset.json}, \code{overlap.json} và \code{sensitivity.json}.
+Trong kiểm tra độ nhạy, loại 10 ảnh test trùng train và tính lại chỉ số trên 9.990 dự đoán còn lại của cùng checkpoint. ResNet18 tinh chỉnh toàn bộ đạt 79,009\%, so với 78,970\% ban đầu. Swin-T đạt 86,677\%, so với 86,630\%. Chênh lệch nhỏ này không loại trừ ảnh hưởng của hai nội dung trùng train--validation đến việc chọn checkpoint, cũng không đánh giá ảnh gần trùng. Đây là phân tích trên dự đoán đã lưu, không phải phép đo huấn luyện mới.

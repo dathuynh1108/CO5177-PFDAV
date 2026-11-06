@@ -55,4 +55,4 @@ PhoBERT feature identity includes the ordered segmented inputs, model revision, 
 
 ## Verification and remaining submission items
 
-The notebooks, classifier replay, tests, PDF rendering and site checks are summarized in `docs/STUDIES_VERIFICATION.json`. Presentation videos, confirmed per-member contribution details, the registered group name and the consolidated LMS report remain separate submission items. No video or registration is inferred from completed experiments.
+The notebooks, classifier replay, tests, PDF rendering and site checks are summarized in `docs/STUDIES_VERIFICATION.json`. The [submission checklist](SUBMISSION_REVIEW.md) records the group information, consolidated report and remaining external submission items.

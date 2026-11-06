@@ -47,7 +47,8 @@ def write(track):
 {\Huge\bfseries BÁO CÁO @TRACK@\par}\vspace{.5cm}
 {\Large @SUBJECT@\par}\vspace{.4cm}\rule{\textwidth}{.6pt}\par
 \vspace{.8cm}{\large Học kỳ 261 · Năm học 2026–2027\par}\vspace{.7cm}
-\begin{tabular}{ll}Giảng viên: & Lê Thành Sách\\[.5em]
+\begin{tabular}{ll}Nhóm: & CTG\\[.5em]
+Giảng viên: & Lê Thành Sách\\[.5em]
 Thành viên: & Huỳnh Thành Đạt · 2570161\\ & Lương Minh Duy · 2570083\end{tabular}
 \vfill{\small Thành phố Hồ Chí Minh, tháng 10 năm 2026\par}
 \end{titlepage}\hypersetup{pageanchor=true}
@@ -78,9 +79,9 @@ Quy tắc được áp dụng trước khi chia tập, nhằm tránh cùng một
         )
         parts.append(r"""
 \begin{figure}[htbp]\centering\includegraphics[width=.95\textwidth]{generated/missing.png}
-\caption{Giá trị thiếu trong dữ liệu nguồn, trước bước imputation.}\end{figure}
+\caption{Số giá trị thiếu theo thuộc tính trong toàn bộ dữ liệu nguồn trước khi chia tập và imputation.}\end{figure}
 \begin{figure}[htbp]\centering\includegraphics[width=.8\textwidth]{generated/class_counts.png}
-\caption{Phân bố hai lớp sau xử lý trùng.}\end{figure}
+\caption{Số bản ghi theo nhãn thu nhập sau khi loại nhóm nhãn mâu thuẫn và bản ghi trùng.}\end{figure}
 \chapter{Phương pháp và thiết lập}
 \section{Tiền xử lý}
 Split phân tầng theo nhãn với tỷ lệ 70/15/15 và seed 2026; phần 30\% còn lại được chia validation/test bằng seed 2027.
@@ -97,6 +98,8 @@ L2 bằng 1 và không early stopping. Các cấu hình cố định trước kh
 Accuracy, macro-F1, confusion và precision/recall/F1 từng lớp được tính từ prediction test.
 Thời gian fit/validation cộng các ứng viên của từng mô hình, không gồm tải dữ liệu và xuất báo cáo.
 Chỉ một split và model seed 42 được đo, không báo độ lệch chuẩn hoặc khoảng tin cậy từ một lượt.
+Các thuộc tính số được chuẩn hóa cho logistic regression; histogram gradient boosting dùng chúng ở thang đo gốc.
+Phân bố số liệu có thể chứa giá trị cực đoan, nhưng thí nghiệm không áp dụng bước phát hiện hoặc loại ngoại lệ riêng.
 """)
     else:
         parts.append(r"""
@@ -110,7 +113,7 @@ Bộ \code{dathuynh1108/vietnamnet-news} do nhóm thu thập chứa 212.705 bài
 Bài này dùng các tệp parquet gốc, không dùng config NER có nhãn thực thể.
 Revision nguồn được cố định ở \code{d70a9601f36dcb1e5c534d30e2d3921c2ba16284}; SHA256 từng tệp nằm trong config.
 Dataset card không nêu license phân phối nội dung báo chí; tình trạng license được ghi là chưa rõ.
-Raw corpus và checkpoint không được đưa vào Git \cite{vietnamnet}.
+Dữ liệu thô và trọng số mô hình không được đưa vào Git \cite{vietnamnet}.
 \section{Làm sạch và tập mô hình}
 Tiêu đề được chuẩn hóa NFC và khoảng trắng. URL được bỏ query/fragment để nhận diện bài.
 Các bản ghi có cùng URL hoặc cùng tiêu đề đã casefold được nối thành nhóm liên thông;
@@ -150,7 +153,7 @@ Logistic regression trên đặc trưng cố định chọn cùng tập C bằng
 Các vector test được tạo bằng encoder cố định, không dùng để học từ vựng, thống kê chuẩn hóa hoặc tham số classifier.
 \section{Đánh giá}
 Tất cả lựa chọn classifier hoàn tất bằng validation trước khi dự đoán test.
-Đo accuracy, macro-F1 và F1 theo chuyên mục trên cùng 1.140 tiêu đề; không chọn model hoặc checkpoint theo test.
+Đo accuracy, macro-F1 và F1 theo chuyên mục trên cùng 1.140 tiêu đề; không chọn mô hình theo test.
 Thời gian classifier gồm toàn bộ fit/validation của các ứng viên, tách khỏi thời gian mã hóa PhoBERT.
 """)
         info = summary["pretrained"]
@@ -166,7 +169,7 @@ Thời gian classifier gồm toàn bộ fit/validation của các ứng viên, t
 \section{So sánh mô hình}
 \begin{table}[htbp]\centering\small\setlength{\tabcolsep}{4pt}
 \begin{tabularx}{\textwidth}{Xrrrr}\toprule
-Mô hình & C & Val F1 & Test acc. & Test F1\\\midrule
+Mô hình & C & Val macro-F1 & Test accuracy & Test macro-F1\\\midrule
 """)
     for model in summary["models"]:
         name = model["name"].replace(" + ", " + ")
@@ -175,9 +178,9 @@ Mô hình & C & Val F1 & Test acc. & Test F1\\\midrule
             f"{name} & {c} & {model['validation']['macro_f1']:.4f} & {100 * model['test']['accuracy']:.2f}\\% & {model['test']['macro_f1']:.4f} \\\\\n"
         )
     parts.append(r"""\bottomrule\end{tabularx}
-\caption{C được chọn theo validation macro-F1. Test accuracy theo phần trăm; F1 theo thang 0--1.}\end{table}
+\caption{Siêu tham số $C$ được chọn theo macro-F1 trên validation; các cột test là kết quả trên tập giữ riêng. Accuracy trình bày theo phần trăm, macro-F1 theo thang 0--1.}\end{table}
 \begin{figure}[htbp]\centering\includegraphics[width=.95\textwidth]{generated/scores.png}
-\caption{Accuracy và macro-F1 trên cùng tập test. Không có error bar vì chỉ đo một split/seed.}\end{figure}
+\caption{Độ chính xác và macro-F1 của bốn mô hình trên cùng tập kiểm tra. Kết quả tính trên một cách chia và một hạt giống.}\end{figure}
 \section{Nhận xét}
 """)
     models = {m["id"]: m for m in summary["models"]}
@@ -186,19 +189,19 @@ Mô hình & C & Val F1 & Test acc. & Test F1\\\midrule
         balanced = models["balanced"]
         strong = models["histogram"]
         parts.append(
-            f"Gradient boosting đạt accuracy {100 * strong['test']['accuracy']:.2f}\\% và macro-F1 {strong['test']['macro_f1']:.4f}, cao hơn logistic regression {100 * (strong['test']['accuracy'] - base['test']['accuracy']):.2f} điểm phần trăm accuracy. Cây phân nhánh biểu diễn được các quan hệ phi tuyến và tương tác giữa thuộc tính trong thiết lập này. Đây là diễn giải từ đối chứng đã đo, chưa tách riêng đóng góp từng tương tác.\n\n"
+            f"Histogram gradient boosting đạt accuracy {100 * strong['test']['accuracy']:.2f}\\% và macro-F1 {strong['test']['macro_f1']:.4f}, cao hơn logistic regression {100 * (strong['test']['accuracy'] - base['test']['accuracy']):.2f} điểm phần trăm accuracy và {strong['test']['macro_f1'] - base['test']['macro_f1']:.4f} macro-F1. Kết quả cho thấy mô hình boosting có hiệu quả cao hơn trong split và cấu hình đã thử; phép so sánh không xác định riêng vai trò của phi tuyến tính, tương tác hay cách mã hóa.\n\n"
         )
         p = base["test"]["per_class"][">50K"]
         q = balanced["test"]["per_class"][">50K"]
         parts.append(
-            f"Cân bằng class weight thay đổi recall lớp >50K từ {p['recall']:.4f} lên {q['recall']:.4f}, trong khi precision đổi từ {p['precision']:.4f} xuống {q['precision']:.4f}. Vì vậy, tăng khả năng nhận diện lớp ít mẫu đi kèm nhiều false positive hơn; không thể chỉ đọc accuracy để đánh giá lựa chọn này.\n"
+            f"Thêm trọng số cân bằng lớp làm recall của nhóm thu nhập trên 50.000 USD tăng từ {p['recall']:.4f} lên {q['recall']:.4f}, trong khi precision giảm từ {p['precision']:.4f} xuống {q['precision']:.4f}. Số dự đoán dương tính giả tăng từ 363 với hồi quy logistic thông thường lên {balanced['test']['confusion'][0][1]:,} với bản cân bằng lớp. Trọng số lớp giúp bỏ sót ít bản ghi thu nhập cao hơn và làm tăng số bản ghi được xếp nhầm vào nhóm này.\n"
         )
     else:
         phi = models["phobert"]
         char = models["character"]
         word = models["word"]
         parts.append(
-            f"PhoBERT đóng băng với logistic regression đạt accuracy {100 * phi['test']['accuracy']:.2f}\\% và macro-F1 {phi['test']['macro_f1']:.4f}. So với TF-IDF ký tự, accuracy tăng {100 * (phi['test']['accuracy'] - char['test']['accuracy']):.2f} điểm phần trăm. Kết quả phù hợp với lợi ích của biểu diễn ngữ cảnh pretrained khi tiêu đề ngắn và nhiều cách diễn đạt khác nhau. Thực nghiệm chưa tách riêng ảnh hưởng của encoder, pooling và classifier.\n\n"
+            f"PhoBERT đóng băng với logistic regression đạt accuracy {100 * phi['test']['accuracy']:.2f}\\% và macro-F1 {phi['test']['macro_f1']:.4f}. So với TF-IDF ký tự, accuracy tăng {100 * (phi['test']['accuracy'] - char['test']['accuracy']):.2f} điểm phần trăm và macro-F1 tăng {phi['test']['macro_f1'] - char['test']['macro_f1']:.4f}. Đây là so sánh giữa toàn bộ pipeline đã đo; thí nghiệm chưa cô lập ảnh hưởng của encoder, pooling hoặc classifier.\n\n"
         )
         parts.append(
             f"TF-IDF ký tự đạt {100 * char['test']['accuracy']:.2f}\\%, so với {100 * word['test']['accuracy']:.2f}\\% của TF-IDF từ. Chênh lệch quan sát được nhỏ hơn mức tăng từ PhoBERT; một split chưa đủ để suy ra ưu thế ổn định giữa hai baseline.\n"
@@ -217,15 +220,14 @@ Mô hình & C & Val F1 & Test acc. & Test F1\\\midrule
         )
     parts.append(r"""
 \begin{figure}[htbp]\centering\includegraphics[width=.9\textwidth]{generated/confusion.png}
-\caption{Confusion test của mô hình có validation macro-F1 cao nhất; hàng là nhãn thực, cột là dự đoán.}\end{figure}
-\chapter{Kết luận và tái lập}
+\caption{Ma trận nhầm lẫn trên test của mô hình có macro-F1 validation cao nhất; hàng là nhãn thực, cột là nhãn dự đoán.}\end{figure}
+\chapter{Kết luận và giới hạn}
 \section{Giới hạn}
 """)
     if track == "tabular":
-        parts.append(r"""Một split và seed chỉ mô tả thiết lập cụ thể; chưa có đánh giá biến thiên hoặc kiểm định thống kê.
-Dữ liệu Census lịch sử không đại diện cho thu nhập hiện tại. Đã loại trùng vector thuộc tính nhưng chưa có khóa hộ gia đình
-để chia theo nhóm tự nhiên. Fnlwgt được dùng như một feature, không làm sample weight; kết quả không phải ước lượng tỷ lệ dân số.
-Chưa khảo sát riêng ảnh hưởng của từng chiến lược imputation hay hiệu quả trên từng nhóm nhân khẩu.
+        parts.append(r"""Các kết quả phản ánh một cách chia dữ liệu và một hạt giống.
+Nguồn điều tra năm 1994 giới hạn khả năng áp dụng cho thu nhập hiện nay. Sau khi gộp các bản ghi trùng thuộc tính, dữ liệu còn thiếu mã hộ gia đình để chia theo hộ. Fnlwgt được dùng làm biến đầu vào. Các chỉ số mô tả tập mẫu đã chia.
+Chưa khảo sát riêng ảnh hưởng của từng chiến lược imputation, xử lý giá trị cực đoan hay hiệu quả trên từng nhóm nhân khẩu.
 """)
     else:
         parts.append(r"""Chỉ dùng tiêu đề trên cohort cân bằng, nên kết quả không mô tả việc đọc toàn bài hoặc phân bố triển khai tự nhiên.
@@ -233,19 +235,8 @@ Chuyên mục nguồn có thể giao nhau; 3.628 dòng có mâu thuẫn trong nh
 Đã xử lý exact URL/headline duplicates; near duplicates và split theo thời gian chưa được khảo sát.
 Không có nhiều split/seed để mô tả độ bất định. PhoBERT không được fine-tune trong thực nghiệm này.
 """)
-    parts.append(r"\section{Mã nguồn và lệnh chạy}" + "\n")
-    parts.append(
-        f"Mã nguồn ở {code('src/studies/' + track + '.py')}; cấu hình ở {code('configs/' + track + '.json')}.\n\n"
-    )
-    parts.append(
-        f"{code('python -m studies.' + track)} chạy lại toàn bộ thí nghiệm.\n\nNotebook {code('notebooks/' + ('text_baselines' if track == 'text' else track) + '.ipynb')} thực hiện cùng quy trình.\n\n"
-    )
-    parts.append(r"""\code{python -m studies.audit --models} kiểm tra checksum và tính lại chỉ số từ predictions,
-đồng thời kiểm tra classifier đã lưu ngoài Git. Chữ ký nguồn/config được kiểm tra không đổi trong lúc đo.
-JSON/CSV, split IDs và biểu đồ nằm trong thư mục generated; dữ liệu nguồn, feature cache và model ở data/runs ngoài Git.
-Các unit checks kiểm tra loại trùng liên thông, nhãn mâu thuẫn, biến phân loại chưa gặp, thống kê imputer và sửa đổi evidence.
-
-Báo cáo sử dụng AI được đính kèm tại tệp \code{AI_USE_REPORT.md} trong repository.
+    parts.append(r"""
+Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5177-PFDAV/blob/main/AI\_USE\_REPORT.md}{AI\_USE\_REPORT.md}.
 \begin{thebibliography}{9}\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
 """)
     if track == "tabular":

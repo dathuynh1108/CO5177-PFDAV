@@ -14,12 +14,12 @@ Course project website for **Programming Foundations for Data Analysis and Visua
 | Instructor | Lê Thành Sách |
 | Semester | 261 · Academic year 2026–2027 |
 
-## Team
+## Team CTG
 
-| Student ID | Name |
-| --- | --- |
-| 2570161 | Huỳnh Thành Đạt |
-| 2570083 | Lương Minh Duy |
+| Student ID | Name | Contribution |
+| --- | --- | --- |
+| 2570161 | Huỳnh Thành Đạt | 50% |
+| 2570083 | Lương Minh Duy | 50% |
 
 ## Selected assignments
 
@@ -29,7 +29,7 @@ Course project website for **Programming Foundations for Data Analysis and Visua
 | 02 | [Text](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/text.html) | Required | Corpus exploration, text representations and analysis. |
 | 03 | [Image](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/image.html) | Selected elective | Visual exploration, feature extraction and model evaluation. |
 
-All three tracks have source code, an executed notebook and a separate LaTeX/PDF report. Tabular is a new CO5177 experiment. Main Text reuses the supplied full-training PhoBERT notebook and matching application model metadata; the newer headline baseline remains separate. Image reuses the code and 24 measured runs from CO5085 A1. The [cross-course comparison](docs/COURSE_REUSE.md) documents that match. Presentation videos and the consolidated LMS report are still pending.
+All three tracks have source code, an executed notebook and a separate LaTeX/PDF report. Tabular is a new CO5177 experiment. Main Text reuses the supplied full-training PhoBERT notebook and matching application model metadata; the newer headline baseline remains separate. Image reuses the code and 24 measured runs from CO5085 A1. The [cross-course comparison](docs/COURSE_REUSE.md) documents that match. The [consolidated report](reports/overview/CTG-report.pdf) covers all three studies. The YouTube fields are blank pending presentation links. See the [submission checklist](docs/SUBMISSION_REVIEW.md).
 
 ## Technology
 
@@ -92,7 +92,7 @@ Save the settings. GitHub Pages publishes the files from `main`. No custom GitHu
 
 ## Update content
 
-Edit `assets/site-config.js` to set the registered group name, member contributions, GitHub profiles and assignment resource links. For example, after a report is available:
+The registered group name and contribution percentages are recorded in `assets/site-config.js`. The file also holds member GitHub profiles and assignment resource links. For example, after a report is available:
 
 ```js
 report: 'reports/tabular/tabular.pdf'
