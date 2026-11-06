@@ -1,66 +1,38 @@
 \documentclass[12pt,a4paper]{report}
-\usepackage{fontspec}
-\IfFontExistsTF{TeX Gyre Termes}{\setmainfont{TeX Gyre Termes}}{\setmainfont{Liberation Serif}}
-\IfFontExistsTF{TeX Gyre Heros}{\setsansfont{TeX Gyre Heros}}{\setsansfont{Liberation Sans}}
-\setmonofont[Scale=0.84]{DejaVu Sans Mono}
-\usepackage[vietnamese]{babel}
-\usepackage[a4paper,margin=1in]{geometry}
-\usepackage{amsmath,amssymb,mathtools,bm}
-\usepackage{booktabs,tabularx,array,longtable}
-\usepackage{graphicx,float}
-\usepackage[hidelinks]{hyperref}
-\usepackage{fancyhdr,setspace,titlesec,caption,microtype,needspace}
-\usepackage{enumitem}
-\setstretch{1.1}
-\setlength{\parskip}{0.2em}
-\setlength{\parindent}{0pt}
-\setlength{\headheight}{16pt}
+\input{../course-report.tex}
+\CourseReportHeader{CO5177 · Text}
 \setcounter{topnumber}{3}
 \setcounter{bottomnumber}{3}
 \renewcommand{\topfraction}{0.9}
 \renewcommand{\bottomfraction}{0.85}
 \renewcommand{\textfraction}{0.08}
 \renewcommand{\floatpagefraction}{0.75}
-\setcounter{tocdepth}{1}
-\setcounter{secnumdepth}{2}
-\captionsetup{font=small,labelfont=bf}
-\numberwithin{equation}{chapter}
-\titleformat{\chapter}[display]{\normalfont\bfseries}{\filleft\Large Chương \thechapter}{0.3em}{\filright\huge}[\vspace{0.4em}\titlerule]
-\titlespacing*{\chapter}{0pt}{-10pt}{20pt}
-\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
-\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
-\pagestyle{fancy}
-\fancyhf{}
-\lhead{\small CO5177 · Text}
-\rhead{\small Học kỳ 261 · Text}
-\cfoot{\thepage}
-\fancypagestyle{plain}{\fancyhf{}\lhead{\small CO5177 · Text}\rhead{\small Học kỳ 261 · Text}\cfoot{\thepage}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
-\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
 \newcommand{\resultfigure}[3]{\begin{figure}[htbp]\centering\includegraphics[width=#3\textwidth]{generated/figures/#1.png}\caption{#2}\end{figure}}
 \hypersetup{pdftitle={CO5177 - Bao cao Text},pdfauthor={Huynh Thanh Dat; Luong Minh Duy}}
-\emergencystretch=2em
 
 \begin{document}
-\hypersetup{pageanchor=false}
-\begin{titlepage}\centering
-{\large ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH\par}
-{\large\bfseries TRƯỜNG ĐẠI HỌC BÁCH KHOA\par}
-{\large KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH\par}
-\vspace{1cm}\includegraphics[width=3cm]{assets/hcmut-logo.png}\par
-\vspace{.8cm}{\large\bfseries NỀN TẢNG LẬP TRÌNH CHO PHÂN TÍCH\par}
-{\large\bfseries VÀ TRỰC QUAN DỮ LIỆU\par}{\large Mã môn học: CO5177\par}
-\vspace{1cm}\rule{\textwidth}{.6pt}\par\vspace{.4cm}
-{\Huge\bfseries BÁO CÁO TEXT\par}\vspace{.5cm}
-{\Large Phân loại tin tức VietnamNet bằng PhoBERT\\[.3em] Fine-tuning, temperature scaling và ngưỡng theo lớp\par}\vspace{.4cm}\rule{\textwidth}{.6pt}\par
-\vspace{.8cm}{\large Học kỳ 261 · Năm học 2026–2027\par}\vspace{.7cm}
-\begin{tabular}{ll}Giảng viên: & Lê Thành Sách\\[.5em]
-Nhóm: & CTG\\[.5em]
-Thành viên: & Huỳnh Thành Đạt · 2570161\\ & Lương Minh Duy · 2570083\end{tabular}
-\vfill{\small Thành phố Hồ Chí Minh, tháng 10 năm 2026\par}
-\end{titlepage}\hypersetup{pageanchor=true}
-\pagenumbering{roman}{\footnotesize\setstretch{1}\tableofcontents}\clearpage\pagenumbering{arabic}
+\CourseCover{assets/hcmut-logo.png}
+  {BÁO CÁO TEXT}
+  {CO5177 · Nền tảng lập trình cho phân tích và trực quan dữ liệu}
+  {Phân loại bài báo VietnamNet bằng PhoBERT}
+  {Nhóm CTG}
+  {Huỳnh Thành Đạt & 2570161 · 50\%\\
+   Lương Minh Duy & 2570083 · 50\%\\[0.5em]
+   Giảng viên & Lê Thành Sách}
+  {tháng 11 năm 2026}
 
-\input{chapters/study.tex}
+\CourseAbstract{
+Báo cáo trình bày việc fine-tune PhoBERT Base v2 trên 7.600 bài báo, cân bằng 400 bài mỗi chuyên mục, với tập validation và test độc lập. Trên 1.140 bài test, accuracy và macro-F1 lần lượt đạt 83,77\% và 0,8353; hiệu chỉnh bằng validation làm giảm NLL nhưng cũng giảm nhẹ hai chỉ số trên test. Baseline PhoBERT đóng băng trên tiêu đề đạt accuracy 77,54\% trên cùng split. Do đầu vào và cách huấn luyện khác nhau, chênh lệch không thể quy cho một yếu tố riêng.
+}
+
+\CourseOverview{
+Dữ liệu và chia tập & 7.600 bài có nội dung; train/validation/test theo tỷ lệ 70/15/15.\\
+Kết quả & Accuracy 83,77\% và macro-F1 0,8353 trước hiệu chỉnh; 83,25\% và 0,8296 sau hiệu chỉnh.\\
+Đối chiếu & Baseline tiêu đề trên cùng split đạt accuracy 77,54\%; chênh lệch không quy cho riêng một yếu tố.\\
+Nguồn & Bài VietnamNet do Huỳnh Thành Đạt thu thập từ danh sách URL công khai; notebook dùng bộ dữ liệu đã công bố.\\
+}
+
+\CourseContents
+
+\input{fresh_run.tex}
 \end{document}

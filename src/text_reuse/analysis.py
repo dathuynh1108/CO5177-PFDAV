@@ -64,7 +64,7 @@ def audit(root=ROOT):
         or metrics["metrics_after"] != thresholds["metrics_after"]
     ):
         raise ValueError("Threshold and metric packages differ")
-    notebook = json.loads((root / "notebooks/text.ipynb").read_text())
+    notebook = json.loads((root / "notebooks/text_historical.ipynb").read_text())
     images = sum(
         "image/png" in o.get("data", {})
         for c in notebook["cells"]

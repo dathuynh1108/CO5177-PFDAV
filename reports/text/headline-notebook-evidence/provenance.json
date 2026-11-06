@@ -1,0 +1,15 @@
+{
+  "notebook": "notebooks/text_baselines.ipynb",
+  "run_id": "20261106T192012Z",
+  "kernel": "Jupyter",
+  "python": "3.12.0",
+  "platform": "Darwin",
+  "code_sha256": "a8500655695087efde120df5a6018d2d13011d1ece4b9b907a2d05daf9bdcbd3",
+  "artifacts_sha256": {
+    "config.json": "a66b7955b55ecd9eba43a2f8d2ffa88210d364ecdf41fde5efcfdc261fec86d9",
+    "data_audit.json": "ea39f9bb301a0a86eac9c5938071976d3f7326478a7bb386e69c2bc81b1bcdc2",
+    "fit_history.json": "82f98ee6595425ef45fb843d85465f3da5bcf5b367176a66836de938124c4122",
+    "metrics.json": "587c89554a8c907f6d61cff55eda4b74c051b75a761895711821d2c0acb51c71"
+  },
+  "source_metrics_sha256": "eeaae3b420cf47cfbc03caae89634aec3dccc546ab425a7d1044b4d464d15db2"
+}

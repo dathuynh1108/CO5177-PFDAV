@@ -1,0 +1,62 @@
+\chapter{Tinh chỉnh PhoBERT trên tập bài báo với ba tập dữ liệu độc lập}
+
+\section{Mục tiêu}
+Thực nghiệm khảo sát khả năng phân loại bài báo tiếng Việt vào 19 chuyên mục bằng PhoBERT Base v2. Mỗi đầu vào gồm tiêu đề và phần nội dung rút gọn của bài viết. Thiết kế giữ riêng tập huấn luyện, validation và test để việc chọn checkpoint, hiệu chỉnh và đánh giá cuối không dùng chung dữ liệu.
+
+\section{Nguồn dữ liệu và cohort}
+Bộ VietnamNet News gồm 212.705 bài thuộc 19 chuyên mục. Huỳnh Thành Đạt thu thập nội dung bài báo bằng cách crawl các URL từ danh sách công khai; bộ dữ liệu được công bố tại \href{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}{Hugging Face} \cite{vietnamnet}. Notebook tải bản parquet đã công bố tại revision cố định và không thực hiện crawl mới. Dữ liệu thô không được đưa vào repository.
+
+Trước khi lấy mẫu, URL và tiêu đề được chuẩn hóa để gộp bài trùng; nhóm có nhãn mâu thuẫn bị loại. Từ các bài còn lại, mỗi chuyên mục được chọn 400 bài theo ID và seed cố định, tạo cohort cân bằng 7.600 bài. Cohort này dùng cùng ID với baseline tiêu đề; thực nghiệm hiện tại bổ sung nội dung bài báo.
+
+Cohort được chia phân tầng thành train, validation và test theo tỷ lệ 70/15/15 (5.320/1.140/1.140 bài), cùng ID và seed với baseline tiêu đề. Validation dùng chọn checkpoint và hiệu chỉnh; test chỉ được mở sau khi các quyết định đã cố định.
+
+\section{Tiền xử lý và biểu diễn}
+Tiêu đề được nối với tối đa 220 từ đầu và 80 từ cuối của nội dung. Văn bản được chuyển sang chữ thường, loại dấu câu và chữ số, chuẩn hóa khoảng trắng rồi tách từ bằng PyVi \cite{pyvi}. Tokenizer PhoBERT chuyển chuỗi thành subword; chuỗi dài hơn giới hạn 256 token được mã hóa bằng 127 token đầu và 127 token cuối, kèm hai token đặc biệt. Attention mask phân biệt token thực với padding.
+
+\section{Mô hình và quy trình huấn luyện}
+PhoBERT Base v2 \cite{phobert} được tinh chỉnh với đầu phân loại 19 lớp. Cohort cân bằng có 400 bài mỗi lớp nên hàm mất mát dùng cross-entropy chuẩn. Learning rate là $2\times10^{-5}$, weight decay 0,01 và số epoch tối đa là bốn. Macro-F1 trên validation là tiêu chí chọn checkpoint; early stopping dừng sau hai epoch không cải thiện. Seed dữ liệu là 2026, seed mô hình là 42. Huấn luyện hoàn tất bốn epoch trong 84,9 giây trên RTX 5090; đây là thời lượng fine-tuning được ghi trong log, không bao gồm toàn bộ thời gian chuẩn bị dữ liệu.
+
+\section{Kết quả trên tập test}
+Bảng~\ref{tab:fresh-text-metrics} trình bày kết quả trên test sau khi checkpoint và tham số hiệu chỉnh đã được lựa chọn bằng validation. Hiệu chỉnh làm giảm NLL trên validation từ 0,9739 xuống 0,6811 với temperature $T=0,5802$. Trên test, accuracy giảm 0,53 điểm phần trăm (83,77\% xuống 83,25\%) và macro-F1 giảm 0,0057 (0,8353 xuống 0,8296) sau khi áp dụng temperature cùng ngưỡng lớp đã chọn trên validation. Mức giảm NLL validation vì vậy không đồng nghĩa với cải thiện accuracy hay F1 trên test.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrr}\toprule
+Cách dự đoán & Accuracy & Macro-F1 & Weighted-F1 \\\midrule
+Argmax logits & 83,77\% & 0,8353 & 0,8353 \\
+Temperature và ngưỡng theo lớp từ validation & 83,25\% & 0,8296 & 0,8296 \\\bottomrule
+\end{tabular}
+\caption{Kết quả trên 1.140 bài test; tham số hiệu chỉnh chỉ được khớp trên validation.}
+\label{tab:fresh-text-metrics}
+\end{table}
+
+\begin{figure}[H]\centering
+\includegraphics[width=.92\textwidth]{generated/fresh_run_confusion.png}
+\caption{Ma trận nhầm lẫn chuẩn hóa trên tập test sau hiệu chỉnh bằng validation.}
+\label{fig:fresh-text-confusion}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=.92\textwidth]{generated/fresh_run_training_curves.png}
+\caption{Loss huấn luyện và macro-F1 validation theo epoch.}
+\label{fig:fresh-text-training}
+\end{figure}
+
+\section{Phân tích lỗi trên test}
+Sau hiệu chỉnh, Kinh doanh có F1 thấp nhất (0,6095; recall 0,5333), tiếp theo là Thời sự (F1 0,6604; recall 0,5833), Thị trường tiêu dùng (0,6610) và Đời sống (0,6667). Cặp nhầm lẫn lớn nhất là Kinh doanh thành Thị trường tiêu dùng với 12/60 bài (20,0\%). Tiếp theo là Thời sự thành Pháp luật với 11/60 bài (18,3\%). Đây là các quan hệ nhầm lẫn quan sát được trong ma trận; số liệu tự nó chưa xác định nguyên nhân thuộc nội dung, ranh giới chuyên mục hay nhãn nguồn.
+
+\section{Đối chiếu với mô hình tiêu đề}
+Trên cùng tập test gồm 1.140 ID, baseline dùng đặc trưng PhoBERT đóng băng và hồi quy logistic trên tiêu đề đạt accuracy 77,54\% và macro-F1 0,7738. Mô hình hiện tại dùng tiêu đề cùng nội dung bài báo và fine-tune toàn bộ PhoBERT; đầu vào và quy trình học vì thế khác nhau ở nhiều khía cạnh. Chênh lệch metric không thể được quy riêng cho việc thêm nội dung hoặc fine-tuning.
+
+\section{Giới hạn và kết luận}
+Cohort cân bằng 7.600 bài không đại diện trực tiếp cho phân bố tự nhiên của 212.705 bài nguồn; một split và seed cũng chưa mô tả biến thiên giữa các lần chạy. Mô hình đạt 83,77\% accuracy và macro-F1 0,8353 trên test. Hiệu chỉnh giảm NLL validation nhưng không cải thiện các chỉ số phân loại trên test.
+
+Thực nghiệm lịch sử trên toàn corpus dùng cùng tập 31.906 bài để chọn checkpoint và hiệu chỉnh; các điểm số của lần đó không phải kết quả test độc lập. Notebook và bằng chứng lịch sử được lưu riêng tại \href{https://github.com/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/text_historical.ipynb}{notebook lịch sử}.
+
+Báo cáo về phạm vi hỗ trợ AI được trình bày trong \href{https://github.com/dathuynh1108/CO5177-PFDAV/blob/main/AI_USE_REPORT.md}{AI\_USE\_REPORT.md}.
+
+\begin{thebibliography}{3}
+\bibitem{vietnamnet} Huỳnh Thành Đạt. \emph{VietnamNet News}. Bộ dữ liệu thu thập bằng crawl từ danh sách URL công khai. \url{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}.
+\bibitem{phobert} D. Q. Nguyen và A. T. Nguyen. \emph{PhoBERT: Pre-trained language models for Vietnamese}. Findings of EMNLP, 2020. \url{https://huggingface.co/vinai/phobert-base-v2}.
+\bibitem{pyvi} PyVi. Vietnamese word segmentation. \url{https://pypi.org/project/pyvi/}.
+\end{thebibliography}

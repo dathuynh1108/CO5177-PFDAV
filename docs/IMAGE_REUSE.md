@@ -1,4 +1,6 @@
-# Image: phạm vi và nguồn thực nghiệm
+# Image: nguồn kết quả A1 đã lưu
+
+Phần này ghi lại thí nghiệm cũ. [Notebook Image hiện tại](../notebooks/image.ipynb) chạy 18 lượt sau khi loại ảnh trùng pixel. [Kết quả và log mới](../reports/image/notebook-evidence/summary.json) được lưu riêng.
 
 Image dùng lại thí nghiệm A1 của CO5085 tại commit `1250e569c6ce055391b5670e2f9a31faedb44b20`. Đây là cùng 24 lượt chạy, không phải 24 phép đo độc lập mới. `reports/image/reuse-manifest.json` ghi repository, commit, hash config/source, ánh xạ code được chuyển và SHA256 từng tệp evidence được nhập. Không lấy Fashion-MNIST của E1–E3 làm bài chính.
 
@@ -18,7 +20,7 @@ Các tiêu chí Image được đối chiếu với Mục 4.4 của đề v4.0 d
 - `src/image/`: data, mô hình, training loop và phân tích; module được chuyển từ A1, thay import/path.
 - `configs/image.json`: protocol gốc byte-identical.
 - `reports/image/`: PDF, LaTeX, figures và evidence riêng của track Image.
-- `notebooks/image.ipynb`: notebook phân tích từ trên xuống, không tự thuê GPU hay chạy lại training.
+- Notebook phân tích của lượt cũ nằm tại commit `fd07745`. Notebook hiện tại thực hiện huấn luyện và đánh giá trong một quy trình.
 - `reports/image/reuse-manifest.json`: nguồn và hash của 186 tệp nhập cùng chín module được chuyển; `python -m image.analysis` kiểm tra hash và tính lại 24 confusion/accuracy/macro-F1 từ predictions. Sáu hình đường cong pretrained được bổ sung từ đúng commit gốc, với đường dẫn nguồn ở `additional_figure_sources`.
 
 ## Chạy

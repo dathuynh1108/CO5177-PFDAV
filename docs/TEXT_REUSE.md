@@ -1,12 +1,12 @@
 # Full-corpus PhoBERT study
 
-The main Text study is the executed full-training notebook supplied by Huỳnh Thành Đạt on 19 October 2026. It replaces the earlier headline-only study as the main notebook and report; that newer experiment remains a separate baseline study.
+This document records the executed full-corpus notebook supplied by Huỳnh Thành Đạt on 19 October 2026. The current [Text notebook](../notebooks/text.ipynb) uses a separate 7,600-article cohort and independent test partition.
 
 ## Source and measured runtime
 
 - Source: [phobert-news-classification-app](https://github.com/dathuynh1108/phobert-news-classification-app), commit `e17168883b8a80a5c77b670018dd9ac8afb15913`.
 - Attachment: `notebookb4f8845517.ipynb`, SHA256 `32a22cbe811bc8f1035cd80b819a5eb8da0e2390ca3b5d6ca32dbcca9c238c66`.
-- [`notebooks/text.ipynb`](../notebooks/text.ipynb) is byte-identical to the attachment, including historical outputs. All 36 cell sources match the pinned repository notebook; 25 code cells have outputs and seven PNG figures are embedded.
+- [`notebooks/text_historical.ipynb`](../notebooks/text_historical.ipynb) is byte-identical to the attachment, including historical outputs. All 36 cell sources match the pinned repository notebook; 25 code cells have outputs and seven PNG figures are embedded.
 - Historical runtime: Kaggle, two Tesla T4 GPUs, Python 3.12.12, PyTorch 2.10.0+cu128. Papermill records 26 April 2026 11:01–22:02 UTC (26–27 April in Vietnam). Fine-tuning took about 38,115 seconds; the whole notebook took 39,660 seconds. These are historical timings, not a new run on Vast or this Mac.
 - The repository's first-commit notebook has 213,954 rows and different results. Those figures and scores are **not** mixed into this 212,705-row run.
 
@@ -40,7 +40,7 @@ The newer headline experiment uses an audited 7,600-headline cohort and its own 
 
 ## Review and reproduce
 
-Opening the main notebook only displays saved outputs. **Run All in a fresh runtime performs full training** unless the notebook's model-cache condition is satisfied. Configure paths in Section 0.3, choose an isolated workspace and clear caches after data changes. Original `train/runs/` paths are retained to preserve notebook bytes. No cell rents hardware or submits paid jobs. No fresh Kaggle/Colab run or new fine-tuning is claimed by this import.
+Opening the archived notebook displays its saved outputs. **Run All in a fresh runtime performs full training** unless the notebook's model-cache condition is satisfied. Configure paths in Section 0.3, choose an isolated workspace and clear caches after data changes. Original `train/runs/` paths are retained to preserve notebook bytes. No cell rents hardware or submits paid jobs. No fresh Kaggle/Colab run or new fine-tuning is claimed by this import.
 
 ```bash
 .venv/bin/python -m text_reuse.analysis --export

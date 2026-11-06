@@ -1,60 +1,33 @@
 \documentclass[12pt,a4paper]{report}
-\usepackage{fontspec}
-\IfFontExistsTF{TeX Gyre Termes}{\setmainfont{TeX Gyre Termes}}{\setmainfont{Liberation Serif}}
-\IfFontExistsTF{TeX Gyre Heros}{\setsansfont{TeX Gyre Heros}}{\setsansfont{Liberation Sans}}
-\setmonofont[Scale=0.84]{DejaVu Sans Mono}
-\usepackage[vietnamese]{babel}
-\usepackage[a4paper,margin=1in]{geometry}
-\usepackage{amsmath,amssymb,mathtools,bm}
-\usepackage{booktabs,tabularx,array,longtable}
-\usepackage{graphicx,float}
-\usepackage[hidelinks]{hyperref}
-\usepackage{fancyhdr,setspace,titlesec,caption,microtype,needspace}
-\usepackage{enumitem}
-\setstretch{1.15}
-\setlength{\parskip}{0.3em}
-\setlength{\parindent}{0pt}
-\setlength{\headheight}{16pt}
-\setcounter{tocdepth}{1}
-\setcounter{secnumdepth}{2}
-\captionsetup{font=small,labelfont=bf}
-\numberwithin{equation}{chapter}
-\titleformat{\chapter}[display]{\normalfont\bfseries}{\filleft\Large Chương \thechapter}{0.3em}{\filright\huge}[\vspace{0.4em}\titlerule]
-\titlespacing*{\chapter}{0pt}{-10pt}{20pt}
-\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
-\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
-\pagestyle{fancy}
-\fancyhf{}
-\lhead{\small CO5177 · Tabular}
-\rhead{\small Học kỳ 261 · CTG}
-\cfoot{\thepage}
-\fancypagestyle{plain}{\fancyhf{}\lhead{\small CO5177 · Tabular}\rhead{\small Học kỳ 261 · CTG}\cfoot{\thepage}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
-\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
-\newcommand{\resultfigure}[3]{\begin{figure}[htbp]\centering\includegraphics[width=#3\textwidth]{generated/figures/#1.png}\caption{#2}\end{figure}}
-\hypersetup{pdftitle={CO5177 - Bao cao Tabular},pdfauthor={Huynh Thanh Dat; Luong Minh Duy}}
-\emergencystretch=2em
+\input{../course-report.tex}
+\CourseReportHeader{CO5177 · Tabular}
+\hypersetup{pdftitle={CO5177 - Bao cao Tabular},pdfauthor={Huynh Thanh Dat, Luong Minh Duy}}
 
 \begin{document}
-\hypersetup{pageanchor=false}
-\begin{titlepage}\centering
-{\large ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH\par}
-{\large\bfseries TRƯỜNG ĐẠI HỌC BÁCH KHOA\par}
-{\large KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH\par}
-\vspace{1cm}\includegraphics[width=3cm]{assets/hcmut-logo.png}\par
-\vspace{.8cm}{\large\bfseries NỀN TẢNG LẬP TRÌNH CHO PHÂN TÍCH\par}
-{\large\bfseries VÀ TRỰC QUAN DỮ LIỆU\par}{\large Mã môn học: CO5177\par}
-\vspace{1cm}\rule{\textwidth}{.6pt}\par\vspace{.4cm}
-{\Huge\bfseries BÁO CÁO TABULAR\par}\vspace{.5cm}
-{\Large Phân tích và phân loại dữ liệu UCI Adult\par}\vspace{.4cm}\rule{\textwidth}{.6pt}\par
-\vspace{.8cm}{\large Học kỳ 261 · Năm học 2026–2027\par}\vspace{.7cm}
-\begin{tabular}{ll}Nhóm: & CTG\\[.5em]
-Giảng viên: & Lê Thành Sách\\[.5em]
-Thành viên: & Huỳnh Thành Đạt · 2570161\\ & Lương Minh Duy · 2570083\end{tabular}
-\vfill{\small Thành phố Hồ Chí Minh, tháng 10 năm 2026\par}
-\end{titlepage}\hypersetup{pageanchor=true}
-\pagenumbering{roman}{\small\tableofcontents}\clearpage\pagenumbering{arabic}
+\CourseCover{assets/hcmut-logo.png}
+  {BÁO CÁO TABULAR}
+  {CO5177 · Nền tảng lập trình cho phân tích và trực quan dữ liệu}
+  {Phân loại thu nhập trên UCI Adult}
+  {Nhóm CTG}
+  {Huỳnh Thành Đạt & 2570161 · 50\%\\
+   Lương Minh Duy & 2570083 · 50\%\\[0.5em]
+   Giảng viên & Lê Thành Sách}
+  {tháng 10 năm 2026}
+
+\CourseAbstract{
+Thực nghiệm dự đoán thu nhập trên 50.000 USD mỗi năm từ 14 thuộc tính trong UCI Adult. Sau khi loại các bản ghi trùng và nhóm có nhãn mâu thuẫn, dữ liệu được chia thành ba tập. Bốn cấu hình so sánh gồm dự đoán lớp đa số, hồi quy logistic thường, hồi quy logistic cân bằng lớp và histogram gradient boosting.
+
+Histogram gradient boosting đạt độ chính xác 87,48\% và macro-F1 0,8185 trên 7.317 mẫu kiểm tra. Thêm trọng số cân bằng lớp giúp hồi quy logistic nhận ra nhiều bản ghi thu nhập cao hơn, đồng thời làm tăng số bản ghi được xếp nhầm vào nhóm này.
+}
+
+\CourseOverview{
+Dữ liệu & UCI Adult với 14 thuộc tính số và phân loại.\\
+Tiền xử lý & Loại trùng trước khi chia tập, điền giá trị thiếu và mã hóa thuộc tính phân loại.\\
+Đối chứng & Dự đoán lớp đa số, hồi quy logistic và histogram gradient boosting.\\
+Kết quả chính & Histogram gradient boosting đạt độ chính xác 87,48\% và macro-F1 0,8185 trên 7.317 mẫu kiểm tra.\\
+}
+
+\CourseContents
 
 \chapter{Bài toán và dữ liệu}
 \section{Mục tiêu}

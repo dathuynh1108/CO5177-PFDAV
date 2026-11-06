@@ -78,20 +78,17 @@ def main(notebook_path, checkout):
     figures = destination / "figures"
     evidence.mkdir(parents=True, exist_ok=True)
     figures.mkdir(exist_ok=True)
-    primary = ROOT / "notebooks/text.ipynb"
-    baseline = ROOT / "notebooks/text_baselines.ipynb"
-    if primary.exists() and sha256(primary) != NOTEBOOK_SHA256:
-        if baseline.exists() and sha256(primary) != sha256(baseline):
-            raise ValueError("Refusing to overwrite a different baseline notebook")
-        shutil.copyfile(primary, baseline)
-    shutil.copyfile(notebook_path, primary)
+    archived_notebook = ROOT / "notebooks/text_historical.ipynb"
+    if archived_notebook.exists() and sha256(archived_notebook) != NOTEBOOK_SHA256:
+        raise ValueError("Refusing to overwrite a different historical notebook")
+    shutil.copyfile(notebook_path, archived_notebook)
 
     imported = {}
 
     def record(path, origin):
         imported[str(path.relative_to(ROOT))] = {"sha256": sha256(path), **origin}
 
-    record(primary, {"kind": "user_attachment", "filename": notebook_path.name})
+    record(archived_notebook, {"kind": "user_attachment", "filename": notebook_path.name})
     for name in [
         "config.json",
         "label_config.json",

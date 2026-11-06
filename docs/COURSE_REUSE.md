@@ -1,5 +1,7 @@
 # Reusing CO5085 coursework in CO5177
 
+Các mục dưới đây mô tả phần dữ liệu và kết quả được lưu từ các lượt trước. Kết quả chính của [Text](../reports/text/text.pdf) và [Image](../reports/image/image.pdf) lấy từ các notebook thực thi riêng.
+
 The CIFAR-100 study in **CO5085 A1** matches the selected **Image** track in CO5177. Its training code, configuration and 24 measured runs are available here. The instructor permits reuse for equivalent work, as reported by Huỳnh Thành Đạt on 19 October 2026. The two courses therefore cite the same measurements.
 
 ## Assignment comparison at the original reuse review

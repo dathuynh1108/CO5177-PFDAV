@@ -1,0 +1,18 @@
+{
+  "source": "https://huggingface.co/datasets/dathuynh1108/vietnamnet-news",
+  "source_revision": "d70a9601f36dcb1e5c534d30e2d3921c2ba16284",
+  "source_url_hosts": {
+    "vietnamnet.vn": 212705
+  },
+  "cohort_size": 7600,
+  "same_ids_as_headline_baseline": {
+    "train": true,
+    "validation": true,
+    "test": true
+  },
+  "split_sizes": {
+    "train": 5320,
+    "validation": 1140,
+    "test": 1140
+  }
+}

@@ -1,60 +1,33 @@
 \documentclass[12pt,a4paper]{report}
-\usepackage{fontspec}
-\IfFontExistsTF{TeX Gyre Termes}{\setmainfont{TeX Gyre Termes}}{\setmainfont{Liberation Serif}}
-\IfFontExistsTF{TeX Gyre Heros}{\setsansfont{TeX Gyre Heros}}{\setsansfont{Liberation Sans}}
-\setmonofont[Scale=0.84]{DejaVu Sans Mono}
-\usepackage[vietnamese]{babel}
-\usepackage[a4paper,margin=1in]{geometry}
-\usepackage{amsmath,amssymb,mathtools,bm}
-\usepackage{booktabs,tabularx,array,longtable}
-\usepackage{graphicx,float}
-\usepackage[hidelinks]{hyperref}
-\usepackage{fancyhdr,setspace,titlesec,caption,microtype,needspace}
-\usepackage{enumitem}
-\setstretch{1.15}
-\setlength{\parskip}{0.3em}
-\setlength{\parindent}{0pt}
-\setlength{\headheight}{16pt}
-\setcounter{tocdepth}{1}
-\setcounter{secnumdepth}{2}
-\captionsetup{font=small,labelfont=bf}
-\numberwithin{equation}{chapter}
-\titleformat{\chapter}[display]{\normalfont\bfseries}{\filleft\Large Chương \thechapter}{0.3em}{\filright\huge}[\vspace{0.4em}\titlerule]
-\titlespacing*{\chapter}{0pt}{-10pt}{20pt}
-\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
-\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
-\pagestyle{fancy}
-\fancyhf{}
-\lhead{\small CO5177 · Text}
-\rhead{\small Học kỳ 261 · CTG}
-\cfoot{\thepage}
-\fancypagestyle{plain}{\fancyhf{}\lhead{\small CO5177 · Text}\rhead{\small Học kỳ 261 · CTG}\cfoot{\thepage}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
-\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
-\newcommand{\resultfigure}[3]{\begin{figure}[htbp]\centering\includegraphics[width=#3\textwidth]{generated/figures/#1.png}\caption{#2}\end{figure}}
-\hypersetup{pdftitle={CO5177 - Bao cao Text},pdfauthor={Huynh Thanh Dat; Luong Minh Duy}}
-\emergencystretch=2em
+\input{../course-report.tex}
+\CourseReportHeader{CO5177 · Text}
+\hypersetup{pdftitle={CO5177 - Bao cao Text},pdfauthor={Huynh Thanh Dat, Luong Minh Duy}}
 
 \begin{document}
-\hypersetup{pageanchor=false}
-\begin{titlepage}\centering
-{\large ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH\par}
-{\large\bfseries TRƯỜNG ĐẠI HỌC BÁCH KHOA\par}
-{\large KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH\par}
-\vspace{1cm}\includegraphics[width=3cm]{assets/hcmut-logo.png}\par
-\vspace{.8cm}{\large\bfseries NỀN TẢNG LẬP TRÌNH CHO PHÂN TÍCH\par}
-{\large\bfseries VÀ TRỰC QUAN DỮ LIỆU\par}{\large Mã môn học: CO5177\par}
-\vspace{1cm}\rule{\textwidth}{.6pt}\par\vspace{.4cm}
-{\Huge\bfseries BÁO CÁO TEXT\par}\vspace{.5cm}
-{\Large Phân loại tiêu đề VietnamNet với TF-IDF và PhoBERT\par}\vspace{.4cm}\rule{\textwidth}{.6pt}\par
-\vspace{.8cm}{\large Học kỳ 261 · Năm học 2026–2027\par}\vspace{.7cm}
-\begin{tabular}{ll}Nhóm: & CTG\\[.5em]
-Giảng viên: & Lê Thành Sách\\[.5em]
-Thành viên: & Huỳnh Thành Đạt · 2570161\\ & Lương Minh Duy · 2570083\end{tabular}
-\vfill{\small Thành phố Hồ Chí Minh, tháng 10 năm 2026\par}
-\end{titlepage}\hypersetup{pageanchor=true}
-\pagenumbering{roman}{\small\tableofcontents}\clearpage\pagenumbering{arabic}
+\CourseCover{assets/hcmut-logo.png}
+  {BÁO CÁO TEXT}
+  {CO5177 · Nền tảng lập trình cho phân tích và trực quan dữ liệu}
+  {Phân loại tiêu đề VietnamNet với TF-IDF và PhoBERT}
+  {Nhóm CTG}
+  {Huỳnh Thành Đạt & 2570161 · 50\%\\
+   Lương Minh Duy & 2570083 · 50\%\\[0.5em]
+   Giảng viên & Lê Thành Sách}
+  {tháng 10 năm 2026}
+
+\CourseAbstract{
+Thực nghiệm so sánh các cách biểu diễn trên cùng tập 7.600 tiêu đề VietnamNet thuộc 19 chuyên mục. TF-IDF theo từ và theo ký tự được kết hợp với SVM tuyến tính. Đặc trưng từ PhoBERT đóng băng được đưa vào hồi quy logistic. Bộ phân loại được chọn bằng macro-F1 trên tập xác thực.
+
+PhoBERT đóng băng kết hợp hồi quy logistic đạt độ chính xác 77,54\% và macro-F1 0,7738 trên 1.140 mẫu kiểm tra. Kết quả phản ánh hiệu quả của từng cặp biểu diễn và bộ phân loại. Tập tiêu đề cân bằng và cách chia riêng xác định phạm vi của phép so sánh.
+}
+
+\CourseOverview{
+Dữ liệu & 7.600 tiêu đề được chọn từ bộ dữ liệu VietnamNet do nhóm thu thập.\\
+Biểu diễn & TF-IDF theo từ, TF-IDF theo ký tự và đặc trưng PhoBERT đóng băng.\\
+Phép đo & Độ chính xác, macro-F1 và lỗi theo chuyên mục trên tập kiểm tra giữ riêng.\\
+Kết quả chính & PhoBERT đóng băng kết hợp hồi quy logistic đạt độ chính xác 77,54\% và macro-F1 0,7738 trên 1.140 mẫu kiểm tra.\\
+}
+
+\CourseContents
 
 \chapter{Bài toán và dữ liệu}
 \section{Mục tiêu}

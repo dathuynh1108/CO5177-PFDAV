@@ -193,7 +193,7 @@ Báo cáo sử dụng AI được trình bày trong \href{https://github.com/dat
 
 \appendix
 \chapter{Thực nghiệm bổ sung trên tiêu đề}
-Một bộ đối chứng gồm 7.600 tiêu đề được chọn cân bằng giữa 19 lớp, với train/validation/test lần lượt có 5.320/1.140/1.140 mẫu. Các mô hình gồm TF-IDF từ, TF-IDF ký tự và đặc trưng PhoBERT đóng băng kết hợp Logistic Regression. Tham số của bộ phân loại được chọn theo macro-F1 trên validation trước khi đánh giá test.
+Bộ đối chứng gồm 7.600 tiêu đề được chọn cân bằng giữa 19 lớp. Tập huấn luyện có 5.320 mẫu, tập xác thực và tập kiểm tra có 1.140 mẫu mỗi tập. Các mô hình gồm TF-IDF từ, TF-IDF ký tự và đặc trưng PhoBERT đóng băng kết hợp Logistic Regression. Tham số của bộ phân loại được chọn theo macro-F1 trên validation trước khi đánh giá test.
 \begin{table}[H]\centering\small
 \begin{tabularx}{\textwidth}{Xrr}\toprule
 Mô hình & Accuracy & Macro-F1\\\midrule

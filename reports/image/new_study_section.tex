@@ -1,0 +1,69 @@
+% Kết quả được tổng hợp từ 18 lượt notebook mới; độ lệch chuẩn là SD mẫu.
+\section{Kết quả trên tập kiểm tra}
+
+Bảng~\ref{tab:new-image-results} tổng hợp accuracy và macro-F1 trên 9.998 ảnh test độc lập theo chính sách loại trùng chính xác. Ở cả hai kiến trúc, chế độ partial vượt head-only; full tiếp tục cải thiện kết quả. ResNet18 full đạt $79{,}16\pm0{,}39$\%, còn Swin-T full đạt $86{,}81\pm0{,}02$\%.
+
+\begin{table}[htbp]\centering\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrr}
+\toprule
+Cấu hình & Accuracy test (\%) & Macro-F1\\\midrule
+ResNet18 head-only & $60{,}91\pm0{,}14$ & $0{,}6077\pm0{,}0012$\\
+ResNet18 partial & $73{,}84\pm0{,}23$ & $0{,}7382\pm0{,}0018$\\
+ResNet18 full & $79{,}16\pm0{,}39$ & $0{,}7915\pm0{,}0038$\\
+Swin-T head-only & $71{,}69\pm0{,}07$ & $0{,}7156\pm0{,}0008$\\
+Swin-T partial & $78{,}44\pm0{,}16$ & $0{,}7837\pm0{,}0015$\\
+Swin-T full & $86{,}81\pm0{,}02$ & $0{,}8681\pm0{,}0001$\\
+\bottomrule
+\end{tabular}
+\caption{Accuracy và macro-F1 trên test, trung bình $\pm$ SD mẫu qua seed 42, 43 và 44.}
+\label{tab:new-image-results}
+\end{table}
+
+\begin{figure}[htbp]\centering
+\includegraphics[trim=0 644pt 0 0,clip,width=\textwidth]{notebook-evidence/figures/learning_curves.png}
+\caption{Accuracy và cross-entropy trên train/validation của ba cấu hình ResNet18 qua 20 epoch; đường cong tổng hợp từ các seed 42, 43 và 44.}
+\end{figure}
+
+\begin{figure}[htbp]\centering
+\includegraphics[trim=0 0 0 644pt,clip,width=\textwidth]{notebook-evidence/figures/learning_curves.png}
+\caption{Accuracy và cross-entropy trên train/validation của ba cấu hình Swin-T qua 20 epoch; đường cong tổng hợp từ các seed 42, 43 và 44.}
+\end{figure}
+
+\section{Chi phí và so sánh ghép cặp}
+
+Swin-T full cao hơn ResNet18 full $7{,}66\pm0{,}41$ điểm phần trăm theo chênh lệch ghép cặp cùng seed; độ lệch chuẩn được tính trên ba chênh lệch seed-wise. Macro-F1 của hai cấu hình lần lượt là $0{,}8681\pm0{,}0001$ và $0{,}7915\pm0{,}0038$.
+
+\begin{table}[htbp]\centering\small
+\begin{tabular}{lrr}
+\toprule
+Cấu hình & Thời gian train (s) & Peak allocated memory (MiB)\\\midrule
+ResNet18 head-only & $88{,}3\pm0{,}3$ & $252{,}1\pm0{,}0$\\
+ResNet18 partial & $87{,}9\pm0{,}3$ & $347{,}4\pm0{,}0$\\
+ResNet18 full & $88{,}1\pm0{,}7$ & $520{,}4\pm0{,}0$\\
+Swin-T head-only & $88{,}4\pm0{,}4$ & $501{,}9\pm0{,}0$\\
+Swin-T partial & $109{,}1\pm0{,}3$ & $662{,}9\pm0{,}0$\\
+Swin-T full & $212{,}5\pm1{,}6$ & $2454{,}2\pm0{,}0$\\
+\bottomrule
+\end{tabular}
+\caption{Trung bình $\pm$ SD mẫu qua ba seed; đo trên cùng RTX 5090 và bốn workers. Peak memory gần như cố định theo cấu hình nên SD hiển thị làm tròn về 0,0 MiB.}
+\label{tab:new-image-cost}
+\end{table}
+
+Trong chế độ full, Swin-T mất thời gian gấp 2,41 lần và dùng peak memory gấp 4,72 lần ResNet18. Chỉ học head giảm chi phí so với full ở từng backbone; tuy vậy Swin-T head vẫn cấp phát bộ nhớ gần bằng ResNet18 full do khác biệt kiến trúc và kích thước mô hình. Đây là tương quan chi phí trong runtime và giao thức đã đo, không phải so sánh hiệu năng trên nhiều loại phần cứng.
+
+\section{Phân tích nhầm lẫn}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=.48\textwidth]{notebook-evidence/figures/resnet18_full-confusion.png}\hfill
+\includegraphics[width=.48\textwidth]{notebook-evidence/figures/swin_t_full-confusion.png}
+\caption{Confusion matrix test trung bình qua các seed 42, 43 và 44: ResNet18 full (trái), Swin-T full (phải). Số ảnh trung bình ở mỗi ô được làm tròn để hiển thị.}
+\end{figure}
+
+Ở cả hai mô hình full, cặp nhầm lẫn oak\_tree và maple\_tree xuất hiện nhiều lần qua các seed. Đây là quan sát nhất quán từ các ô ngoài đường chéo lớn nhất, gợi ý các hình ảnh cây có thể khó tách bằng đặc trưng ở độ phân giải này. Confusion matrix không đo trực tiếp độ tương đồng thị giác và không đủ để quy nguyên nhân cho kiến trúc.
+
+\section{Kiểm tra giao thức và nguồn gốc}
+
+Ba cấu hình seed hoàn tất cho mỗi kiến trúc. Tập train giữ 44.976/45.000 ảnh ban đầu sau khi loại 24 bản trùng với validation hoặc test; validation giữ đủ 5.000 ảnh; test giữ 9.998/10.000 ảnh sau khi gộp hai nội dung trùng. Sau bước này không có nội dung RGB trùng chính xác giữa các split. Near-duplicates chưa được đánh giá.
+
+Hash notebook và digest code cell được lưu đầy đủ trong metadata; tiền tố lần lượt là \code{5f9ce3335d9c} và \code{d74c090d011c}. Metadata theo seed, cấu hình, split, history, metrics test và log nằm trong \code{notebook-evidence/}. Dữ liệu được tải từ máy chủ Toronto; hash pixel theo thứ tự được lưu trong cấu hình seed để kiểm tra nguồn. Các số liệu lịch sử CO5085 không được dùng trong bảng hoặc hình của phần kết quả mới.

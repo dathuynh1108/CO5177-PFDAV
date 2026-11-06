@@ -1,0 +1,72 @@
+[
+  {
+    "model": "Majority baseline",
+    "C": null,
+    "validation_accuracy": 0.05263157894736842,
+    "validation_macro_f1": 0.005263157894736842,
+    "fit_seconds": 0.0007349160005105659
+  },
+  {
+    "model": "Word TF-IDF + Linear SVM",
+    "C": 0.5,
+    "validation_accuracy": 0.637719298245614,
+    "validation_macro_f1": 0.6325600067706004,
+    "fit_seconds": 0.1478465000000142
+  },
+  {
+    "model": "Word TF-IDF + Linear SVM",
+    "C": 1.0,
+    "validation_accuracy": 0.6263157894736842,
+    "validation_macro_f1": 0.622332737378714,
+    "fit_seconds": 0.1590468750000582
+  },
+  {
+    "model": "Word TF-IDF + Linear SVM",
+    "C": 2.0,
+    "validation_accuracy": 0.6149122807017544,
+    "validation_macro_f1": 0.6106851299582274,
+    "fit_seconds": 0.16501258300013433
+  },
+  {
+    "model": "Character TF-IDF + Linear SVM",
+    "C": 0.5,
+    "validation_accuracy": 0.6473684210526316,
+    "validation_macro_f1": 0.6435006375495268,
+    "fit_seconds": 0.5459478749999107
+  },
+  {
+    "model": "Character TF-IDF + Linear SVM",
+    "C": 1.0,
+    "validation_accuracy": 0.6403508771929824,
+    "validation_macro_f1": 0.6368286527697804,
+    "fit_seconds": 0.6274978329984151
+  },
+  {
+    "model": "Character TF-IDF + Linear SVM",
+    "C": 2.0,
+    "validation_accuracy": 0.6289473684210526,
+    "validation_macro_f1": 0.6267352523504922,
+    "fit_seconds": 0.7002983750007843
+  },
+  {
+    "model": "Frozen PhoBERT + Logistic regression",
+    "C": 0.5,
+    "validation_accuracy": 0.762280701754386,
+    "validation_macro_f1": 0.7625099971920296,
+    "fit_seconds": 0.660021957999561
+  },
+  {
+    "model": "Frozen PhoBERT + Logistic regression",
+    "C": 1.0,
+    "validation_accuracy": 0.7570175438596491,
+    "validation_macro_f1": 0.7576398378087948,
+    "fit_seconds": 0.6988224590004393
+  },
+  {
+    "model": "Frozen PhoBERT + Logistic regression",
+    "C": 2.0,
+    "validation_accuracy": 0.7482456140350877,
+    "validation_macro_f1": 0.7487916556413041,
+    "fit_seconds": 0.6246393340006762
+  }
+]

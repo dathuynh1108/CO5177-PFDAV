@@ -20,41 +20,79 @@ def write(track):
     shutil.copyfile(
         ROOT / "reports/image/assets/hcmut-logo.png", assets / "hcmut-logo.png"
     )
-    preamble = (
-        (ROOT / "reports/image/report.tex").read_text().split(r"\begin{document}", 1)[0]
-    )
     title = track.title()
-    preamble = (
-        preamble.replace("Nhóm Image", title)
-        .replace("CO5177 · Image", f"CO5177 · {title}")
-        .replace("CO5177 - Bao cao Image", f"CO5177 - Bao cao {title}")
-    )
     subject = {
-        "tabular": "Phân tích và phân loại dữ liệu UCI Adult",
+        "tabular": "Phân loại thu nhập trên UCI Adult",
         "text": "Phân loại tiêu đề VietnamNet với TF-IDF và PhoBERT",
     }[track]
-    cover = r"""
+    preamble = r"""\documentclass[12pt,a4paper]{report}
+\input{../course-report.tex}
+\CourseReportHeader{CO5177 · @TRACK@}
+\hypersetup{pdftitle={CO5177 - Bao cao @TRACK@},pdfauthor={Huynh Thanh Dat, Luong Minh Duy}}
+
 \begin{document}
-\hypersetup{pageanchor=false}
-\begin{titlepage}\centering
-{\large ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH\par}
-{\large\bfseries TRƯỜNG ĐẠI HỌC BÁCH KHOA\par}
-{\large KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH\par}
-\vspace{1cm}\includegraphics[width=3cm]{assets/hcmut-logo.png}\par
-\vspace{.8cm}{\large\bfseries NỀN TẢNG LẬP TRÌNH CHO PHÂN TÍCH\par}
-{\large\bfseries VÀ TRỰC QUAN DỮ LIỆU\par}{\large Mã môn học: CO5177\par}
-\vspace{1cm}\rule{\textwidth}{.6pt}\par\vspace{.4cm}
-{\Huge\bfseries BÁO CÁO @TRACK@\par}\vspace{.5cm}
-{\Large @SUBJECT@\par}\vspace{.4cm}\rule{\textwidth}{.6pt}\par
-\vspace{.8cm}{\large Học kỳ 261 · Năm học 2026–2027\par}\vspace{.7cm}
-\begin{tabular}{ll}Nhóm: & CTG\\[.5em]
-Giảng viên: & Lê Thành Sách\\[.5em]
-Thành viên: & Huỳnh Thành Đạt · 2570161\\ & Lương Minh Duy · 2570083\end{tabular}
-\vfill{\small Thành phố Hồ Chí Minh, tháng 10 năm 2026\par}
-\end{titlepage}\hypersetup{pageanchor=true}
-\pagenumbering{roman}{\small\tableofcontents}\clearpage\pagenumbering{arabic}
-""".replace("@TRACK@", track.upper()).replace("@SUBJECT@", subject)
-    parts = [preamble, cover]
+\CourseCover{assets/hcmut-logo.png}
+  {BÁO CÁO @LABEL@}
+  {CO5177 · Nền tảng lập trình cho phân tích và trực quan dữ liệu}
+  {@SUBJECT@}
+  {Nhóm CTG}
+  {Huỳnh Thành Đạt & 2570161 · 50\%\\
+   Lương Minh Duy & 2570083 · 50\%\\[0.5em]
+   Giảng viên & Lê Thành Sách}
+  {tháng 10 năm 2026}
+
+""".replace("@TRACK@", title).replace("@LABEL@", track.upper()).replace("@SUBJECT@", subject)
+    best = max(summary["models"], key=lambda model: model["validation"]["macro_f1"])
+    accuracy = f"{100 * best['test']['accuracy']:.2f}".replace(".", ",")
+    macro_f1 = f"{best['test']['macro_f1']:.4f}".replace(".", ",")
+    test_size = f"{data['split_sizes']['test']:,}".replace(",", ".")
+    best_name = (
+        "PhoBERT đóng băng kết hợp hồi quy logistic"
+        if best["id"] == "phobert"
+        else best["name"]
+    )
+    best_result = (
+        f"{best_name} đạt độ chính xác {accuracy}\\% và macro-F1 {macro_f1} "
+        f"trên {test_size} mẫu kiểm tra."
+    )
+    if track == "tabular":
+        abstract = (
+            "Thực nghiệm dự đoán thu nhập trên 50.000 USD mỗi năm từ 14 thuộc tính trong UCI Adult. "
+            "Sau khi loại các bản ghi trùng và nhóm có nhãn mâu thuẫn, dữ liệu được chia thành ba tập. "
+            "Bốn cấu hình so sánh gồm dự đoán lớp đa số, hồi quy logistic thường, hồi quy logistic "
+            "cân bằng lớp và histogram gradient boosting.\n\n"
+            + best_result
+            + " Thêm trọng số cân bằng lớp giúp hồi quy logistic nhận ra nhiều bản ghi thu nhập cao hơn, "
+            "đồng thời làm tăng số bản ghi được xếp nhầm vào nhóm này."
+        )
+        overview = [
+            ("Dữ liệu", "UCI Adult với 14 thuộc tính số và phân loại."),
+            ("Tiền xử lý", "Loại trùng trước khi chia tập, điền giá trị thiếu và mã hóa thuộc tính phân loại."),
+            ("Đối chứng", "Dự đoán lớp đa số, hồi quy logistic và histogram gradient boosting."),
+            ("Kết quả chính", best_result),
+        ]
+    else:
+        abstract = (
+            "Thực nghiệm so sánh các cách biểu diễn trên cùng tập 7.600 tiêu đề VietnamNet thuộc 19 chuyên mục. "
+            "TF-IDF theo từ và theo ký tự được kết hợp với SVM tuyến tính. Đặc trưng từ PhoBERT đóng băng "
+            "được đưa vào hồi quy logistic. Bộ phân loại được chọn bằng macro-F1 trên tập xác thực.\n\n"
+            + best_result
+            + " Kết quả phản ánh hiệu quả của từng cặp biểu diễn và bộ phân loại. "
+            "Tập tiêu đề cân bằng và cách chia riêng xác định phạm vi của phép so sánh."
+        )
+        overview = [
+            ("Dữ liệu", "7.600 tiêu đề được chọn từ bộ dữ liệu VietnamNet do nhóm thu thập."),
+            ("Biểu diễn", "TF-IDF theo từ, TF-IDF theo ký tự và đặc trưng PhoBERT đóng băng."),
+            ("Phép đo", "Độ chính xác, macro-F1 và lỗi theo chuyên mục trên tập kiểm tra giữ riêng."),
+            ("Kết quả chính", best_result),
+        ]
+    overview_rows = "".join(f"{label} & {value}" + r"\\" + "\n" for label, value in overview)
+    parts = [
+        preamble,
+        "\\CourseAbstract{\n" + abstract + "\n}\n\n",
+        "\\CourseOverview{\n" + overview_rows + "}\n\n",
+        "\\CourseContents\n",
+    ]
     if track == "tabular":
         parts.append(r"""
 \chapter{Bài toán và dữ liệu}

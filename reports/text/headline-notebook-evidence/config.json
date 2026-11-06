@@ -1,0 +1,102 @@
+{
+  "dataset": "dathuynh1108/vietnamnet-news",
+  "revision": "d70a9601f36dcb1e5c534d30e2d3921c2ba16284",
+  "files": {
+    "ban-doc.parquet": {
+      "sha256": "a5fd0e2b0afe695c90437056073b288a600f32dd6bc1927fb1faca2e2d3d5357",
+      "bytes": 25726364
+    },
+    "bao-ve-nguoi-tieu-dung.parquet": {
+      "sha256": "9fde37b4a4198d3847c07c36b5860379372b441aae792eee534b42502b8c1438",
+      "bytes": 8952909
+    },
+    "bat-dong-san.parquet": {
+      "sha256": "82d51cdb02a488e891e46d8483e1a185864907fe96e58393d47ce453f08cecda",
+      "bytes": 29667225
+    },
+    "chinh-tri.parquet": {
+      "sha256": "a3b537edcc6499f842a04b94939b0829a76f79b8152308fb76506b4ced82d4e6",
+      "bytes": 34339416
+    },
+    "cong-nghe.parquet": {
+      "sha256": "6a7fcdd00e78619d42baf5d0ebfe66ca83d381ef9d05c4db59eccadc1494764b",
+      "bytes": 29533226
+    },
+    "dan-toc-ton-giao.parquet": {
+      "sha256": "73e58dc561b059ef11427df6da5e085fe05b0875c492de4951eba03e9875e43f",
+      "bytes": 9364409
+    },
+    "doi-song.parquet": {
+      "sha256": "d9fe706b14a8d27fdf013efeaea8bffbf7ebdc17c05866c1f027d3f34f085185",
+      "bytes": 30318102
+    },
+    "du-lich.parquet": {
+      "sha256": "61ada4f2297faa2ed86cea3f9ccc79be43d8fa25f7a191aac2e10a5f0748267f",
+      "bytes": 22707875
+    },
+    "giao-duc.parquet": {
+      "sha256": "3d4e189c136a8e35129d9d6dd288c7fa112a3d76f347dfd72f3dd43f9f02c6fb",
+      "bytes": 30592810
+    },
+    "kinh-doanh.parquet": {
+      "sha256": "977a163681be97686440247543c2096d78d72ee782876cff21f77fffdfd4b820",
+      "bytes": 30745747
+    },
+    "oto-xe-may.parquet": {
+      "sha256": "bf168e8eafe30988b3f7fb02d8fb0d579d276d1d45a33f3008e07bd192fc03b6",
+      "bytes": 26956743
+    },
+    "phap-luat.parquet": {
+      "sha256": "a4cddd1a5366013a27c52d8c7f9d33ac5c6bb89d6331e4043a5468b17167a42e",
+      "bytes": 18709536
+    },
+    "suc-khoe.parquet": {
+      "sha256": "4d1368ec15bf54d849aed33e5244a45579da9e19b79e8e643799b6c0b3cb1721",
+      "bytes": 25683763
+    },
+    "the-gioi.parquet": {
+      "sha256": "fcd26f677f00d55c12903aa35daea3e4ad1e163f1205a9f1b1e8ba7c4555a658",
+      "bytes": 17217951
+    },
+    "the-thao.parquet": {
+      "sha256": "a31aed257f14e012ad38f6eab97c1c3d7ad8b37830f968c6297b8fcc0aa70f4d",
+      "bytes": 16596991
+    },
+    "thi-truong-tieu-dung.parquet": {
+      "sha256": "6d6ca9aadf709d30f5c8a277184ae49c746b342bf522ff1cf3d60336fc2b6b76",
+      "bytes": 18647941
+    },
+    "thoi-su.parquet": {
+      "sha256": "5a72b25d7c9c8fa2fe3f933c954fbdcb8f4b8596768c59a312596c4b7d79ef12",
+      "bytes": 19671066
+    },
+    "tuan-viet-nam.parquet": {
+      "sha256": "50093c792312edcd0f2a5e27ed8119cd4a00a9e7beb133682ab1ea62383f849f",
+      "bytes": 46268383
+    },
+    "van-hoa-giai-tri.parquet": {
+      "sha256": "2e40344c3ba64d4fa3b1fc852f4049570c031c5f54a4b87bbd38fecde26e805a",
+      "bytes": 24195718
+    }
+  },
+  "phobert": "vinai/phobert-base-v2",
+  "model_revision": "86cd7fd4c148980922ac11a2cf5e257f2ba639e1",
+  "old_model_repository": "dathuynh1108/ner-phobert-base-v2-finetuned",
+  "old_model_revision": "98f4f3ea72e5fefb125d08421216b29a9508fe39",
+  "old_model_status": "Only .gitattributes exists; no configuration, tokenizer or checkpoint is available",
+  "max_per_class": 400,
+  "sample_seed": 2026,
+  "split_seed": 2026,
+  "model_seed": 42,
+  "classifier_c": [
+    0.5,
+    1.0,
+    2.0
+  ],
+  "max_features": 80000,
+  "max_length": 128,
+  "batch_size": 16,
+  "cpu_threads": 4,
+  "device": "auto",
+  "protocol": "Full-corpus streaming audit, connected URL/headline deduplication with conflict removal, deterministic capped cohort, identical 70/15/15 split and headline inputs for all models. TF-IDF and classifiers fit train only. Frozen encoder has no corpus adaptation. Select C by validation macro-F1 before held-out evaluation."
+}

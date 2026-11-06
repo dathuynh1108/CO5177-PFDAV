@@ -1,0 +1,42 @@
+{
+  "experiment": {
+    "id": "swin_t_head",
+    "family": "swin_t",
+    "regime": "head",
+    "weights": "Swin_T_Weights.IMAGENET1K_V1",
+    "lr": 0.001
+  },
+  "seed": 42,
+  "device": "cuda",
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "torch": "2.10.0+cu130",
+    "cuda_runtime": "13.0",
+    "cudnn": 91501,
+    "device": "cuda",
+    "device_name": "NVIDIA GeForce RTX 5090",
+    "git_commit": null,
+    "git_dirty": null,
+    "torch_num_threads": 4,
+    "tf32_matmul": false,
+    "tf32_cudnn": false
+  },
+  "completed_epochs": 20,
+  "status": "trained",
+  "best_validation": {
+    "epoch": 14,
+    "accuracy": 0.7248,
+    "ce": 1.0067267322540283,
+    "macro_f1": 0.7228916555091567,
+    "state_sha256": "d163b7a678bedbe5476db79616954b4ec7a0b12b80d5be1a4570c27b00bdb393"
+  },
+  "train_seconds": 88.6099254480796,
+  "epoch_seconds": 101.02467902214266,
+  "peak_gpu_memory_bytes": 526245888,
+  "retained_train": 44976,
+  "retained_validation": 5000,
+  "test_evaluated": true,
+  "selection": "max validation accuracy; tie min validation CE",
+  "split_policy": "SHA256 exact RGB-pixel deduplication; test representative has priority, then validation, then train; one representative per exact image content per split"
+}

@@ -29,7 +29,7 @@ Course project website for **Programming Foundations for Data Analysis and Visua
 | 02 | [Text](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/text.html) | Required | Corpus exploration, text representations and analysis. |
 | 03 | [Image](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/image.html) | Selected elective | Visual exploration, feature extraction and model evaluation. |
 
-All three tracks have source code, an executed notebook and a separate LaTeX/PDF report. Tabular is a new CO5177 experiment. Main Text reuses the supplied full-training PhoBERT notebook and matching application model metadata; the newer headline baseline remains separate. Image reuses the code and 24 measured runs from CO5085 A1. The [cross-course comparison](docs/COURSE_REUSE.md) documents that match. The [consolidated report](reports/overview/CTG-report.pdf) covers all three studies. The YouTube fields are blank pending presentation links. See the [submission checklist](docs/SUBMISSION_REVIEW.md).
+Each assignment has its own notebook and report. The notebooks are the primary workflow: open the current notebook in Colab, choose a GPU runtime for the full Text and Image experiments, then use **Runtime → Run all**. Each experiment prints its data audit, configuration and seeds, validation/training log, metrics and charts. Tabular and the separate headline baseline have both been executed locally from fresh kernels. The current full Text run was fine-tuned on an RTX 5090. All 18 Image runs completed on RTX 5090 GPUs after exact-pixel deduplication. The prior PhoBERT notebook is preserved separately as [`text_historical.ipynb`](notebooks/text_historical.ipynb) for provenance. The [cross-course comparison](docs/COURSE_REUSE.md) and [submission checklist](docs/SUBMISSION_REVIEW.md) explain evidence status. YouTube fields remain blank pending presentation links.
 
 ## Technology
 
@@ -110,46 +110,31 @@ The site includes responsive layouts, keyboard-accessible navigation, a skip lin
 
 Requirements are summarized from **Course Assignment v4.0, dated 14 September 2026**, for Semester 261. The official assignment brief and course LMS announcements determine final requirements and deadlines.
 
-## Tabular and Text studies
+## Experiments and current evidence
 
 | Study | Data and model | Accuracy | Macro-F1 | Evaluation |
 | --- | --- | --- | --- | --- |
-| Tabular | 48,780 deduplicated Adult rows; histogram gradient boosting | 87.48% | 0.8185 | Independent test within a new 70/15/15 split |
-| Text · main | 212,705 VietnamNet articles; full PhoBERT fine-tuning | 90.52% | 0.8986 | 31,906 rows also used for checkpoint selection |
-| Text · calibrated | Same full model with temperature and class thresholds | 90.86% | 0.9016 | Same rows also used to fit calibration |
-| Text · separate baseline | 7,600 headlines; frozen PhoBERT + logistic regression | 77.54% | 0.7738 | Separate audited cohort and 70/15/15 split |
+| Tabular | 48,780 deduplicated UCI Adult rows; histogram gradient boosting | 87.4812% | 0.818526 | Fresh local notebook run; 34,146/7,317/7,317 train/validation/test split |
+| Text · full articles | 7,600 VietnamNet articles; PhoBERT fine-tuning | 83.7719% | 0.835296 | RTX 5090 run; shared 5,320/1,140/1,140 split |
+| Text · validation calibrated | Same full-article model with validation-fitted calibration | 83.2456% | 0.829602 | Same held-out test split; calibrated decisions |
+| Text · headline baseline | 7,600 headlines; frozen PhoBERT + logistic regression | 77.5439% | 0.773780 | Fresh local notebook run; 5,320/1,140/1,140 split |
+| Image | CIFAR-100; Swin-T full fine-tuning | 86.81% | 0.8681 | 9,998 held-out images after exact-pixel deduplication |
 
-The main Text notebook contains the complete historical Kaggle run on two Tesla T4 GPUs: 36 cells, 25 executed code cells, seven figures and seven training epochs. Its pipeline covers source inspection, PyVi, compact article text, Head–Tail tokenization, weighted loss, fine-tuning, checkpoint export, temperature scaling, per-class threshold search and class diagnostics. The report follows all Sections 0–9. These are reused April 2026 results, not new training on Vast or this Mac.
+The full Text study uses 7,600 articles collected by Huỳnh Thành Đạt from public VietnamNet URLs and published as the [`vietnamnet-news` dataset](https://huggingface.co/datasets/dathuynh1108/vietnamnet-news). It fine-tunes PhoBERT and uses the same stratified 5,320/1,140/1,140 split as the separate headline comparison. Calibration is fit on validation; its test metrics are listed separately. The headline baseline uses headlines only and frozen PhoBERT features, so it is not a direct model comparison with full-article fine-tuning.
 
-Temperature is 1.4583; printed NLL changes from .3828 to .3237 and 15-bin ECE from .0608 to .0218 on calibration data. Temperature alone preserves argmax. The per-class thresholds change classification decisions. The historical split is not an untouched independent test, and its checkpoint reload logs contain LayerNorm compatibility warnings. Full provenance and limits are in [TEXT_REUSE.md](docs/TEXT_REUSE.md). The headline baseline is not directly comparable because its inputs, volume, priors and split differ.
+| Notebook | Run in Colab |
+| --- | --- |
+| [Tabular · UCI Adult](notebooks/tabular.ipynb) | [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/tabular.ipynb) |
+| [Text · full-article PhoBERT](notebooks/text.ipynb) | [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/text.ipynb) |
+| [Text · headline baseline](notebooks/text_baselines.ipynb) | [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/text_baselines.ipynb) |
+| [Image · CIFAR-100](notebooks/image.ipynb) | [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/image.ipynb) |
 
-[Tabular notebook](notebooks/tabular.ipynb) · [Tabular PDF](reports/tabular/tabular.pdf) · [Tabular LaTeX](reports/tabular/report.tex)
+The Text run requires a GPU for practical fine-tuning; Image trains six configurations over three seeds and 20 epochs. A full Colab Run all has not been independently verified. New Tabular and headline-baseline runs save their configuration, seeds, fit history, metrics, predictions and plots to a fresh ignored `artifacts/notebook-runs/` directory. The Text archive [`text_historical.ipynb`](notebooks/text_historical.ipynb) preserves the prior Kaggle/Tesla T4 run and its original outputs; it is historical evidence, not a current result. Further provenance is recorded in [TEXT_REUSE.md](docs/TEXT_REUSE.md).
 
-[Full Text notebook](notebooks/text.ipynb) · [Text PDF](reports/text/text.pdf) · [Text LaTeX](reports/text/report.tex) · [Text report chapters](reports/text/chapters/study.tex) · [Text reuse manifest](reports/text/reuse-manifest.json)
-
-[Headline baseline notebook](notebooks/text_baselines.ipynb) · [Baseline PDF](reports/text/baselines.pdf) · [Baseline LaTeX](reports/text/baselines.tex) · [New-study protocol](docs/STUDIES_PROTOCOL.md)
-
-```bash
-.venv/bin/python -m pip install -r requirements-studies.txt
-.venv/bin/python -m pip install --no-deps -e .
-.venv/bin/python -m text_reuse.analysis --export
-.venv/bin/python scripts/build_report.py --track text
-.venv/bin/python -m studies.audit --models
-```
-
-Opening `text.ipynb` displays the supplied historical output. **Run All in a fresh runtime can perform full fine-tuning**; review Section 0.3 and use an isolated workspace first. No notebook rents hardware. A fresh Kaggle/Colab rerun has not been performed during this import. `python -m studies.text` still runs only the separate headline baseline; `python -m studies.tabular` reruns Adult. Raw data, feature caches and model weights stay outside Git. The verified old checkpoint is stored locally under ignored `runs/text-full/model/`.
+[Tabular PDF](reports/tabular/tabular.pdf) · [Full Text PDF](reports/text/text.pdf) · [Headline baseline PDF](reports/text/baselines.pdf) · [Image PDF](reports/image/image.pdf) · [New-study protocol](docs/STUDIES_PROTOCOL.md)
 
 ## Image study
 
-[Image notebook](notebooks/image.ipynb) · [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/image.ipynb) · [PDF](reports/image/image.pdf) · [LaTeX](reports/image/report.tex) · [Source](src/image/) · [Reuse protocol](docs/IMAGE_REUSE.md)
+[Image notebook](notebooks/image.ipynb) · [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/image.ipynb) · [PDF](reports/image/image.pdf) · [LaTeX](reports/image/report.tex) · [Run evidence](reports/image/notebook-evidence/summary.json)
 
-| Pretrained model | Head-only test accuracy | Partial test accuracy | Full test accuracy |
-| --- | --- | --- | --- |
-| ResNet18 | 60.95 ± 0.29% | 73.96 ± 0.12% | 78.97 ± 0.04% |
-| Swin-T | 71.67 ± 0.09% | 78.25 ± 0.22% | 86.63 ± 0.22% |
-
-Mean ± sample SD over seeds 42, 43, 44. The notebook includes learning curves for all six pretrained configurations; the PDF compares both full fine-tuning curves with the scratch controls.
-
-The Image study reuses the **same** 24 CO5085 A1 runs at commit `1250e56`; no additional training was performed. Six pretrained configurations are the primary CO5177 comparisons. Data inspection and result analysis are specific to this Image report. CIFAR-100 original images are 32px, measured input is 96px, below the recommended 128px short edge; this limitation is explained. Exact-pixel duplicates cross the measured splits (2 train/validation, 10 train/test shared image contents); the report includes a fixed-prediction sensitivity check and does not claim leakage-free retraining.
-
-Python code is organized under `src/image/`, with `configs/image.json`, `notebooks/`, `tests/`, and separate `reports/image/`. The static site still runs without Python dependencies or a build. See `docs/IMAGE_REUSE.md` for Python setup and audit commands. `python -m image.analysis` verifies the import hashes and reproduces all 24 metrics from held-out predictions. `AI_USE_REPORT.md` records the assistance used.
+The Image notebook trained six pretrained configurations with seeds 42–44 for 20 epochs. Exact RGB duplicates were removed after the stratified split, leaving 44,976 training, 5,000 validation and 9,998 test images. Swin-T and ResNet18 reached 86.81% and 79.16% test accuracy in full fine-tuning. Earlier CO5085 A1 measurements remain documented as historical reuse in [IMAGE_REUSE.md](docs/IMAGE_REUSE.md) and are not results of this CO5177 run. CIFAR-100 images are 32px before resizing; the experimental input is 96px, below the brief's recommended 128px short edge. `AI_USE_REPORT.md` records the assistance used.

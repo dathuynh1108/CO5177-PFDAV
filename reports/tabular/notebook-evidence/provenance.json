@@ -1,0 +1,14 @@
+{
+  "notebook": "notebooks/tabular.ipynb",
+  "run_id": "20261106T191810Z",
+  "kernel": "Jupyter",
+  "python": "3.12.0",
+  "platform": "Darwin",
+  "code_sha256": "c89e18edfb3f8c5d61a8db398213baca267645b36a794ca6a7060395c644e35c",
+  "artifacts_sha256": {
+    "config.json": "58edf1793c86d03a05e042574f7d134cabf21fc6898cf437856a52c036cd3626",
+    "data_audit.json": "9c1cfcc9c4019aaf1995dfc52b9883467f609ad2d3adee112e82ce3e741e407f",
+    "fit_history.json": "912716fa2c9cc012d6c6fc9188cbb02a04bf5bdd683393c36164356af7a54df5",
+    "metrics.json": "c2e7db4ebfa034cad6c3c402a8c502d5ab153dedb40b529d016abe95b12696b5"
+  }
+}

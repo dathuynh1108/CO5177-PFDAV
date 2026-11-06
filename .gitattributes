@@ -3,3 +3,4 @@
 *.pdf binary
 *.png binary
 reports/**/generated/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+reports/**/notebook-evidence/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

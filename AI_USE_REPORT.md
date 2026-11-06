@@ -11,11 +11,11 @@ AI được sử dụng để tra cứu tài liệu và API của scikit-learn, 
 | Bài | Nội dung có hỗ trợ |
 | --- | --- |
 | Tabular | Hỗ trợ xây dựng quy trình xử lý dữ liệu thiếu, mã hóa và chuẩn hóa thuộc tính, chia tập và so sánh các bộ phân loại trên UCI Adult. Đối chiếu chỉ số và phân tích sự đánh đổi giữa precision và recall. |
-| Text | Hỗ trợ hiện thực thí nghiệm đối chứng trên tiêu đề bằng TF-IDF và PhoBERT đóng băng. Với thí nghiệm toàn văn đã có, AI hỗ trợ đối chiếu notebook và kết quả huấn luyện, kiểm tra chỉ số từ ma trận nhầm lẫn và biên tập phần phân tích hiệu chỉnh. Bộ dữ liệu VietnamNet do nhóm thu thập. |
-| Image | Hỗ trợ chuyển mã và kết quả CIFAR-100 từ A1 của CO5085, tra cứu API trọng số tiền huấn luyện và phân tích đường cong, lỗi phân loại và ảnh trùng. Các số liệu chính thuộc cùng 24 lượt thực nghiệm của CO5085. |
+| Text | Hỗ trợ tra cứu API PhoBERT, chuẩn bị đối chứng TF-IDF và embedding, tách tập xác thực và tập kiểm tra, đối chiếu ma trận nhầm lẫn và phân tích hiệu chỉnh. Dữ liệu được Huỳnh Thành Đạt thu thập bằng crawling từ URL công khai của VietnamNet. |
+| Image | Hỗ trợ sử dụng API trọng số tiền huấn luyện, kiểm tra ảnh trùng pixel, triển khai quy trình huấn luyện trong notebook và đối chiếu các chỉ số với dự đoán kiểm tra. Kết quả 18 lượt của notebook được lưu riêng với hồ sơ A1 CO5085. |
 | Trình bày | Hỗ trợ biên tập Markdown, LaTeX, PDF và nội dung GitHub Pages. Phần phân công do nhóm cung cấp. |
 
-Bảng và hình sử dụng số liệu từ các lượt chạy có lưu kết quả. Thí nghiệm tiêu đề có tập kiểm tra riêng. Lượt PhoBERT toàn văn dùng chung tập đánh giá cho chọn checkpoint và hiệu chỉnh, nên báo cáo ghi riêng phạm vi của các chỉ số này.
+Bảng và hình sử dụng số liệu từ các lượt thực nghiệm có lưu cấu hình và lịch sử. Hai thí nghiệm Text hiện tại dùng chung danh sách bài kiểm tra độc lập. Lượt toàn văn Kaggle trước đó được lưu riêng vì dùng chung tập đánh giá để chọn checkpoint và hiệu chỉnh.
 
 ## Tài liệu đối chiếu
 
