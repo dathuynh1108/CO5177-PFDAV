@@ -11,7 +11,7 @@ AI được sử dụng để tra cứu tài liệu và API của scikit-learn, 
 | Bài | Nội dung có hỗ trợ |
 | --- | --- |
 | Tabular | Hỗ trợ xây dựng quy trình xử lý dữ liệu thiếu, mã hóa và chuẩn hóa thuộc tính, chia tập và so sánh các bộ phân loại trên UCI Adult. Đối chiếu chỉ số và phân tích sự đánh đổi giữa precision và recall. |
-| Text | Hỗ trợ tra cứu API PhoBERT, chuẩn bị đối chứng TF-IDF và embedding, tách tập xác thực và tập kiểm tra, đối chiếu ma trận nhầm lẫn và phân tích hiệu chỉnh. Dữ liệu được Huỳnh Thành Đạt thu thập bằng crawling từ URL công khai của VietnamNet. |
+| Text | Hỗ trợ tra cứu API PhoBERT, chuẩn bị đối chứng TF-IDF và embedding, tách tập validation và tập test, đối chiếu ma trận nhầm lẫn và phân tích hiệu chỉnh. Dữ liệu được Huỳnh Thành Đạt thu thập bằng crawling từ URL công khai của VietnamNet. |
 | Image | Hỗ trợ sử dụng API trọng số tiền huấn luyện, kiểm tra ảnh trùng pixel, triển khai quy trình huấn luyện trong notebook và đối chiếu các chỉ số với dự đoán kiểm tra. Kết quả 18 lượt của notebook được lưu riêng với hồ sơ A1 CO5085. |
 | Trình bày | Hỗ trợ biên tập Markdown, LaTeX, PDF và nội dung GitHub Pages. Phần phân công do nhóm cung cấp. |
 

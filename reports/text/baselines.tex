@@ -15,16 +15,16 @@
   {tháng 10 năm 2026}
 
 \CourseAbstract{
-Thực nghiệm so sánh các cách biểu diễn trên cùng tập 7.600 tiêu đề VietnamNet thuộc 19 chuyên mục. TF-IDF theo từ và theo ký tự được kết hợp với SVM tuyến tính. Đặc trưng từ PhoBERT đóng băng được đưa vào hồi quy logistic. Bộ phân loại được chọn bằng macro-F1 trên tập xác thực.
+Thực nghiệm so sánh các cách biểu diễn trên cùng tập 7.600 tiêu đề VietnamNet thuộc 19 chuyên mục. TF-IDF theo từ và theo ký tự được kết hợp với SVM tuyến tính. Đặc trưng từ PhoBERT đóng băng được đưa vào hồi quy logistic. Bộ phân loại được chọn bằng macro-F1 trên tập validation.
 
-PhoBERT đóng băng kết hợp hồi quy logistic đạt độ chính xác 77,54\% và macro-F1 0,7738 trên 1.140 mẫu kiểm tra. Kết quả phản ánh hiệu quả của từng cặp biểu diễn và bộ phân loại. Tập tiêu đề cân bằng và cách chia riêng xác định phạm vi của phép so sánh.
+PhoBERT đóng băng kết hợp hồi quy logistic đạt độ chính xác 77,54\% và macro-F1 0,7738 trên 1.140 mẫu test. Kết quả phản ánh hiệu quả của từng cặp biểu diễn và bộ phân loại. Tập tiêu đề cân bằng và cách chia riêng xác định phạm vi của phép so sánh.
 }
 
 \CourseOverview{
 Dữ liệu & 7.600 tiêu đề được chọn từ bộ dữ liệu VietnamNet do nhóm thu thập.\\
 Biểu diễn & TF-IDF theo từ, TF-IDF theo ký tự và đặc trưng PhoBERT đóng băng.\\
-Phép đo & Độ chính xác, macro-F1 và lỗi theo chuyên mục trên tập kiểm tra giữ riêng.\\
-Kết quả chính & PhoBERT đóng băng kết hợp hồi quy logistic đạt độ chính xác 77,54\% và macro-F1 0,7738 trên 1.140 mẫu kiểm tra.\\
+Phép đo & Độ chính xác, macro-F1 và lỗi theo chuyên mục trên tập test giữ riêng.\\
+Kết quả chính & PhoBERT đóng băng kết hợp hồi quy logistic đạt độ chính xác 77,54\% và macro-F1 0,7738 trên 1.140 mẫu test.\\
 }
 
 \CourseContents
@@ -93,7 +93,7 @@ Frozen PhoBERT + Logistic regression & 0.5 & 0.7625 & 77.54\% & 0.7738 \\
 \bottomrule\end{tabularx}
 \caption{Siêu tham số $C$ được chọn theo macro-F1 trên validation; các cột test là kết quả trên tập giữ riêng. Accuracy trình bày theo phần trăm, macro-F1 theo thang 0--1.}\end{table}
 \begin{figure}[htbp]\centering\includegraphics[width=.95\textwidth]{generated/scores.png}
-\caption{Độ chính xác và macro-F1 của bốn mô hình trên cùng tập kiểm tra. Kết quả tính trên một cách chia và một hạt giống.}\end{figure}
+\caption{Độ chính xác và macro-F1 của bốn mô hình trên cùng tập test. Kết quả tính trên một cách chia và một seed.}\end{figure}
 \section{Nhận xét}
 PhoBERT đóng băng với logistic regression đạt accuracy 77.54\% và macro-F1 0.7738. So với TF-IDF ký tự, accuracy tăng 10.26 điểm phần trăm và macro-F1 tăng 0.1061. Đây là so sánh giữa toàn bộ pipeline đã đo; thí nghiệm chưa cô lập ảnh hưởng của encoder, pooling hoặc classifier.
 

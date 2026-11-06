@@ -53,7 +53,7 @@ def write(track):
     )
     best_result = (
         f"{best_name} đạt độ chính xác {accuracy}\\% và macro-F1 {macro_f1} "
-        f"trên {test_size} mẫu kiểm tra."
+        f"trên {test_size} mẫu test."
     )
     if track == "tabular":
         abstract = (
@@ -75,7 +75,7 @@ def write(track):
         abstract = (
             "Thực nghiệm so sánh các cách biểu diễn trên cùng tập 7.600 tiêu đề VietnamNet thuộc 19 chuyên mục. "
             "TF-IDF theo từ và theo ký tự được kết hợp với SVM tuyến tính. Đặc trưng từ PhoBERT đóng băng "
-            "được đưa vào hồi quy logistic. Bộ phân loại được chọn bằng macro-F1 trên tập xác thực.\n\n"
+            "được đưa vào hồi quy logistic. Bộ phân loại được chọn bằng macro-F1 trên tập validation.\n\n"
             + best_result
             + " Kết quả phản ánh hiệu quả của từng cặp biểu diễn và bộ phân loại. "
             "Tập tiêu đề cân bằng và cách chia riêng xác định phạm vi của phép so sánh."
@@ -83,7 +83,7 @@ def write(track):
         overview = [
             ("Dữ liệu", "7.600 tiêu đề được chọn từ bộ dữ liệu VietnamNet do nhóm thu thập."),
             ("Biểu diễn", "TF-IDF theo từ, TF-IDF theo ký tự và đặc trưng PhoBERT đóng băng."),
-            ("Phép đo", "Độ chính xác, macro-F1 và lỗi theo chuyên mục trên tập kiểm tra giữ riêng."),
+            ("Phép đo", "Độ chính xác, macro-F1 và lỗi theo chuyên mục trên tập test giữ riêng."),
             ("Kết quả chính", best_result),
         ]
     overview_rows = "".join(f"{label} & {value}" + r"\\" + "\n" for label, value in overview)
@@ -218,7 +218,7 @@ Mô hình & C & Val macro-F1 & Test accuracy & Test macro-F1\\\midrule
     parts.append(r"""\bottomrule\end{tabularx}
 \caption{Siêu tham số $C$ được chọn theo macro-F1 trên validation; các cột test là kết quả trên tập giữ riêng. Accuracy trình bày theo phần trăm, macro-F1 theo thang 0--1.}\end{table}
 \begin{figure}[htbp]\centering\includegraphics[width=.95\textwidth]{generated/scores.png}
-\caption{Độ chính xác và macro-F1 của bốn mô hình trên cùng tập kiểm tra. Kết quả tính trên một cách chia và một hạt giống.}\end{figure}
+\caption{Độ chính xác và macro-F1 của bốn mô hình trên cùng tập test. Kết quả tính trên một cách chia và một seed.}\end{figure}
 \section{Nhận xét}
 """)
     models = {m["id"]: m for m in summary["models"]}
@@ -263,7 +263,7 @@ Mô hình & C & Val macro-F1 & Test accuracy & Test macro-F1\\\midrule
 \section{Giới hạn}
 """)
     if track == "tabular":
-        parts.append(r"""Các kết quả phản ánh một cách chia dữ liệu và một hạt giống.
+        parts.append(r"""Các kết quả phản ánh một cách chia dữ liệu và một seed.
 Nguồn điều tra năm 1994 giới hạn khả năng áp dụng cho thu nhập hiện nay. Sau khi gộp các bản ghi trùng thuộc tính, dữ liệu còn thiếu mã hộ gia đình để chia theo hộ. Fnlwgt được dùng làm biến đầu vào. Các chỉ số mô tả tập mẫu đã chia.
 Chưa khảo sát riêng ảnh hưởng của từng chiến lược imputation, xử lý giá trị cực đoan hay hiệu quả trên từng nhóm nhân khẩu.
 """)
