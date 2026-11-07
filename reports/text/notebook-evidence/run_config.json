@@ -213,7 +213,7 @@
   },
   "device": "NVIDIA GeForce RTX 5090",
   "training_arguments": {
-    "output_dir": "/workspace/co5177/runs/text-full-final/checkpoints",
+    "output_dir": "/content/CO5177-PFDAV/artifacts/notebook-runs/text-full/20261107T115508Z/checkpoints",
     "overwrite_output_dir": false,
     "do_train": false,
     "do_eval": true,
@@ -243,7 +243,7 @@
     "log_level": "passive",
     "log_level_replica": "warning",
     "log_on_each_node": true,
-    "logging_dir": "/workspace/co5177/runs/text-full-final/checkpoints/runs/Nov07_08-29-13_b385a32c9f9a",
+    "logging_dir": "/content/CO5177-PFDAV/artifacts/notebook-runs/text-full/20261107T115508Z/checkpoints/runs/Nov07_12-02-35_234169e3fe85",
     "logging_strategy": "steps",
     "logging_first_step": false,
     "logging_steps": 100,
@@ -361,13 +361,13 @@
   "source_sha256": {
     "src/studies/text.py": "9fdfb28e4349190076cd3e2e7f03bfe8115c98eee110624aef111dd8ea248992",
     "configs/text.json": "e05f5130fbd1c22cbe40f8702a7d8d1fc442ae04f54fd4acb64bef5ec8d192ba",
-    "notebooks/text.ipynb": "1f9d1467e6751d5fde98f88a4776c833f26f51c9c97c3b98da865ba61d9dafcf"
+    "notebooks/text.ipynb": "6f02033043e1a3be836d6b1b1b6dcc5eece90aac2486eb237ff1c40b0d01b0ea"
   },
   "packages": {
     "torch": "2.10.0+cu130",
     "transformers": "4.57.6",
     "accelerate": "1.15.0",
-    "numpy": "2.5.4",
+    "numpy": "2.4.1",
     "pandas": "2.3.3",
     "scikit-learn": "1.8.0",
     "pyvi": "0.1.1",

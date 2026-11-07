@@ -1,0 +1,30 @@
+{
+  "completed_at_utc": "2026-11-07T12:27:17.245385+00:00",
+  "article_count": 207375,
+  "metrics": {
+    "test_before_calibration": {
+      "accuracy": 0.9183115797595319,
+      "f1_macro": 0.9106526350086178,
+      "f1_weighted": 0.9182827461147117
+    },
+    "test_after_validation_calibration": {
+      "accuracy": 0.9188902462547418,
+      "f1_macro": 0.9112177312184612,
+      "f1_weighted": 0.9186911947218449
+    },
+    "calibration": {
+      "temperature": 1.443427048875924,
+      "validation_nll_before": 0.35724180936813354,
+      "validation_nll_after": 0.30183225870132446
+    },
+    "split_sizes": {
+      "train": 145162,
+      "validation": 31107,
+      "test": 31106
+    },
+    "train_seconds": 1443.584265947342,
+    "epochs_completed": 7.0,
+    "best_model_checkpoint": "/content/CO5177-PFDAV/artifacts/notebook-runs/text-full/20261107T115508Z/checkpoints/checkpoint-13614",
+    "best_validation_macro_f1": 0.9091291874132431
+  }
+}

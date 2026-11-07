@@ -277,7 +277,7 @@ def main(notebook_path, checkout):
             "all_36_cell_sources_match_pinned_repository": True,
             "imported_files": imported,
             "checkpoint_files": model_files,
-            "baseline_notebook": "notebooks/text_baselines.ipynb",
+            "baseline_notebook": "notebooks/text.ipynb",
             "comparison_policy": "Headline baselines and full-article fine-tuning have different inputs and splits; no paired superiority claim.",
         },
     )

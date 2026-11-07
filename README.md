@@ -54,7 +54,7 @@ The website uses static HTML5, CSS3 and vanilla JavaScript; it needs no backend,
 ├── src/studies/               # New Tabular/headline baseline studies
 ├── src/text_reuse/            # Full PhoBERT notebook provenance and result audit
 ├── configs/                   # Separate image, tabular and text configurations
-├── notebooks/                 # Main notebooks plus the separate Text baseline
+├── notebooks/                 # One main notebook for each data modality
 ├── reports/                   # Separate image/, tabular/ and text/ reports
 ├── docs/                      # Requirements mapping and reuse provenance
 ├── scripts/                   # Report compilation and site checks
@@ -115,23 +115,22 @@ Requirements are summarized from **Course Assignment v4.0, dated 14 September 20
 | Study | Data and model | Accuracy | Macro-F1 | Evaluation |
 | --- | --- | --- | --- | --- |
 | Tabular | 48,780 deduplicated UCI Adult rows; histogram gradient boosting | 87.4812% | 0.818526 | Fresh local notebook run; 34,146/7,317/7,317 train/validation/test split |
-| Text · full articles | All 207,375 valid VietnamNet articles; PhoBERT fine-tuning | 91.840802% | 0.910916 | RTX 5090; seven epochs; 145,162/31,107/31,106 grouped split |
-| Text · validation calibrated | Same full-article model; calibration fitted on validation | 91.892239% | 0.911448 | Same held-out test records |
-| Text · headline baseline | All 207,375 headlines; frozen PhoBERT + logistic regression | 80.981161% | 0.794315 | Four classifiers fitted on CPU using the same grouped split |
+| Text · full articles | All 207,375 valid VietnamNet articles; PhoBERT fine-tuning | 91.831158% | 0.910653 | RTX 5090; seven epochs; 145,162/31,107/31,106 grouped split |
+| Text · validation calibrated | Same full-article model; calibration fitted on validation | 91.889025% | 0.911218 | Same held-out test records |
+| Text · headline baseline | All 207,375 headlines; frozen PhoBERT + logistic regression | 80.926509% | 0.793345 | Four classifiers fitted on CPU using the same grouped split |
 | Image | CIFAR-100; Swin-T full fine-tuning | 86.81% | 0.8681 | Three-seed mean; 9,998 held-out images after exact-pixel deduplication |
 
-Text uses the [`vietnamnet-news` dataset](https://huggingface.co/datasets/dathuynh1108/vietnamnet-news) published on the Hugging Face account of student Huỳnh Thành Đạt. This records the dataset publisher, without attributing article collection. All 207,375 valid records from 212,705 source rows are retained. Equal final headline token IDs or Head–Tail article token IDs form 207,108 groups; grouping removes no rows. A 20-fold `StratifiedGroupKFold` with seed 2026 assigns 14/3/3 folds to training/validation/test. Both Text notebooks use identical article IDs and partitions. Fine-tuning completes all seven epochs with effective batch size 64 and selects epoch 7 by validation macro-F1. Temperature and class thresholds are fitted on validation before test evaluation. Headline-only and article inputs differ, so the comparison does not isolate the effect of fine-tuning alone.
+Text uses the [`vietnamnet-news` dataset](https://huggingface.co/datasets/dathuynh1108/vietnamnet-news) published on the Hugging Face account of student Huỳnh Thành Đạt. This records the dataset publisher, without attributing article collection. All 207,375 valid records from 212,705 source rows are retained. Equal final headline token IDs or Head–Tail article token IDs form 207,108 groups; grouping removes no rows. A 20-fold `StratifiedGroupKFold` with seed 2026 assigns 14/3/3 folds to training/validation/test. Article and headline models use identical article IDs and partitions. Fine-tuning completes all seven epochs with effective batch size 64 and selects epoch 6 by validation macro-F1. Temperature and class thresholds are fitted on validation before test evaluation. Headline-only and article inputs differ, so the comparison does not isolate the effect of fine-tuning alone.
 
 | Notebook | Run in Colab |
 | --- | --- |
 | [Tabular · UCI Adult](notebooks/tabular.ipynb) | [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/tabular.ipynb) |
-| [Text · full-article PhoBERT](notebooks/text.ipynb) | [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/text.ipynb) |
-| [Text · headline baseline](notebooks/text_baselines.ipynb) | [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/text_baselines.ipynb) |
+| [Text · PhoBERT and headline baselines](notebooks/text.ipynb) | [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/text.ipynb) |
 | [Image · CIFAR-100](notebooks/image.ipynb) | [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/image.ipynb) |
 
-Text fine-tuning uses a GPU; Image trains six configurations over three seeds for 20 epochs each. The executed Image notebook contains 21 code cells, six PNG outputs, and no error outputs. Fresh run directories retain configurations, seeds, fitting history, metrics, predictions, and plots. [Text evidence](reports/text/notebook-evidence/metrics.json) and [Image execution receipt](reports/image/notebook-evidence/execution-receipt.json) accompany the reports. The Text archive [`text_historical.ipynb`](notebooks/text_historical.ipynb) preserves the prior Kaggle/Tesla T4 run and its original outputs; it is historical evidence, not a current result. Further provenance is recorded in [TEXT_REUSE.md](docs/TEXT_REUSE.md).
+The Text notebook contains 38 executed code cells and six PNG outputs, with no errors; it fine-tunes the article model and fits all four headline baselines in one run. Text fine-tuning uses a GPU; Image trains six configurations over three seeds for 20 epochs each. The executed Image notebook contains 21 code cells, six PNG outputs, and no error outputs. Fresh run directories retain configurations, seeds, fitting history, metrics, predictions, and plots. [Text evidence](reports/text/notebook-evidence/metrics.json) and [Image execution receipt](reports/image/notebook-evidence/execution-receipt.json) accompany the reports. The Text archive [`text_historical.ipynb`](notebooks/text_historical.ipynb) preserves the prior Kaggle/Tesla T4 run and its original outputs; it is historical evidence, not a current result. Further provenance is recorded in [TEXT_REUSE.md](docs/TEXT_REUSE.md).
 
-[Tabular PDF](reports/tabular/tabular.pdf) · [Full Text PDF](reports/text/text.pdf) · [Headline baseline PDF](reports/text/baselines.pdf) · [Image PDF](reports/image/image.pdf) · [New-study protocol](docs/STUDIES_PROTOCOL.md)
+[Tabular PDF](reports/tabular/tabular.pdf) · [Full Text PDF](reports/text/text.pdf) · [Image PDF](reports/image/image.pdf) · [New-study protocol](docs/STUDIES_PROTOCOL.md)
 
 ## Image study
 

@@ -7,11 +7,11 @@ CO5177 now has independently executed Tabular, full-article Text, headline Text,
 | Study | Current execution | Evidence |
 | --- | --- | --- |
 | Tabular | All 48,780 cleaned Adult records; four fitted models; 34,146/7,317/7,317 split | [Notebook](../notebooks/tabular.ipynb), [notebook evidence](../reports/tabular/notebook-evidence/metrics.json) |
-| Text | All 207,375 valid articles; 207,108 final-input groups; 145,162/31,107/31,106 split; all seven fine-tuning epochs on RTX 5090; epoch 7 selected on validation | [Notebook](../notebooks/text.ipynb), [metrics](../reports/text/notebook-evidence/metrics.json) |
-| Text headlines | Four classifiers fitted using the same complete corpus, article IDs, and grouped partitions | [Notebook](../notebooks/text_baselines.ipynb), [protocol and scores](STUDIES_PROTOCOL.md) |
+| Text | All 207,375 valid articles; 207,108 final-input groups; 145,162/31,107/31,106 split; all seven fine-tuning epochs on RTX 5090; epoch 6 selected on validation | [Notebook](../notebooks/text.ipynb), [metrics](../reports/text/notebook-evidence/metrics.json) |
+| Text headlines | Four classifiers fitted using the same complete corpus, article IDs, and grouped partitions | [Notebook](../notebooks/text.ipynb), [protocol and scores](STUDIES_PROTOCOL.md) |
 | Image | Six pretrained configurations × three seeds × 20 epochs on RTX 5090; exact-pixel deduplication leaves 44,976/5,000/9,998 images | [Notebook](../notebooks/image.ipynb), [18-run summary](../reports/image/notebook-evidence/summary.json), [execution receipt](../reports/image/notebook-evidence/execution-receipt.json) |
 
-Text uses VietnamNet News published on student Huỳnh Thành Đạt's Hugging Face account. Equal final headline or Head–Tail article token inputs remain in the same partition; grouping removes no valid records. Test accuracy/macro-F1 after validation calibration are 91.892239%/0.911448. Frozen PhoBERT + logistic regression on headlines reaches 80.981161%/0.794315; differing inputs prevent attributing the entire difference to fine-tuning.
+Text uses VietnamNet News published on student Huỳnh Thành Đạt's Hugging Face account. Equal final headline or Head–Tail article token inputs remain in the same partition; grouping removes no valid records. Test accuracy/macro-F1 after validation calibration are 91.889025%/0.911218. Frozen PhoBERT + logistic regression on headlines reaches 80.926509%/0.793345; differing inputs prevent attributing the entire difference to fine-tuning.
 
 Current Image full fine-tuning reaches three-seed mean accuracy 79.16% for ResNet18 and 86.81% for Swin-T. These differ from the archived A1 measurements below. The notebook has 21 executed code cells, six PNG outputs, and no error outputs.
 

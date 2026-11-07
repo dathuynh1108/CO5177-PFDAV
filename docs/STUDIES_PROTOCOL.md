@@ -1,6 +1,6 @@
 # Current experiment protocol
 
-The entry points are [Tabular](../notebooks/tabular.ipynb), [full-article Text](../notebooks/text.ipynb), [headline Text](../notebooks/text_baselines.ipynb), and [Image](../notebooks/image.ipynb). Current notebooks use English presentation and actual Jupyter outputs. Reports use Vietnamese. Tabular has completed a fresh hosted Google Colab Run all with 17 executed code cells and no errors; the exported execution is in `reports/tabular/notebook-evidence/colab-executed.ipynb`. Text and Image Colab checks remain incomplete.
+The entry points are [Tabular](../notebooks/tabular.ipynb), [Text](../notebooks/text.ipynb), and [Image](../notebooks/image.ipynb). The Text notebook trains the article model and fits the headline baselines in one execution. Current notebooks use English presentation and actual Jupyter outputs. Reports use Vietnamese. Tabular has completed a fresh hosted Google Colab Run all with 17 executed code cells and no errors; the exported execution is in `reports/tabular/notebook-evidence/colab-executed.ipynb`. Text and Image Colab checks remain incomplete.
 
 ## Environment and evidence
 
@@ -31,7 +31,7 @@ Source: [VietnamNet News](https://huggingface.co/datasets/dathuynh1108/vietnamne
 - Inspect all 212,705 source rows. Remove 1,167 empty headlines, 3,636 rows in conflicting-category components, and 527 other duplicates. Keep all 207,375 valid articles, including seven with empty bodies; apply no sampling cap.
 - Deduplication uses connected components of canonical URL, normalized casefolded headline, or nonempty normalized casefolded body.
 - Prepare final headline and Head–Tail article token IDs. Union records sharing either input into 207,108 groups. This grouping removes no rows.
-- Use 20-fold `StratifiedGroupKFold`, shuffle enabled, seed 2026. Assign 14/3/3 folds to train/validation/test: 145,162/31,107/31,106 records. Equal input groups remain together. Both Text notebooks share these IDs and splits.
+- Use 20-fold `StratifiedGroupKFold`, shuffle enabled, seed 2026. Assign 14/3/3 folds to train/validation/test: 145,162/31,107/31,106 records. Equal input groups remain together. The article model and headline baselines share these IDs and splits.
 
 ### Headline classifiers
 
@@ -39,20 +39,20 @@ Fit four classifiers on titles only: majority, word TF-IDF + Linear SVM, charact
 
 TF-IDF vocabulary and IDF fit train only: word n-grams 1–2 or character-within-word n-grams 3–5, min-df=2, max-df=.98, sublinear TF, at most 80,000 features. Select C from `{0.5, 1, 2}` using validation macro-F1; model seed 42.
 
-PhoBERT uses `vinai/phobert-base-v2`, revision `86cd7fd4c148980922ac11a2cf5e257f2ba639e1`, PyVi segmentation, maximum length 128, and masked mean pooling including BOS/EOS. The encoder remains frozen. The completed notebook fits all four classifiers on CPU using a verified cache of frozen embeddings originally encoded on RTX 5090; it contains 19 executed code cells and two PNG outputs.
+PhoBERT uses `vinai/phobert-base-v2`, revision `86cd7fd4c148980922ac11a2cf5e257f2ba639e1`, PyVi segmentation, maximum length 128, and masked mean pooling including BOS/EOS. The encoder remains frozen. The combined Text notebook encodes all headline features freshly on RTX 5090 and fits all four classifiers on CPU in the same execution. It contains 38 executed code cells and six PNG outputs; the [current headline metrics](../reports/text/notebook-evidence/headline-baselines/metrics.json) accompany the article results.
 
 | Headline classifier | Test accuracy | Test macro-F1 |
 | --- | ---: | ---: |
 | Majority | 6.002057% | 0.005960 |
-| Word TF-IDF + Linear SVM | 80.190317% | 0.783883 |
-| Character TF-IDF + Linear SVM | 80.251398% | 0.785580 |
-| Frozen PhoBERT + logistic regression | 80.981161% | 0.794315 |
+| Word TF-IDF + Linear SVM | 80.180673% | 0.783519 |
+| Character TF-IDF + Linear SVM | 80.264258% | 0.785756 |
+| Frozen PhoBERT + logistic regression | 80.926509% | 0.793345 |
 
 ### Full-article fine-tuning
 
-The current RTX 5090 run completes all seven epochs with effective batch size 64. Article input combines the title with the first 220 and last 80 body words, followed by Head–Tail token selection to maximum length 256. Class weights use train only. Checkpoint selection uses validation macro-F1 and selects epoch 7. Temperature and class thresholds fit validation before test evaluation.
+The current RTX 5090 run completes all seven epochs with effective batch size 64. Article input combines the title with the first 220 and last 80 body words, followed by Head–Tail token selection to maximum length 256. Class weights use train only. Checkpoint selection uses validation macro-F1 and selects epoch 6. Temperature and class thresholds fit validation before test evaluation.
 
-Test accuracy/macro-F1 are 91.840802%/0.910916 before calibration and 91.892239%/0.911448 after validation calibration. [Published metrics](../reports/text/notebook-evidence/metrics.json), [input audit](../reports/text/notebook-evidence/input_audit.json), and [split audit](../reports/text/notebook-evidence/split_audit.json) record this run. Headline-only and article inputs differ, so the comparison does not isolate backbone fine-tuning alone.
+Test accuracy/macro-F1 are 91.831158%/0.910653 before calibration and 91.889025%/0.911218 after validation calibration. [Published metrics](../reports/text/notebook-evidence/metrics.json), [input audit](../reports/text/notebook-evidence/input_audit.json), and [split audit](../reports/text/notebook-evidence/split_audit.json) record this run. Headline-only and article inputs differ, so the comparison does not isolate backbone fine-tuning alone.
 
 ## Image and historical material
 

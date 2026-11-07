@@ -78,7 +78,7 @@ Thiết bị / độ chính xác số & RTX 5090 / BF16\\\bottomrule
 \caption{Thiết lập của lần huấn luyện trên toàn bộ tập bài hợp lệ.}
 \end{table}
 
-Mô hình hoàn tất bảy epoch với 15.883 bước cập nhật trong 1.454,1 giây, tương đương 24,23 phút. Thời lượng này là phần fine-tuning, không bao gồm toàn bộ thời gian tải và chuẩn bị dữ liệu. Checkpoint epoch 7 được chọn với macro-F1 validation 0,9081.
+Mô hình hoàn tất bảy epoch với 15.883 bước cập nhật trong 1.443,6 giây, tương đương 24,06 phút. Thời lượng này là phần fine-tuning, không bao gồm toàn bộ thời gian tải và chuẩn bị dữ liệu. Checkpoint epoch 6 được chọn với macro-F1 validation 0,909129; epoch 7 vẫn được huấn luyện và đánh giá đầy đủ.
 
 \section{Hiệu chỉnh trên validation}
 Với logits $z_{i,c}$, temperature scaling tạo xác suất
@@ -96,56 +96,56 @@ Các $t_c$ co giãn điểm tương đối giữa các lớp, không phải các
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{rXXX}\toprule
 Epoch & Cross-entropy validation có trọng số & Accuracy validation & Macro-F1 validation\\\midrule
-1 & 0,3884 & 88,71\% & 0,8748 \\
-2 & 0,3211 & 90,14\% & 0,8928 \\
-3 & 0,3283 & 91,02\% & 0,9020 \\
-4 & 0,3322 & 91,24\% & 0,9039 \\
-5 & 0,4087 & 90,93\% & 0,9016 \\
-6 & 0,4000 & 91,46\% & 0,9072 \\
-7 & 0,4170 & 91,54\% & 0,9081 \\
+1 & 0,3871 & 88,72\% & 0,8752 \\
+2 & 0,3259 & 90,02\% & 0,8913 \\
+3 & 0,3310 & 91,01\% & 0,9014 \\
+4 & 0,3282 & 91,31\% & 0,9047 \\
+5 & 0,4005 & 91,01\% & 0,9024 \\
+6 & 0,3930 & 91,64\% & 0,9091 \\
+7 & 0,4168 & 91,65\% & 0,9091 \\
 \bottomrule\end{tabularx}
 \caption{Đánh giá sau mỗi epoch. Cross-entropy có trọng số lớp khác với NLL không trọng số dùng để chọn temperature.}
 \label{tab:text-epochs}
 \end{table}
 
-Macro-F1 validation tăng từ 0,8748 ở epoch 1 lên 0,9081 ở epoch 7, dù giảm ở epoch 5. Cross-entropy validation đạt thấp nhất 0,3211 ở epoch 2 rồi tăng lên 0,4170 ở epoch 7. Hai chỉ số vì thế không cải thiện đồng thời: checkpoint có F1 cao nhất không phải checkpoint có loss thấp nhất. Lựa chọn epoch 7 tuân theo tiêu chí macro-F1 đã đặt ra; đường loss cho thấy cần đánh giá thêm chất lượng xác suất dự đoán thay vì chỉ đọc nhãn đúng hoặc sai.
+Macro-F1 validation tăng từ 0,8752 ở epoch 1 lên 0,909129 ở epoch 6, rồi giảm nhẹ còn 0,909089 ở epoch 7. Hai giá trị cuối cùng cùng làm tròn thành 0,9091 trong bảng, nhưng epoch 6 có giá trị chính xác cao hơn và được chọn. Cross-entropy validation đạt thấp nhất 0,3259 ở epoch 2 rồi tăng lên 0,4168 ở epoch 7. Hai chỉ số vì thế không cải thiện đồng thời: checkpoint có F1 cao nhất không phải checkpoint có loss thấp nhất. Đường loss cho thấy cần đánh giá thêm chất lượng xác suất dự đoán thay vì chỉ đọc nhãn đúng hoặc sai.
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=.98\textwidth]{notebook-evidence/figures/training_curves.png}
-\caption{Train loss theo bước cập nhật và macro-F1 validation theo epoch. Macro-F1 cao nhất ở epoch 7; các giá trị train loss là các mốc ghi nhận trong quá trình tối ưu.}
+\caption{Train loss theo bước cập nhật và macro-F1 validation theo epoch. Macro-F1 cao nhất ở epoch 6; các giá trị train loss là các mốc ghi nhận trong quá trình tối ưu.}
 \end{figure}
 
 \section{Kết quả trên tập test}
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{Xrrr}\toprule
 Quy tắc dự đoán & Accuracy & Macro-F1 & Weighted-F1\\\midrule
-Argmax logits & 91,8408\% & 0,910916 & 0,918241\\
-Temperature và hệ số lớp & 91,8922\% & 0,911448 & 0,918761\\\bottomrule
+Argmax logits & 91,8312\% & 0,910653 & 0,918283\\
+Temperature và hệ số lớp & 91,8890\% & 0,911218 & 0,918691\\\bottomrule
 \end{tabularx}
-\caption{Hiệu chỉnh bằng validation làm accuracy trên cùng 31.106 bài test tăng từ 91,8408\% lên 91,8922\% và macro-F1 từ 0,910916 lên 0,911448, tương ứng tăng ròng 16 bài đúng. Mức cải thiện nhỏ: 123 bài được sửa đúng, trong khi 107 bài từ đúng chuyển thành sai.}
+\caption[Kết quả trước và sau hiệu chỉnh bằng validation]{Hiệu chỉnh bằng validation làm accuracy trên cùng 31.106 bài test tăng từ 91,8312\% lên 91,8890\% và macro-F1 từ 0,910653 lên 0,911218, tương ứng tăng ròng 18 bài đúng. Mức cải thiện nhỏ: 123 bài được sửa đúng, trong khi 105 bài từ đúng chuyển thành sai.}
 \label{tab:text-results}
 \end{table}
 
-Temperature được chọn là $T=1,4935$, làm phân bố xác suất mềm hơn. NLL validation giảm từ 0,3781 xuống 0,3098. Khi kết hợp các hệ số lớp, accuracy test tăng 0,0514 điểm phần trăm và macro-F1 tăng 0,000532. Số bài dự đoán đúng tăng từ 28.568 lên 28.584: 123 bài được sửa đúng, trong khi 107 bài từ đúng chuyển thành sai. Hiệu chỉnh vì thế có lợi nhỏ về chỉ số tổng hợp trong lần chia này, với thay đổi ở cả hai chiều đối với từng bài.
+Temperature được chọn là $T=1,4434$, làm phân bố xác suất mềm hơn. NLL validation giảm từ 0,3572 xuống 0,3018. Khi kết hợp các hệ số lớp, accuracy test tăng 0,0579 điểm phần trăm và macro-F1 tăng 0,000565. Số bài dự đoán đúng tăng từ 28.565 lên 28.583: 123 bài được sửa đúng, trong khi 105 bài từ đúng chuyển thành sai. Hiệu chỉnh vì thế có lợi nhỏ về chỉ số tổng hợp trong lần chia này, với thay đổi ở cả hai chiều đối với từng bài.
 
 \section{Chất lượng theo chuyên mục}
 \begin{table}[htbp]\centering\small
 \begin{tabularx}{\textwidth}{Xrrrr}\toprule
 Chuyên mục & Số bài test & Precision & Recall & F1\\\midrule
-Dân tộc -- Tôn giáo & 437 & 0,8028 & 0,8009 & 0,8018 \\
-Kinh doanh & 1.806 & 0,8427 & 0,8217 & 0,8321 \\
-Thị trường tiêu dùng & 1.347 & 0,8341 & 0,8396 & 0,8368 \\
-Đời sống & 1.826 & 0,8607 & 0,8253 & 0,8426 \\
-Thời sự & 1.761 & 0,8644 & 0,8541 & 0,8592 \\
-Ô tô -- Xe máy & 1.861 & 0,9790 & 0,9764 & 0,9777 \\
-Thế giới & 1.863 & 0,9658 & 0,9710 & 0,9684 \\
-Thể thao & 1.846 & 0,9887 & 0,9919 & 0,9903 \\
+Dân tộc -- Tôn giáo & 437 & 0,7923 & 0,8032 & 0,7977 \\
+Kinh doanh & 1.806 & 0,8485 & 0,8184 & 0,8331 \\
+Thị trường tiêu dùng & 1.347 & 0,8402 & 0,8352 & 0,8377 \\
+Đời sống & 1.826 & 0,8667 & 0,8335 & 0,8498 \\
+Thời sự & 1.761 & 0,8681 & 0,8370 & 0,8523 \\
+Ô tô -- Xe máy & 1.861 & 0,9780 & 0,9796 & 0,9788 \\
+Thế giới & 1.863 & 0,9714 & 0,9678 & 0,9696 \\
+Thể thao & 1.846 & 0,9892 & 0,9913 & 0,9903 \\
 \bottomrule\end{tabularx}
 \caption{Một số chuyên mục có F1 thấp và cao sau hiệu chỉnh. Số mẫu theo lớp không bằng nhau; macro-F1 cho mỗi chuyên mục mức đóng góp ngang nhau.}
 \label{tab:text-classes}
 \end{table}
 
-Thể thao có F1 cao nhất (0,9903), tiếp theo là Ô tô -- Xe máy (0,9777) và Thế giới (0,9684). Dân tộc -- Tôn giáo có F1 thấp nhất (0,8018) trên 437 bài test; Kinh doanh và Thị trường tiêu dùng lần lượt đạt 0,8321 và 0,8368. Chênh lệch macro-F1 0,9114 với weighted-F1 0,9188 phản ánh khác biệt giữa cách tính trung bình đều theo chuyên mục và cách tính theo số mẫu.
+Thể thao có F1 cao nhất (0,9903), tiếp theo là Ô tô -- Xe máy (0,9788) và Thế giới (0,9696). Dân tộc -- Tôn giáo có F1 thấp nhất (0,7977) trên 437 bài test; Kinh doanh và Thị trường tiêu dùng lần lượt đạt 0,8331 và 0,8377. Chênh lệch macro-F1 0,9112 với weighted-F1 0,9187 phản ánh khác biệt giữa cách tính trung bình đều theo chuyên mục và cách tính theo số mẫu.
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=\textwidth]{notebook-evidence/figures/test_confusion_and_class_f1.png}
@@ -153,26 +153,29 @@ Thể thao có F1 cao nhất (0,9903), tiếp theo là Ô tô -- Xe máy (0,9777
 \label{fig:text-confusion}
 \end{figure}
 
-Cặp nhầm lẫn có số bài lớn nhất là Thời sự thành Pháp luật: 117/1.761 bài (6,64\%). Chiều ngược lại có 66/1.778 bài (3,71\%), cho thấy nhầm lẫn giữa hai lớp không đối xứng. Thị trường tiêu dùng thành Kinh doanh có 69/1.347 bài (5,12\%), còn Kinh doanh thành Thị trường tiêu dùng có 64/1.806 bài (3,54\%). Đời sống thành Du lịch cũng có 69 bài, nhưng chiếm 3,78\% của lớp Đời sống. Đọc đồng thời số bài và tỷ lệ tránh đồng nhất các cặp có cùng số lỗi nhưng quy mô lớp khác nhau.
+Cặp nhầm lẫn có số bài lớn nhất là Thời sự thành Pháp luật: 139/1.761 bài (7,89\%). Chiều ngược lại có 49/1.778 bài (2,76\%), cho thấy nhầm lẫn giữa hai lớp không đối xứng. Đời sống thành Du lịch có 79/1.826 bài (4,33\%). Thị trường tiêu dùng thành Kinh doanh có 70/1.347 bài (5,20\%), còn Kinh doanh thành Thị trường tiêu dùng có 54/1.806 bài (2,99\%). Đọc đồng thời số bài và tỷ lệ giúp phân biệt số lỗi tuyệt đối với mức nhầm lẫn trong từng lớp.
 
 \section{Đối chiếu với các mô hình tiêu đề}
-Các baseline được huấn luyện lại trên cùng 145.162 bài train và chọn siêu tham số bằng cùng 31.107 bài validation. PhoBERT đóng băng kết hợp hồi quy logistic có macro-F1 validation cao nhất (0,7939), với $C=0,5$. Trên cùng 31.106 ID test, mô hình này đạt accuracy 80,9812\% và macro-F1 0,794315. TF-IDF từ và TF-IDF ký tự lần lượt đạt accuracy 80,1903\% và 80,2514\%, với macro-F1 0,783883 và 0,785580.
+Các baseline được huấn luyện lại trên cùng 145.162 bài train và chọn siêu tham số bằng cùng 31.107 bài validation. PhoBERT đóng băng kết hợp hồi quy logistic có macro-F1 validation cao nhất (0,7942), với $C=1$. Trên cùng 31.106 ID test, mô hình này đạt accuracy 80,9265\% và macro-F1 0,793345. TF-IDF từ và TF-IDF ký tự lần lượt đạt accuracy 80,1807\% và 80,2643\%, với macro-F1 0,783519 và 0,785756. Hai SVM đều chọn $C=0,5$; macro-F1 validation tương ứng là 0,7896 và 0,7879.
 
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{Xrr}\toprule
 Mô hình và đầu vào & Accuracy test & Macro-F1 test\\\midrule
-Tiêu đề: PhoBERT đóng băng và hồi quy logistic & 80,9812\% & 0,794315\\
-Bài báo: PhoBERT tinh chỉnh, argmax & 91,8408\% & 0,910916\\
-Bài báo: PhoBERT tinh chỉnh, có hiệu chỉnh & 91,8922\% & 0,911448\\\bottomrule
+Tiêu đề: Dự đoán lớp đa số & 6,0021\% & 0,005960\\
+Tiêu đề: TF-IDF theo từ và SVM & 80,1807\% & 0,783519\\
+Tiêu đề: TF-IDF theo ký tự và SVM & 80,2643\% & 0,785756\\
+Tiêu đề: PhoBERT đóng băng và hồi quy logistic & 80,9265\% & 0,793345\\
+Bài báo: PhoBERT tinh chỉnh, argmax & 91,8312\% & 0,910653\\
+Bài báo: PhoBERT tinh chỉnh, có hiệu chỉnh & 91,8890\% & 0,911218\\\bottomrule
 \end{tabularx}
-\caption{Trên cùng ID test, accuracy tăng từ 80,9812\% với PhoBERT tiêu đề đóng băng lên 91,8408\% với PhoBERT bài báo tinh chỉnh trước hiệu chỉnh; macro-F1 tăng từ 0,794315 lên 0,910916. Các mô hình được chọn bằng validation. Phép so sánh thay đổi cả đầu vào và việc cập nhật encoder, nên chưa tách riêng tác động của nội dung và fine-tuning.}
+\caption[Đối chiếu các mô hình tiêu đề và mô hình bài báo]{Trên cùng ID test, accuracy tăng từ 80,9265\% với PhoBERT tiêu đề đóng băng lên 91,8312\% với PhoBERT bài báo tinh chỉnh trước hiệu chỉnh; macro-F1 tăng từ 0,793345 lên 0,910653. Các mô hình được chọn bằng validation. Phép so sánh thay đổi cả đầu vào và việc cập nhật encoder, nên chưa tách riêng tác động của nội dung và fine-tuning.}
 \label{tab:text-headline-comparison}
 \end{table}
 
-So với baseline tiêu đề, mô hình bài báo trước hiệu chỉnh cao hơn 10,8596 điểm phần trăm accuracy và 0,116602 macro-F1. Phép so sánh thay đổi đồng thời nội dung đầu vào, độ dài token, cách tổng hợp đặc trưng và việc cập nhật encoder. Chênh lệch vì vậy mô tả hiệu quả của hai quy trình trên cùng dữ liệu, chưa tách riêng tác động của việc thêm nội dung hoặc fine-tuning.
+So với baseline tiêu đề, mô hình bài báo trước hiệu chỉnh cao hơn 10,9046 điểm phần trăm accuracy và 0,117307 macro-F1. Phép so sánh thay đổi đồng thời nội dung đầu vào, độ dài token, cách tổng hợp đặc trưng và việc cập nhật encoder. Chênh lệch vì vậy mô tả hiệu quả của hai quy trình trên cùng dữ liệu, chưa tách riêng tác động của việc thêm nội dung hoặc fine-tuning.
 
 \chapter{Kết luận và giới hạn}
-Trên toàn bộ 207.375 bài hợp lệ và phép chia theo nhóm đầu vào, PhoBERT đạt accuracy 91,84\% và macro-F1 0,9109 trước hiệu chỉnh. Hiệu chỉnh chỉ dùng validation đưa hai chỉ số test lên 91,89\% và 0,9114. Mức tăng tương ứng 16 bài đúng trên 31.106 bài test; khác biệt giữa các chuyên mục lớn hơn nhiều so với thay đổi tổng hợp này.
+Trên toàn bộ 207.375 bài hợp lệ và phép chia theo nhóm đầu vào, PhoBERT đạt accuracy 91,83\% và macro-F1 0,9107 trước hiệu chỉnh. Hiệu chỉnh chỉ dùng validation đưa hai chỉ số test lên 91,89\% và 0,9112. Mức tăng tương ứng 18 bài đúng trên 31.106 bài test; khác biệt giữa các chuyên mục lớn hơn nhiều so với thay đổi tổng hợp này.
 
 Thực nghiệm đánh giá một phép chia và một seed, chưa lượng hóa biến thiên giữa các lần huấn luyện. Chia theo nhóm đầu vào giống nhau hạn chế một dạng rò rỉ cụ thể nhưng không thay thế đánh giá theo thời gian hoặc đo các bài gần trùng về ngữ nghĩa. Head--Tail chỉ giữ phần đầu và cuối, còn phép loại chữ số có thể bỏ thông tin; chưa có đối chứng tách riêng hai lựa chọn này. Vì vậy, kết quả mô tả hiệu quả của toàn bộ quy trình đã đo trên nguồn VietnamNet.
 

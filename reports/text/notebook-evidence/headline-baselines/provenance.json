@@ -1,0 +1,17 @@
+{
+  "source_sha256": {
+    "src/studies/text.py": "9fdfb28e4349190076cd3e2e7f03bfe8115c98eee110624aef111dd8ea248992",
+    "configs/text.json": "e05f5130fbd1c22cbe40f8702a7d8d1fc442ae04f54fd4acb64bef5ec8d192ba",
+    "notebooks/text.ipynb": "6f02033043e1a3be836d6b1b1b6dcc5eece90aac2486eb237ff1c40b0d01b0ea"
+  },
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "packages": {
+    "numpy": "2.4.1",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.8.0",
+    "transformers": "4.57.6",
+    "torch": "2.10.0+cu130",
+    "pyvi": "0.1.1",
+    "pyarrow": "26.0.1"
+  }
+}
