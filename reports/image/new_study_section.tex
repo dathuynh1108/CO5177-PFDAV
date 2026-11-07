@@ -16,7 +16,7 @@ Swin-T partial & $78{,}44\pm0{,}16$ & $0{,}7837\pm0{,}0015$\\
 Swin-T full & $86{,}81\pm0{,}02$ & $0{,}8681\pm0{,}0001$\\
 \bottomrule
 \end{tabular}
-\caption{Accuracy và macro-F1 trên test, trung bình $\pm$ SD mẫu qua seed 42, 43 và 44.}
+\caption{Full cho accuracy cao nhất trong từng kiến trúc. Swin-T full đạt 86,81\% so với 79,16\% của ResNet18 full, cao hơn 7,66 điểm phần trăm theo so sánh ghép cặp cùng seed. Accuracy và macro-F1 được trình bày dưới dạng trung bình $\pm$ SD mẫu qua seed 42, 43 và 44.}
 \label{tab:new-image-results}
 \end{table}
 
@@ -46,7 +46,7 @@ Swin-T partial & $104,8\pm0,1$ & $662,9\pm0,0$\\
 Swin-T full & $209,6\pm0,1$ & $2454,2\pm0,0$\\
 \bottomrule
 \end{tabular}
-\caption{Trung bình $\pm$ SD mẫu qua ba seed; đo trên cùng RTX 5090 và bốn workers. SD của peak memory làm tròn về 0,0 MiB ở năm cấu hình; ResNet18 head-only có SD 0,4 MiB.}
+\caption{Trên cùng RTX 5090 và bốn workers, Swin-T full đạt accuracy 86,81\% so với 79,16\% của ResNet18 full: mức tăng 7,66 điểm phần trăm theo ba cặp seed đi kèm 2,63 lần thời gian train và 4,72 lần bộ nhớ cấp phát cực đại. Chi phí là trung bình $\pm$ SD mẫu qua seed 42, 43 và 44; SD bộ nhớ làm tròn về 0,0 MiB ở năm cấu hình, riêng ResNet18 head-only là 0,4 MiB.}
 \label{tab:new-image-cost}
 \end{table}
 

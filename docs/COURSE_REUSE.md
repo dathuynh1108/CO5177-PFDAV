@@ -52,4 +52,4 @@ The archived split contains two exact pixel contents shared between train/valida
 
 ## Submission status
 
-Current notebooks contain English presentation and real Jupyter outputs; reports are Vietnamese. The landing page uses notebooks as experiment entry points. Fresh Google Colab Run all, GroupLink, and LMS submission remain unverified. YouTube fields are intentionally blank; the brief's video requirement remains outstanding. See [SUBMISSION_REVIEW.md](SUBMISSION_REVIEW.md).
+Current notebooks contain English presentation and real Jupyter outputs; reports are Vietnamese. The landing page uses notebooks as experiment entry points. Tabular has completed a fresh hosted Google Colab Run all. Text and Image Colab checks, GroupLink, and LMS submission remain incomplete or unverified. YouTube fields are intentionally blank; the brief's video requirement remains outstanding. See [SUBMISSION_REVIEW.md](SUBMISSION_REVIEW.md).

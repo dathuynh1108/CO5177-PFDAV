@@ -240,12 +240,23 @@ Mô hình & C & Val macro-F1 & Test accuracy & Test macro-F1\\\midrule
         parts.append(
             f"{name} & {c} & {model['validation']['macro_f1']:.4f} & {100 * model['test']['accuracy']:.2f}\\% & {model['test']['macro_f1']:.4f} \\\\\n"
         )
-    parts.append(r"""\bottomrule\end{tabularx}
-\caption{Siêu tham số $C$ được chọn theo macro-F1 trên validation; các cột test là kết quả trên tập giữ riêng. Accuracy trình bày theo phần trăm, macro-F1 theo thang 0--1.}\end{table}
-\begin{figure}[htbp]\centering\includegraphics[width=.95\textwidth]{generated/scores.png}
-\caption{Độ chính xác và macro-F1 của bốn mô hình trên cùng tập test. Kết quả tính trên một cách chia và một seed.}\end{figure}
-\section{Nhận xét}
-""")
+    parts.append(r"\bottomrule\end{tabularx}" + "\n")
+    parts.append(
+        r"\caption{" + (
+            r"So sánh trên cùng tập test sau khi chọn $C$ bằng validation. PhoBERT đóng băng và hồi quy logistic đạt accuracy 80,98\% và macro-F1 0,7943, so với 80,25\% và 0,7856 của TF-IDF ký tự và SVM; chênh lệch phản ánh cả biểu diễn và bộ phân loại."
+            if track == "text" else
+            r"Siêu tham số $C$ được chọn theo macro-F1 trên validation; các cột test là kết quả trên tập giữ riêng. Accuracy trình bày theo phần trăm, macro-F1 theo thang 0--1."
+        ) + r"}\end{table}" + "\n"
+    )
+    parts.append(r"\begin{figure}[htbp]\centering\includegraphics[width=.95\textwidth]{generated/scores.png}" + "\n")
+    parts.append(
+        r"\caption{" + (
+            r"Trên cùng tập test, PhoBERT đóng băng và hồi quy logistic đạt accuracy 80,98\% và macro-F1 0,7943, cao hơn TF-IDF ký tự và SVM (80,25\% và 0,7856). Kết quả giới hạn ở một phép chia và một seed."
+            if track == "text" else
+            r"Độ chính xác và macro-F1 của bốn mô hình trên cùng tập test. Kết quả tính trên một cách chia và một seed."
+        ) + r"}\end{figure}" + "\n"
+    )
+    parts.append(r"\section{Nhận xét}" + "\n")
     models = {m["id"]: m for m in summary["models"]}
     if track == "tabular":
         base = models["logistic"]

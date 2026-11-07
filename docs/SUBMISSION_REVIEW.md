@@ -11,9 +11,21 @@ Notebook là điểm truy cập thực nghiệm từ landing page. Các notebook
 | Text · baseline tiêu đề | Bốn bộ phân loại được fit mới trên CPU với toàn bộ 207.375 tiêu đề, dùng cùng ID và split với toàn bài; đặc trưng PhoBERT đóng băng dùng cache đã kiểm tra từ lượt mã hóa trên RTX 5090. PhoBERT đóng băng + logistic regression đạt accuracy 80,981161% và macro-F1 0,794315; TF-IDF từ/ký tự đạt 80,190317%/80,251398%. Đầu vào khác nhau nên so sánh không xác định riêng ảnh hưởng của fine-tuning. [Notebook](../notebooks/text_baselines.ipynb) · [PDF baseline](../reports/text/baselines.pdf). |
 | Text · lưu trữ lịch sử | [Notebook Kaggle/Tesla T4 bảy epoch](../notebooks/text_historical.ipynb) giữ nguyên byte và đầu ra cũ. Lượt cũ dùng chung tập đánh giá cho chọn checkpoint và hiệu chỉnh; không phải test độc lập hay kết quả hiện tại. [Nguồn và giới hạn](TEXT_REUSE.md). |
 | Image | Sáu cấu hình pretrained × ba seed, mỗi lượt đủ 20 epoch trên RTX 5090; sau loại trùng pixel có 44.976/5.000/9.998 ảnh. Hoàn tất 18 lượt; notebook có 21 cell mã, sáu PNG và không có đầu ra lỗi. Swin-T full đạt trung bình accuracy 86,81% và macro-F1 0,8681. [Notebook](../notebooks/image.ipynb) · [PDF](../reports/image/image.pdf) · [Biên nhận thực thi](../reports/image/notebook-evidence/execution-receipt.json). |
-| Google Colab | Có liên kết Colab cho notebook; chưa xác minh Run all trong một runtime Google Colab mới. Thực thi Jupyter cục bộ hoặc trên RTX 5090 không thay thế bước này. |
+| Google Colab | Tabular đã Run all trên runtime Google Colab mới: 17/17 code cell, ba PNG, không error. [Bản thực thi](../reports/tabular/notebook-evidence/colab-executed.ipynb) · [Biên nhận](../reports/tabular/notebook-evidence/colab-execution.json). Text và Image chưa hoàn tất kiểm tra tương ứng; kết quả chạy trên Vast được ghi riêng. |
 | Báo cáo và landing page | Có PDF riêng và các trang bài con. Landing page dùng notebook làm điểm truy cập; báo cáo và evidence được liên kết ở trang bài tương ứng. [Landing page](https://dathuynh1108.github.io/CO5177-PFDAV/) · [PDF tổng hợp](../reports/overview/CTG-report.pdf). |
 | Video YouTube | Cả ba trường liên kết để trống theo lựa chọn của người dùng. Đề yêu cầu video Public hoặc Unlisted cho từng bài; chưa có bằng chứng đáp ứng mục này. |
-| GroupLink và LMS | Chưa xác minh sheet GroupLink hoặc trạng thái nộp PDF tổng hợp trên LMS. |
+| GroupLink và LMS | Link đăng ký trong PDF từ chối quyền truy cập của tài khoản hiện có; chưa đối chiếu được GroupRegistration/GroupLink. Chưa xác nhận nộp PDF tổng hợp trên LMS. |
 
-Các mục chưa xác minh gồm ba video, Run all trên Google Colab mới, GroupLink và việc gửi PDF tổng hợp lên LMS. Các lượt huấn luyện và kiểm tra trong kho mã không xác nhận thay cho các mục này.
+Các mục còn thiếu hoặc chưa xác minh gồm ba video, Run all của Text và Image trên Google Colab, GroupRegistration/GroupLink và việc gửi PDF tổng hợp lên LMS. Các lượt huấn luyện và kiểm tra trong kho mã không xác nhận thay cho các mục này.
+
+## Đối chiếu phần sáng tạo theo mục 7.1
+
+Phần này có trọng số 10% tổng điểm. Mức 10 yêu cầu từng loại dữ liệu có hình hoặc bảng trả lời một câu hỏi, có số đối chiếu, caption nêu kết luận và kết luận khớp metric trong báo cáo. Run all và các biểu đồ EDA, confusion matrix bắt buộc không tự tạo điểm sáng tạo.
+
+| Bài | Câu hỏi và bằng chứng đã thực nghiệm | Kết luận đối chiếu |
+| --- | --- | --- |
+| Tabular | Cân bằng lớp và mô hình boosting thay đổi kết quả so với logistic ra sao? Hình 3.1 và Bảng 3.1. | Cân bằng lớp đưa recall của nhóm >50K từ 59,08% lên 84,59%, precision từ 74,03% xuống 57,64%; boosting đạt accuracy 87,48%, macro-F1 0,8185. Caption Hình 3.1 nêu kết luận so sánh. |
+| Text | Hiệu chỉnh bằng validation có cải thiện phân loại không? Bảng 3.2; đối chiếu thêm tiêu đề với toàn bài ở Bảng 3.4. | Accuracy tăng 91,8408% → 91,8922%, macro-F1 0,910916 → 0,911448; thêm 16 bài đúng. Caption ghi rõ hiệu quả nhỏ và giới hạn của các phép so sánh. |
+| Image | Mức accuracy cao hơn đi kèm chi phí nào? Bảng 3.1–3.2. | Swin-T full hơn ResNet18 full 7,66 điểm phần trăm, với 2,63 lần thời gian train và 4,72 lần bộ nhớ trên cùng RTX 5090; caption nêu đủ kết quả và điều kiện đo. |
+
+Ba bài có bằng chứng thực đo phù hợp cấu trúc mức 7 của từng loại dữ liệu, là căn cứ xem xét mức 10 của riêng phần sáng tạo. Điểm thực tế do giảng viên đánh giá; phần này không bù các mục bắt buộc còn thiếu. Các đề xuất nghiên cứu chưa chạy không được tính là kết quả mở rộng.

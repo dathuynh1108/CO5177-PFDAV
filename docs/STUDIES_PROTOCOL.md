@@ -1,6 +1,6 @@
 # Current experiment protocol
 
-The entry points are [Tabular](../notebooks/tabular.ipynb), [full-article Text](../notebooks/text.ipynb), [headline Text](../notebooks/text_baselines.ipynb), and [Image](../notebooks/image.ipynb). Current notebooks use English presentation and actual Jupyter outputs. Reports use Vietnamese. A fresh Google Colab Run all has not been independently verified.
+The entry points are [Tabular](../notebooks/tabular.ipynb), [full-article Text](../notebooks/text.ipynb), [headline Text](../notebooks/text_baselines.ipynb), and [Image](../notebooks/image.ipynb). Current notebooks use English presentation and actual Jupyter outputs. Reports use Vietnamese. Tabular has completed a fresh hosted Google Colab Run all with 17 executed code cells and no errors; the exported execution is in `reports/tabular/notebook-evidence/colab-executed.ipynb`. Text and Image Colab checks remain incomplete.
 
 ## Environment and evidence
 

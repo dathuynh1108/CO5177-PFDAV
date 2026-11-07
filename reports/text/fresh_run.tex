@@ -117,7 +117,7 @@ Quy tắc dự đoán & Accuracy & Macro-F1 & Weighted-F1\\\midrule
 Argmax logits & 91,8408\% & 0,910916 & 0,918241\\
 Temperature và hệ số lớp & 91,8922\% & 0,911448 & 0,918761\\\bottomrule
 \end{tabularx}
-\caption{Kết quả trên cùng 31.106 bài test, sau khi chọn checkpoint và tham số hiệu chỉnh bằng validation.}
+\caption{Hiệu chỉnh bằng validation làm accuracy trên cùng 31.106 bài test tăng từ 91,8408\% lên 91,8922\% và macro-F1 từ 0,910916 lên 0,911448, tương ứng tăng ròng 16 bài đúng. Mức cải thiện nhỏ: 123 bài được sửa đúng, trong khi 107 bài từ đúng chuyển thành sai.}
 \label{tab:text-results}
 \end{table}
 
@@ -160,7 +160,7 @@ Tiêu đề: PhoBERT đóng băng và hồi quy logistic & 80,9812\% & 0,794315\
 Bài báo: PhoBERT tinh chỉnh, argmax & 91,8408\% & 0,910916\\
 Bài báo: PhoBERT tinh chỉnh, có hiệu chỉnh & 91,8922\% & 0,911448\\\bottomrule
 \end{tabularx}
-\caption{So sánh trên cùng ID train, validation và test. Các mô hình được lựa chọn bằng validation.}
+\caption{Trên cùng ID test, accuracy tăng từ 80,9812\% với PhoBERT tiêu đề đóng băng lên 91,8408\% với PhoBERT bài báo tinh chỉnh trước hiệu chỉnh; macro-F1 tăng từ 0,794315 lên 0,910916. Các mô hình được chọn bằng validation. Phép so sánh thay đổi cả đầu vào và việc cập nhật encoder, nên chưa tách riêng tác động của nội dung và fine-tuning.}
 \label{tab:text-headline-comparison}
 \end{table}
 
