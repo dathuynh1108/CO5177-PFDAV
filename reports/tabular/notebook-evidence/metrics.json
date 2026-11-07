@@ -1,8 +1,8 @@
 {
-  "track": "tabular",
-  "run_id": "20261107T075821Z",
-  "seed": 42,
-  "split_seed": 2026,
+  "run_id": "20261107T160916705565Z",
+  "dataset": "UCI Adult",
+  "raw_rows": 48842,
+  "retained_rows": 48780,
   "split_sizes": {
     "train": 34146,
     "validation": 7317,
@@ -12,22 +12,61 @@
     "<=50K",
     ">50K"
   ],
+  "preferred_model_by_validation": "histogram",
+  "test_opened_after_validation_choices": true,
   "models": [
     {
+      "id": "majority",
       "name": "Majority baseline",
       "selected_C": null,
-      "validation_trials": [
-        {
-          "C": null,
-          "validation_accuracy": 0.7606942736094028,
-          "validation_macro_f1": 0.4320422261895521,
-          "fit_seconds": 0.06754987499880372
+      "validation": {
+        "accuracy": 0.7606942736094028,
+        "macro_f1": 0.4320422261895521,
+        "roc_auc": 0.5,
+        "average_precision": 0.23930572639059725,
+        "confusion": [
+          [
+            5566,
+            0
+          ],
+          [
+            1751,
+            0
+          ]
+        ],
+        "per_class": {
+          "<=50K": {
+            "precision": 0.7606942736094028,
+            "recall": 1.0,
+            "f1-score": 0.8640844523791043,
+            "support": 5566.0
+          },
+          ">50K": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 1751.0
+          },
+          "accuracy": 0.7606942736094028,
+          "macro avg": {
+            "precision": 0.3803471368047014,
+            "recall": 0.5,
+            "f1-score": 0.4320422261895521,
+            "support": 7317.0
+          },
+          "weighted avg": {
+            "precision": 0.5786557779021368,
+            "recall": 0.7606942736094028,
+            "f1-score": 0.6573040948397012,
+            "support": 7317.0
+          }
         }
-      ],
-      "validation_macro_f1": 0.4320422261895521,
+      },
       "test": {
         "accuracy": 0.7605576055760558,
         "macro_f1": 0.4319981369352585,
+        "roc_auc": 0.5,
+        "average_precision": 0.23944239442394424,
         "confusion": [
           [
             5565,
@@ -68,32 +107,57 @@
       }
     },
     {
+      "id": "logistic",
       "name": "Logistic regression",
       "selected_C": 10.0,
-      "validation_trials": [
-        {
-          "C": 0.1,
-          "validation_accuracy": 0.8502118354516879,
-          "validation_macro_f1": 0.779629073523586,
-          "fit_seconds": 0.14141329099948052
-        },
-        {
-          "C": 1.0,
-          "validation_accuracy": 0.8495284952849529,
-          "validation_macro_f1": 0.7797733031187463,
-          "fit_seconds": 0.15324949999921955
-        },
-        {
-          "C": 10.0,
-          "validation_accuracy": 0.8498018313516469,
-          "validation_macro_f1": 0.780272269612676,
-          "fit_seconds": 0.15206050000415416
+      "validation": {
+        "accuracy": 0.8498018313516469,
+        "macro_f1": 0.780272269612676,
+        "roc_auc": 0.9017505114371275,
+        "average_precision": 0.755458980784011,
+        "confusion": [
+          [
+            5167,
+            399
+          ],
+          [
+            700,
+            1051
+          ]
+        ],
+        "per_class": {
+          "<=50K": {
+            "precision": 0.8806885972387932,
+            "recall": 0.9283147682357169,
+            "f1-score": 0.9038747485349428,
+            "support": 5566.0
+          },
+          ">50K": {
+            "precision": 0.7248275862068966,
+            "recall": 0.6002284408909194,
+            "f1-score": 0.6566697906904092,
+            "support": 1751.0
+          },
+          "accuracy": 0.8498018313516469,
+          "macro avg": {
+            "precision": 0.802758091722845,
+            "recall": 0.7642716045633182,
+            "f1-score": 0.780272269612676,
+            "support": 7317.0
+          },
+          "weighted avg": {
+            "precision": 0.8433901647778324,
+            "recall": 0.8498018313516469,
+            "f1-score": 0.8447171865305997,
+            "support": 7317.0
+          }
         }
-      ],
-      "validation_macro_f1": 0.780272269612676,
+      },
       "test": {
         "accuracy": 0.8523985239852399,
         "macro_f1": 0.7815494849977609,
+        "roc_auc": 0.9103177680135551,
+        "average_precision": 0.7713062218941317,
         "confusion": [
           [
             5202,
@@ -134,32 +198,57 @@
       }
     },
     {
+      "id": "balanced",
       "name": "Balanced logistic regression",
       "selected_C": 10.0,
-      "validation_trials": [
-        {
-          "C": 0.1,
-          "validation_accuracy": 0.8006013393467268,
-          "validation_macro_f1": 0.7634420465528993,
-          "fit_seconds": 0.1436623750050785
-        },
-        {
-          "C": 1.0,
-          "validation_accuracy": 0.8010113434467678,
-          "validation_macro_f1": 0.7637156270959088,
-          "fit_seconds": 0.15113550000387477
-        },
-        {
-          "C": 10.0,
-          "validation_accuracy": 0.8011480114801148,
-          "validation_macro_f1": 0.7639083486982081,
-          "fit_seconds": 0.17757241700019222
+      "validation": {
+        "accuracy": 0.8011480114801148,
+        "macro_f1": 0.7639083486982081,
+        "roc_auc": 0.9013397816103442,
+        "average_precision": 0.7525132673114641,
+        "confusion": [
+          [
+            4384,
+            1182
+          ],
+          [
+            273,
+            1478
+          ]
+        ],
+        "per_class": {
+          "<=50K": {
+            "precision": 0.9413785698947821,
+            "recall": 0.7876392382321236,
+            "f1-score": 0.8576738726401252,
+            "support": 5566.0
+          },
+          ">50K": {
+            "precision": 0.5556390977443609,
+            "recall": 0.8440890919474586,
+            "f1-score": 0.6701428247562911,
+            "support": 1751.0
+          },
+          "accuracy": 0.8011480114801148,
+          "macro avg": {
+            "precision": 0.7485088338195716,
+            "recall": 0.8158641650897911,
+            "f1-score": 0.7639083486982081,
+            "support": 7317.0
+          },
+          "weighted avg": {
+            "precision": 0.8490689053143,
+            "recall": 0.8011480114801148,
+            "f1-score": 0.8127966190054944,
+            "support": 7317.0
+          }
         }
-      ],
-      "validation_macro_f1": 0.7639083486982081,
+      },
       "test": {
         "accuracy": 0.8142681426814268,
         "macro_f1": 0.7769169932382569,
+        "roc_auc": 0.9100438159238884,
+        "average_precision": 0.7688861467547121,
         "confusion": [
           [
             4476,
@@ -200,20 +289,57 @@
       }
     },
     {
+      "id": "histogram",
       "name": "Histogram gradient boosting",
       "selected_C": null,
-      "validation_trials": [
-        {
-          "C": null,
-          "validation_accuracy": 0.8719420527538608,
-          "validation_macro_f1": 0.8146511483618553,
-          "fit_seconds": 0.4182820830028504
+      "validation": {
+        "accuracy": 0.8719420527538608,
+        "macro_f1": 0.8146511483618553,
+        "roc_auc": 0.9293177370233283,
+        "average_precision": 0.8332052779095976,
+        "confusion": [
+          [
+            5224,
+            342
+          ],
+          [
+            595,
+            1156
+          ]
+        ],
+        "per_class": {
+          "<=50K": {
+            "precision": 0.8977487540814573,
+            "recall": 0.9385555156306145,
+            "f1-score": 0.9176987263943785,
+            "support": 5566.0
+          },
+          ">50K": {
+            "precision": 0.7716955941255007,
+            "recall": 0.6601941747572816,
+            "f1-score": 0.7116035703293321,
+            "support": 1751.0
+          },
+          "accuracy": 0.8719420527538608,
+          "macro avg": {
+            "precision": 0.8347221741034789,
+            "recall": 0.799374845193948,
+            "f1-score": 0.8146511483618553,
+            "support": 7317.0
+          },
+          "weighted avg": {
+            "precision": 0.8675835110743669,
+            "recall": 0.8719420527538608,
+            "f1-score": 0.868378975366649,
+            "support": 7317.0
+          }
         }
-      ],
-      "validation_macro_f1": 0.8146511483618553,
+      },
       "test": {
         "accuracy": 0.8748120814541479,
         "macro_f1": 0.8185255278334223,
+        "roc_auc": 0.9321308569951631,
+        "average_precision": 0.8334195186761335,
         "confusion": [
           [
             5238,

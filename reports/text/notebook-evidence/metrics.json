@@ -1,26 +1,160 @@
 {
   "test_before_calibration": {
-    "accuracy": 0.9183115797595319,
-    "f1_macro": 0.9106526350086178,
-    "f1_weighted": 0.9182827461147117
+    "accuracy": 0.9178615058188131,
+    "f1_macro": 0.910280319102821,
+    "f1_weighted": 0.9178292655811529
   },
   "test_after_validation_calibration": {
-    "accuracy": 0.9188902462547418,
-    "f1_macro": 0.9112177312184612,
-    "f1_weighted": 0.9186911947218449
+    "accuracy": 0.9178293576801904,
+    "f1_macro": 0.9103618760058476,
+    "f1_weighted": 0.9177862097754482
   },
   "calibration": {
-    "temperature": 1.443427048875924,
-    "validation_nll_before": 0.35724180936813354,
-    "validation_nll_after": 0.30183225870132446
+    "temperature": 1.4530924248480768,
+    "class_factors": {
+      "ban-doc": 1.1749999999999998,
+      "bao-ve-nguoi-tieu-dung": 1.97,
+      "bat-dong-san": 1.46,
+      "chinh-tri": 1.9549999999999998,
+      "cong-nghe": 1.145,
+      "dan-toc-ton-giao": 1.94,
+      "doi-song": 1.145,
+      "du-lich": 1.085,
+      "giao-duc": 1.775,
+      "kinh-doanh": 1.6099999999999999,
+      "oto-xe-may": 1.625,
+      "phap-luat": 0.5,
+      "suc-khoe": 0.815,
+      "the-gioi": 1.805,
+      "the-thao": 1.9849999999999999,
+      "thi-truong-tieu-dung": 0.98,
+      "thoi-su": 1.025,
+      "tuan-viet-nam": 0.545,
+      "van-hoa-giai-tri": 1.16
+    },
+    "validation_nll_before": 0.36191174387931824,
+    "validation_nll_after": 0.3041928708553314,
+    "fitted_on": "validation"
   },
   "split_sizes": {
     "train": 145162,
     "validation": 31107,
     "test": 31106
   },
-  "train_seconds": 1443.584265947342,
-  "epochs_completed": 7.0,
-  "best_model_checkpoint": "/content/CO5177-PFDAV/artifacts/notebook-runs/text-full/20261107T115508Z/checkpoints/checkpoint-13614",
-  "best_validation_macro_f1": 0.9091291874132431
+  "train_seconds": 1506.022475678008,
+  "epochs_completed": 7,
+  "selected_epoch": 6,
+  "best_validation_macro_f1": 0.9089433887746428,
+  "epoch_history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.7861430208382034,
+      "validation_loss": 0.3801098167896271,
+      "validation_accuracy": 0.8917285498440866,
+      "validation_macro_f1": 0.8809528086125313,
+      "validation_weighted_f1": 0.8911238104938318,
+      "epoch_seconds": 214.5272802237887
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.3038579265108541,
+      "validation_loss": 0.32423701882362366,
+      "validation_accuracy": 0.9057125405857203,
+      "validation_macro_f1": 0.8962736258585018,
+      "validation_weighted_f1": 0.9055397210469118,
+      "epoch_seconds": 214.98048490704969
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.21026685103385695,
+      "validation_loss": 0.3120306134223938,
+      "validation_accuracy": 0.907962837946443,
+      "validation_macro_f1": 0.8982461836290425,
+      "validation_weighted_f1": 0.9081997823696356,
+      "epoch_seconds": 214.99344936013222
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.14938078143715805,
+      "validation_loss": 0.3458346128463745,
+      "validation_accuracy": 0.9142636705564664,
+      "validation_macro_f1": 0.9063166795692649,
+      "validation_weighted_f1": 0.9140260184677125,
+      "epoch_seconds": 215.00784710608423
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.10488334109226448,
+      "validation_loss": 0.3572295010089874,
+      "validation_accuracy": 0.9137493168740155,
+      "validation_macro_f1": 0.9056793360712718,
+      "validation_weighted_f1": 0.9136604284381563,
+      "epoch_seconds": 215.0060821690131
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.07332325174712574,
+      "validation_loss": 0.4005129039287567,
+      "validation_accuracy": 0.9161603497605041,
+      "validation_macro_f1": 0.9089433887746428,
+      "validation_weighted_f1": 0.9161311303650908,
+      "epoch_seconds": 214.98260577884503
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.05308618754898652,
+      "validation_loss": 0.416498601436615,
+      "validation_accuracy": 0.9160317613398914,
+      "validation_macro_f1": 0.9083629896685155,
+      "validation_weighted_f1": 0.916033466460706,
+      "epoch_seconds": 214.9264210399706
+    }
+  ],
+  "headline_baselines": [
+    {
+      "name": "Majority",
+      "kind": "majority",
+      "selected_C": null,
+      "validation_macro_f1": 0.005960038690770719,
+      "test": {
+        "accuracy": 0.06002057480871858,
+        "f1_macro": 0.0059602194458943285,
+        "f1_weighted": 0.006796980145444914
+      }
+    },
+    {
+      "name": "Word TF-IDF + SVM",
+      "kind": "word",
+      "selected_C": 0.5,
+      "validation_macro_f1": 0.7895992396425451,
+      "test": {
+        "accuracy": 0.8018388735292227,
+        "f1_macro": 0.7835502975388924,
+        "f1_weighted": 0.799696235020128
+      }
+    },
+    {
+      "name": "Character TF-IDF + SVM",
+      "kind": "character",
+      "selected_C": 0.5,
+      "validation_macro_f1": 0.7879745127024906,
+      "test": {
+        "accuracy": 0.8026747251334148,
+        "f1_macro": 0.7858145153062065,
+        "f1_weighted": 0.800534894272545
+      }
+    },
+    {
+      "name": "Frozen PhoBERT + logistic regression",
+      "kind": "phobert",
+      "selected_C": 1.0,
+      "validation_macro_f1": 0.7939805159793141,
+      "test": {
+        "accuracy": 0.809040056580724,
+        "f1_macro": 0.7931177979274441,
+        "f1_weighted": 0.8077150715910091
+      }
+    }
+  ],
+  "headline_embedding_seconds": 24.085854600183666
 }

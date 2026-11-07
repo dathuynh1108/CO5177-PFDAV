@@ -21,14 +21,14 @@
   {tháng 11 năm 2026}
 
 \CourseAbstract{
-Thực nghiệm fine-tuning PhoBERT Base v2 để phân loại bài báo tiếng Việt vào 19 chuyên mục. Toàn bộ 207.375 bài hợp lệ sau làm sạch được sử dụng; các bài có đầu vào mô hình giống nhau được giữ cùng tập khi chia train, validation và test. Mô hình học từ tiêu đề kết hợp phần đầu và cuối nội dung, với cross-entropy có trọng số lớp. Trên tập test gồm 31.106 bài báo, accuracy và macro-F1 trước hiệu chỉnh đạt 91,83\% và 0,9107; sau hiệu chỉnh bằng validation đạt 91,89\% và 0,9112. Mức tăng nhỏ, trong khi khác biệt giữa các chuyên mục vẫn rõ: Thể thao có F1 0,9903, còn Dân tộc -- Tôn giáo có F1 0,7977.
+Thực nghiệm fine-tuning PhoBERT Base v2 để phân loại bài báo tiếng Việt vào 19 chuyên mục. Toàn bộ 207.375 bài hợp lệ sau làm sạch được sử dụng; các bài có đầu vào mô hình giống nhau được giữ cùng tập khi chia train, validation và test. Mô hình học từ tiêu đề kết hợp phần đầu và cuối nội dung, với cross-entropy có trọng số lớp. Trên tập test gồm 31.106 bài báo, accuracy và macro-F1 trước hiệu chỉnh đạt 91,79\% và 0,9103; sau hiệu chỉnh bằng validation đạt 91,78\% và 0,9104. Macro-F1 tăng rất nhẹ nhưng accuracy giảm, trong khi khác biệt giữa các chuyên mục vẫn rõ: Thể thao có F1 0,9897, còn Dân tộc -- Tôn giáo có F1 0,8046.
 }
 
 \CourseOverview{
 Dữ liệu & 212.705 bài nguồn; giữ toàn bộ 207.375 bài hợp lệ thuộc 19 chuyên mục.\\
 Chia tập & Train: 145.162 bài; validation: 31.107 bài; test: 31.106 bài.\\
 Phương pháp & PhoBERT Base v2 fine-tuning end-to-end với đầu phân loại 19 lớp; Head--Tail 256 token.\\
-Kết quả & Accuracy 91,89\%, macro-F1 0,9112 sau hiệu chỉnh từ validation.\\
+Kết quả & Accuracy 91,78\%, macro-F1 0,9104 sau hiệu chỉnh từ validation.\\
 Nguồn & VietnamNet News trên kho Hugging Face của học viên Huỳnh Thành Đạt.\\
 }
 

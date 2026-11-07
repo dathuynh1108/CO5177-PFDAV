@@ -1,11 +1,11 @@
 \chapter{Bài toán và dữ liệu}
 \section{Mục tiêu}
-Bài toán đặt ra là dự đoán một trong 19 chuyên mục của VietnamNet từ văn bản bài báo. Thực nghiệm đối chiếu các baseline chỉ dùng tiêu đề với PhoBERT sử dụng thêm nội dung, đồng thời phân tích chất lượng theo chuyên mục, diễn biến huấn luyện và tác động của hiệu chỉnh xác suất. PhoBERT Base v2 được fine-tuning trên toàn bộ tập bài hợp lệ. Checkpoint và tham số hiệu chỉnh được chọn trên tập validation; kết quả cuối cùng được đánh giá trên tập test.
+Mục tiêu là xác định chuyên mục của một bài báo VietnamNet. Thực nghiệm so sánh hai cách khai thác văn bản: các baseline chỉ đọc tiêu đề, còn PhoBERT được fine-tuning với cả tiêu đề và nội dung. Ngoài kết quả chung, báo cáo xem xét các chuyên mục khó phân loại và tác động của hiệu chỉnh xác suất. Mô hình được chọn trên validation rồi đánh giá trên test.
 
 \section{Nguồn và làm sạch dữ liệu}
 Bộ dữ liệu VietnamNet News được thu thập bằng crawling từ các trang bài báo công khai của VietnamNet và công bố trên \href{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}{kho Hugging Face của học viên Huỳnh Thành Đạt} \cite{vietnamnet}. Dữ liệu gồm 212.705 bài báo thuộc 19 chuyên mục, lưu trong 19 tệp Parquet theo chuyên mục. Mỗi bản ghi có bốn trường: \code{title} (tiêu đề), \code{content} (nội dung), \code{url} (đường dẫn bài báo) và \code{class} (nhãn chuyên mục).
 
-Tiêu đề và nội dung được chuẩn hóa Unicode NFC và khoảng trắng. URL được chuẩn hóa, bỏ query và fragment. Các bản ghi có cùng URL, cùng tiêu đề không phân biệt hoa thường hoặc cùng nội dung không rỗng được gộp thành nhóm; quan hệ trùng được xét bắc cầu qua các bản ghi. Nhóm chứa nhiều nhãn chuyên mục bị loại toàn bộ vì chưa có cơ sở xác định nhãn đúng; mỗi nhóm còn lại giữ một bản ghi. Bảng~\ref{tab:text-cleaning} tóm tắt số bài ở từng bước.
+Tiêu đề và nội dung được chuẩn hóa Unicode NFC và khoảng trắng. URL được chuẩn hóa, bỏ query và fragment. Các bản ghi có cùng URL, cùng tiêu đề không phân biệt hoa thường hoặc cùng nội dung không rỗng được gộp thành nhóm; Nếu bài A trùng với bài B và bài B trùng với bài C, cả ba được xếp chung nhóm. Nhóm chứa nhiều nhãn chuyên mục bị loại toàn bộ vì chưa có cơ sở xác định nhãn đúng; mỗi nhóm còn lại giữ một bản ghi. Bảng~\ref{tab:text-cleaning} tóm tắt số bài ở từng bước.
 
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{Xr}\toprule
@@ -23,7 +23,7 @@ Bài hợp lệ được sử dụng & 207.375\\\bottomrule
 Không giới hạn số bài theo chuyên mục. Bảy bài thiếu nội dung vẫn có tiêu đề hợp lệ và được giữ lại. Phân bố sau làm sạch còn mất cân bằng: Sức khỏe có 12.444 bài, còn Dân tộc -- Tôn giáo có 2.917 bài, chênh khoảng 4,27 lần. Accuracy cho biết tỷ lệ bài được phân loại đúng, nhưng có thể che khuất kết quả ở các lớp ít bài. Vì vậy, macro-F1, tức trung bình F1 của 19 lớp với trọng số bằng nhau, được dùng để chọn checkpoint; loss cũng được điều chỉnh theo tần suất lớp trong tập train.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=\textwidth]{notebook-evidence/figures/eda.png}
+\includegraphics[width=\textwidth]{figures/eda.png}
 \caption{Phân bố chuyên mục trước và sau làm sạch, cùng độ dài nội dung trước rút gọn. Toàn bộ bài hợp lệ được sử dụng; sự chênh lệch số mẫu giữa các chuyên mục vẫn được giữ lại.}
 \label{fig:text-eda}
 \end{figure}
@@ -31,20 +31,16 @@ Không giới hạn số bài theo chuyên mục. Bảy bài thiếu nội dung 
 \section{Chia tập theo nhóm đầu vào}
 Chuẩn hóa văn bản và giới hạn token có thể khiến các bài khác nhau ở dữ liệu nguồn trở thành cùng một đầu vào mô hình. Vì vậy, các bài có cùng chuỗi token cuối cùng của tiêu đề tối đa 128 token hoặc cùng đầu vào Head--Tail của bài báo 256 token được gộp vào cùng nhóm. Quy tắc gộp nhóm áp dụng cho cả đầu vào của baseline và PhoBERT fine-tuning.
 
-Có 207.108 nhóm đầu vào; 50 nhóm chứa nhiều bài, nhóm lớn nhất có 39 bài. StratifiedGroupKFold với 20 fold và seed 2026 phân bổ 14 fold cho train, ba fold cho validation và ba fold cho test, tương ứng tỷ lệ khoảng 70/15/15. Tập train gồm 145.162 bài báo; tập validation và tập test lần lượt gồm 31.107 và 31.106 bài. Các bài thuộc một nhóm được giữ trong một tập để tránh trùng đầu vào giữa các tập. Cách chia này được sử dụng cho mọi mô hình.
+Sau khi gộp, dữ liệu có 207.108 nhóm đầu vào, trong đó 50 nhóm chứa nhiều bài; nhóm lớn nhất có 39 bài. Mọi bài trong cùng nhóm được đưa vào một tập để tránh xuất hiện cùng đầu vào ở cả train và test.
+
+StratifiedGroupKFold chia dữ liệu thành 20 phần với seed 2026, đồng thời giữ phân bố chuyên mục gần nhau giữa các phần. Trong đó, 14 phần dành cho train, ba phần cho validation và ba phần cho test. Ba tập lần lượt có 145.162, 31.107 và 31.106 bài, tương ứng khoảng 70/15/15. Tất cả mô hình dùng chung cách chia này.
 
 \chapter{Phương pháp và thiết lập}
-\section{Biểu diễn Head--Tail}
-Tiêu đề cung cấp thông tin ngắn gọn về bài viết, còn nội dung bổ sung ngữ cảnh khi tiêu đề chưa đủ để xác định chuyên mục. Để giới hạn độ dài xử lý, mỗi đầu vào kết hợp tiêu đề với tối đa 220 từ đầu và 80 từ cuối nội dung. Văn bản được chuyển sang chữ thường, loại dấu câu và chữ số, chuẩn hóa khoảng trắng rồi tách từ bằng PyVi \cite{pyvi}. PhoBERT yêu cầu văn bản đã tách từ trước bước mã hóa subword \cite{phobert-v2}.
-
-Với chuỗi vượt giới hạn đầu vào, Head--Tail giữ 127 subword token đầu và 127 token cuối, kèm hai token đặc biệt:
-\[
-x=[\mathrm{CLS}]\Vert t_{1:127}\Vert t_{L-126:L}\Vert[\mathrm{SEP}].
-\]
-Chuỗi ngắn hơn được bổ sung padding; attention mask phân biệt token văn bản với padding. Việc giữ đầu và cuối giúp đưa cả hai vị trí vào đầu vào 256 token, nhưng phần giữa bài viết vẫn bị bỏ. Loại chữ số cũng có thể làm mất năm, giá tiền hoặc tỷ số; thực nghiệm chưa tách riêng ảnh hưởng của bước này.
-
 \section{PhoBERT và hàm mất mát}
-PhoBERT là mô hình ngôn ngữ pretrained cho tiếng Việt \cite{phobert}. Thực nghiệm dùng Base v2 qua \code{AutoModelForSequenceClassification}, với đầu phân loại 19 lớp theo kiến trúc RoBERTa \cite{phobert-v2}. Encoder tạo biểu diễn ngữ cảnh cho chuỗi đầu vào; đầu phân loại chuyển biểu diễn này thành 19 logits tương ứng với các chuyên mục. Đầu phân loại được khởi tạo cho bài toán này và học đồng thời với encoder theo cách end-to-end. Đây là mô hình fine-tuning trực tiếp cho bài toán phân loại, khác với baseline giữ nguyên encoder rồi huấn luyện logistic regression trên các vector đặc trưng. Trọng số lớp chỉ được tính từ tập train:
+PhoBERT đã được pretrained trên văn bản tiếng Việt \cite{phobert}. Thực nghiệm dùng PhoBERT Base v2 và bổ sung đầu phân loại 19 lớp theo kiến trúc RoBERTa \cite{phobert-v2}. Encoder biến văn bản thành các vector chứa thông tin ngữ cảnh; đầu phân loại tính một điểm số (logit) cho mỗi chuyên mục. Khi fine-tuning, cả encoder và đầu phân loại đều được cập nhật theo nhãn bài báo.
+
+Để tăng vai trò của các chuyên mục ít bài, cross-entropy sử dụng trọng số lớp tính từ tập train:
+
 \[
 w_c=\frac{N_{\mathrm{train}}}{K n_c},\qquad K=19,
 \]
@@ -52,7 +48,44 @@ trong đó $n_c$ là số bài thuộc lớp $c$ trong tập train. Cross-entrop
 \[
 \mathcal{L}_B=-\frac{\sum_{i\in B}w_{y_i}\log p_\theta(y_i\mid x_i)}{\sum_{i\in B}w_{y_i}}.
 \]
-Lớp ít bài có trọng số lớn hơn, làm lỗi ở lớp đó đóng góp nhiều hơn vào loss.
+Theo công thức này, một lỗi ở lớp ít bài đóng góp vào loss nhiều hơn một lỗi ở lớp đông bài. Gradient được tích lũy từ hai batch, mỗi batch 32 bài báo, trước khi cập nhật trọng số. Nhờ vậy, mỗi bước cập nhật sử dụng thông tin từ 64 bài mà chỉ cần xử lý 32 bài trên GPU cùng lúc.
+
+\section{Biểu diễn Head--Tail}
+Tiêu đề cung cấp thông tin ngắn gọn về bài viết, còn nội dung bổ sung ngữ cảnh khi tiêu đề chưa đủ để xác định chuyên mục. Để giới hạn độ dài xử lý, mỗi đầu vào kết hợp tiêu đề với nội dung bài. Khi nội dung vượt 300 từ, chỉ giữ 220 từ đầu và 80 từ cuối; nội dung ngắn hơn được giữ nguyên. Văn bản được chuyển sang chữ thường, loại dấu câu và chữ số, chuẩn hóa khoảng trắng rồi tách từ bằng PyVi \cite{pyvi}. PhoBERT yêu cầu văn bản đã tách từ trước bước mã hóa subword \cite{phobert-v2}.
+
+Với chuỗi vượt giới hạn đầu vào, Head--Tail giữ 127 subword token đầu và 127 token cuối, kèm hai token đặc biệt:
+\[
+x=\texttt{<s>}\Vert t_{1:127}\Vert t_{L-126:L}\Vert\texttt{</s>}.
+\]
+Chuỗi ngắn hơn được bổ sung padding. Attention mask đánh dấu vị trí văn bản thật để mô hình bỏ qua padding. Head--Tail đưa thông tin ở cả đầu và cuối bài vào giới hạn 256 token; đổi lại, phần giữa không được sử dụng. Việc loại chữ số cũng bỏ đi những thông tin như năm, giá tiền hoặc tỷ số.
+
+\section{Huấn luyện và lựa chọn checkpoint}
+Mô hình được huấn luyện trong bảy epoch trên toàn bộ tập train. AdamW cập nhật đồng thời encoder và đầu phân loại; learning rate nhỏ giúp điều chỉnh biểu diễn pretrained mà không thay đổi quá mạnh ngay từ đầu. Bảng dưới trình bày các tham số chính.
+\begin{table}[htbp]\centering
+\begin{tabularx}{\textwidth}{Xl}\toprule
+Tham số & Giá trị\\\midrule
+Mô hình / số lớp & PhoBERT Base v2 / 19\\
+Độ dài đầu vào & 256 token\\
+Optimizer & AdamW\\
+Learning rate ban đầu & $2\times10^{-5}$\\
+Weight decay & 0,01\\
+Warmup & 200 bước\\
+Batch size & 32 bài báo\\
+Gradient accumulation & 2 batch trước mỗi bước cập nhật\\
+Batch hiệu dụng & 64 bài báo mỗi bước cập nhật\\
+Số epoch & 7\\
+Tiêu chí chọn checkpoint & Macro-F1 validation lớn nhất\\
+Seed dữ liệu / mô hình & 2026 / 42\\
+GPU và kiểu tính toán & RTX 5090, BF16\\\bottomrule
+\end{tabularx}
+\caption{Thiết lập fine-tuning PhoBERT Base v2 trên VietnamNet trong bảy epoch, với model seed 42.}
+\end{table}
+
+Warmup tăng dần learning rate trong 200 bước đầu, giúp đầu phân loại mới bắt đầu học với các cập nhật nhỏ. Sau đó learning rate giảm tuyến tính về 0. Gradient norm được giới hạn ở 1 để hạn chế bước cập nhật quá lớn; bias và tham số LayerNorm không chịu weight decay.
+
+Sau mỗi epoch, mô hình được đánh giá trên validation. Checkpoint có macro-F1 cao nhất được giữ để đánh giá test; khi hòa, giữ checkpoint xuất hiện sớm hơn. Quá trình huấn luyện vẫn thực hiện đủ bảy epoch.
+
+Mô hình hoàn tất bảy epoch với 15.883 bước cập nhật trong 1.506,0 giây, tương đương 25,10 phút. Thời lượng gồm huấn luyện và đánh giá validation sau mỗi epoch, không gồm tải và chuẩn bị dữ liệu. Checkpoint epoch 6 được chọn với macro-F1 validation 0,908943.
 
 \section{Các baseline}
 Bốn baseline dùng cùng các bài trong tập train, validation và test với mô hình chính. Đầu vào văn bản của các baseline chỉ gồm tiêu đề:
@@ -65,125 +98,116 @@ Bốn baseline dùng cùng các bài trong tập train, validation và test vớ
 
 Majority baseline cho biết kết quả khi chỉ dựa vào tần suất nhãn. Hai SVM đánh giá mức độ phân biệt chuyên mục của từ và cụm ký tự trong tiêu đề; Frozen PhoBERT đánh giá biểu diễn pretrained khi encoder chưa được cập nhật theo nhãn chuyên mục. Từ vựng và IDF chỉ được học trên tập train, với tối đa 80.000 đặc trưng cho mỗi biểu diễn TF-IDF. Hệ số $C$ của SVM và logistic regression được chọn trong $\{0{,}5;1;2\}$ theo macro-F1 trên tập validation.
 
-\section{Cấu hình và lựa chọn checkpoint}
-\begin{table}[htbp]\centering
-\begin{tabularx}{\textwidth}{Xl}\toprule
-Tham số & Giá trị\\\midrule
-Mô hình / số lớp & PhoBERT Base v2 / 19\\
-Độ dài đầu vào & 256 token\\
-Optimizer & Fused AdamW\\
-Learning rate / weight decay & $2\times10^{-5}$ / 0,01\\
-Warmup & 200 bước\\
-Batch trên GPU / tích lũy gradient & 32 / 2\\
-Batch hiệu dụng & 64\\
-Số epoch tối đa / patience & 7 / 3\\
-Tiêu chí chọn checkpoint & Macro-F1 validation lớn nhất\\
-Seed dữ liệu / mô hình & 2026 / 42\\
-Thiết bị / độ chính xác số & RTX 5090 / BF16\\\bottomrule
-\end{tabularx}
-\caption{Thiết lập của lần huấn luyện trên toàn bộ tập bài hợp lệ.}
-\end{table}
-
-Mô hình hoàn tất bảy epoch với 15.883 bước cập nhật trong 1.443,6 giây, tương đương 24,06 phút. Thời lượng này là phần fine-tuning, không bao gồm toàn bộ thời gian tải và chuẩn bị dữ liệu. Checkpoint epoch 6 được chọn với macro-F1 validation 0,909129; epoch 7 vẫn được huấn luyện và đánh giá đầy đủ.
-
 \section{Hiệu chỉnh trên validation}
 Với logits $z_{i,c}$, temperature scaling tạo xác suất
 \[
 p_{i,c}(T)=\frac{\exp(z_{i,c}/T)}{\sum_{k=1}^{K}\exp(z_{i,k}/T)},\qquad T>0.
 \]
-Tham số $T$ được chọn để giảm negative log-likelihood trên validation. Sau đó, hệ số tương đối $t_c>0$ cho từng lớp được chọn bằng F1 trên validation, với quy tắc
+Negative log-likelihood (NLL) đo mức phạt khi mô hình gán xác suất thấp cho nhãn đúng. Temperature $T$ điều chỉnh độ tập trung của xác suất: $T$ lớn hơn làm xác suất bớt chênh lệch giữa các lớp. Tham số này được chọn trong $[0{,}5;5]$ để giảm negative log-likelihood trên validation. Tiếp theo, mỗi lớp nhận một hệ số $t_c$ để điều chỉnh điểm số tương đối. Hệ số được thử lần lượt cho từng lớp qua hai lượt, với 101 giá trị cách đều trong $[0{,}5;2]$; chỉ giữ thay đổi làm tăng F1 của lớp đó trên validation. Nhãn cuối cùng được chọn theo
 \[
 \widehat y_i=\arg\max_c\frac{p_{i,c}(T)}{t_c}.
 \]
-Các $t_c$ co giãn điểm tương đối giữa các lớp, không phải các ngưỡng xác suất nhị phân độc lập. Temperature riêng lẻ giữ nguyên thứ tự logits; các hệ số theo lớp có thể thay đổi nhãn dự đoán. Checkpoint, $T$ và $t_c$ được cố định trước khi đánh giá hai quy tắc trên test.
+Chia cho $t_c$ nhỏ hơn sẽ tăng điểm tương đối của lớp $c$, nên có thể đổi nhãn dự đoán. Ngược lại, temperature riêng lẻ chỉ đổi độ tự tin và giữ nguyên lớp có điểm cao nhất. Checkpoint, temperature và các hệ số lớp đều được chọn bằng validation trước khi đánh giá trên test.
 
 \chapter{Kết quả và phân tích}
-\section{Diễn biến huấn luyện}
+\section{Train loss và kết quả validation theo epoch}
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{rXXX}\toprule
 Epoch & Cross-entropy validation có trọng số & Accuracy validation & Macro-F1 validation\\\midrule
-1 & 0,3871 & 88,72\% & 0,8752 \\
-2 & 0,3259 & 90,02\% & 0,8913 \\
-3 & 0,3310 & 91,01\% & 0,9014 \\
-4 & 0,3282 & 91,31\% & 0,9047 \\
-5 & 0,4005 & 91,01\% & 0,9024 \\
-6 & 0,3930 & 91,64\% & 0,9091 \\
-7 & 0,4168 & 91,65\% & 0,9091 \\
+1 & 0,3801 & 89,17\% & 0,8810 \\
+2 & 0,3242 & 90,57\% & 0,8963 \\
+3 & 0,3120 & 90,80\% & 0,8982 \\
+4 & 0,3458 & 91,43\% & 0,9063 \\
+5 & 0,3572 & 91,37\% & 0,9057 \\
+6 & 0,4005 & 91,62\% & 0,9089 \\
+7 & 0,4165 & 91,60\% & 0,9084 \\
 \bottomrule\end{tabularx}
-\caption{Đánh giá sau mỗi epoch. Cross-entropy có trọng số lớp khác với NLL không trọng số dùng để chọn temperature.}
+\caption{Cross-entropy có trọng số lớp, accuracy và macro-F1 validation của PhoBERT Base v2 sau mỗi epoch ở seed 42.}
 \label{tab:text-epochs}
 \end{table}
 
-Macro-F1 validation tăng từ 0,8752 ở epoch 1 lên 0,909129 ở epoch 6, rồi giảm nhẹ còn 0,909089 ở epoch 7. Hai giá trị cuối cùng cùng làm tròn thành 0,9091 trong bảng, nhưng epoch 6 có giá trị chính xác cao hơn và được chọn. Cross-entropy validation đạt thấp nhất 0,3259 ở epoch 2 rồi tăng lên 0,4168 ở epoch 7. Loss và F1 phản ánh hai khía cạnh khác nhau: loss phụ thuộc vào xác suất dự đoán và trọng số lớp, còn F1 được tính từ nhãn phân loại. Mô hình do đó vẫn có thể tăng F1 trong khi loss xấu đi. Theo tiêu chí đã đặt ra, epoch 6 được giữ lại; diễn biến này cũng cho thấy không thể dùng F1 để kết luận rằng xác suất dự đoán đã được hiệu chỉnh tốt.
+Macro-F1 validation đạt cao nhất ở epoch 6 rồi giảm nhẹ ở epoch 7. Trong khi đó, cross-entropy validation thấp nhất ở epoch 3 và tăng về cuối, dù train loss tiếp tục giảm. Mô hình học khớp tập train tốt hơn nhưng không cải thiện tương ứng trên validation.
+
+Hai chỉ số đo các mặt khác nhau: cross-entropy xét xác suất gán cho nhãn đúng, còn F1 xét nhãn được chọn. Vì tiêu chí lựa chọn là macro-F1, checkpoint epoch 6 được dùng cho các bước tiếp theo.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=.98\textwidth]{notebook-evidence/figures/training_curves.png}
-\caption{Train loss theo bước cập nhật và macro-F1 validation theo epoch. Macro-F1 cao nhất ở epoch 6; các giá trị train loss là các mốc ghi nhận trong quá trình tối ưu.}
+\includegraphics[width=.98\textwidth]{figures/training_curves.png}
+\caption{Train loss trung bình và macro-F1 validation của PhoBERT Base v2 qua bảy epoch ở seed 42.}
 \end{figure}
 
 \section{Kết quả trên tập test}
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{Xrrr}\toprule
 Quy tắc dự đoán & Accuracy & Macro-F1 & Weighted-F1\\\midrule
-Argmax logits & 91,8312\% & 0,910653 & 0,918283\\
-Temperature và hệ số lớp & 91,8890\% & 0,911218 & 0,918691\\\bottomrule
+Argmax logits & 91,7862\% & 0,910280 & 0,917829\\
+Temperature và hệ số lớp & 91,7829\% & 0,910362 & 0,917786\\\bottomrule
 \end{tabularx}
-\caption[Kết quả trước và sau hiệu chỉnh bằng validation]{Sau hiệu chỉnh, accuracy trên tập test tăng từ 91,8312\% lên 91,8890\% và macro-F1 từ 0,910653 lên 0,911218, tương ứng tăng ròng 18 bài đúng. Mức cải thiện nhỏ: 123 bài được sửa đúng, trong khi 105 bài từ đúng chuyển thành sai.}
+\caption[Kết quả trước và sau hiệu chỉnh bằng validation]{Accuracy, macro-F1 và weighted-F1 test của PhoBERT Base v2 trước và sau hiệu chỉnh bằng validation, ở seed 42.}
 \label{tab:text-results}
 \end{table}
 
-Temperature được chọn là $T=1,4434$, làm phân bố xác suất mềm hơn. NLL validation giảm từ 0,3572 xuống 0,3018. Khi kết hợp các hệ số lớp, accuracy test tăng 0,0579 điểm phần trăm và macro-F1 tăng 0,000565. Số bài dự đoán đúng tăng từ 28.565 lên 28.583: 123 bài được sửa đúng, trong khi 105 bài từ đúng chuyển thành sai. Temperature giúp giảm NLL trên validation, còn thay đổi nhãn dự đoán đến từ các hệ số lớp. Hai kết quả này cần được đọc riêng: xác suất phù hợp hơn trên validation không đồng nghĩa với mức tăng lớn về phân loại trên test. Lợi ích về accuracy và macro-F1 trong lần chia này chỉ ở mức nhỏ.
+Với $T=1,4531$, NLL validation giảm từ 0,3619 xuống 0,3042: xác suất dự đoán bớt tập trung quá mức và phù hợp hơn với nhãn validation. Khi thêm hệ số lớp, macro-F1 test tăng rất nhẹ, còn accuracy và weighted-F1 giảm nhẹ.
+
+Cụ thể, hiệu chỉnh sửa đúng 130 bài nhưng làm sai thêm 131 bài, khiến số bài đúng giảm từ 28.551 xuống 28.550. Như vậy, hiệu chỉnh cải thiện NLL trên validation nhưng chưa mang lại lợi ích phân loại rõ rệt trên test. Các thay đổi nhãn đến từ hệ số lớp, vì temperature riêng lẻ giữ nguyên nhãn argmax.
 
 \section{Chất lượng theo chuyên mục}
 \begin{table}[htbp]\centering\small
 \begin{tabularx}{\textwidth}{Xrrrr}\toprule
 Chuyên mục & Số bài báo & Precision & Recall & F1\\\midrule
-Dân tộc -- Tôn giáo & 437 & 0,7923 & 0,8032 & 0,7977 \\
-Kinh doanh & 1.806 & 0,8485 & 0,8184 & 0,8331 \\
-Thị trường tiêu dùng & 1.347 & 0,8402 & 0,8352 & 0,8377 \\
-Đời sống & 1.826 & 0,8667 & 0,8335 & 0,8498 \\
-Thời sự & 1.761 & 0,8681 & 0,8370 & 0,8523 \\
-Ô tô -- Xe máy & 1.861 & 0,9780 & 0,9796 & 0,9788 \\
-Thế giới & 1.863 & 0,9714 & 0,9678 & 0,9696 \\
-Thể thao & 1.846 & 0,9892 & 0,9913 & 0,9903 \\
+Dân tộc -- Tôn giáo & 437 & 0,8131 & 0,7963 & 0,8046 \\
+Kinh doanh & 1.806 & 0,8432 & 0,8189 & 0,8309 \\
+Thị trường tiêu dùng & 1.347 & 0,8406 & 0,8263 & 0,8334 \\
+Đời sống & 1.826 & 0,8368 & 0,8450 & 0,8409 \\
+Thời sự & 1.761 & 0,8587 & 0,8626 & 0,8606 \\
+Ô tô -- Xe máy & 1.861 & 0,9759 & 0,9812 & 0,9786 \\
+Thế giới & 1.863 & 0,9725 & 0,9678 & 0,9701 \\
+Thể thao & 1.846 & 0,9876 & 0,9919 & 0,9897 \\
 \bottomrule\end{tabularx}
-\caption{Một số chuyên mục có F1 thấp và cao sau hiệu chỉnh. Số mẫu theo lớp không bằng nhau; macro-F1 cho mỗi chuyên mục mức đóng góp ngang nhau.}
+\caption{Precision, recall và F1 test của PhoBERT Base v2 sau hiệu chỉnh ở các chuyên mục có F1 thấp và cao, với seed 42.}
 \label{tab:text-classes}
 \end{table}
 
-Thể thao có F1 cao nhất (0,9903), tiếp theo là Ô tô -- Xe máy (0,9788) và Thế giới (0,9696). Dân tộc -- Tôn giáo có F1 thấp nhất (0,7977) trên 437 bài báo trong tập test; Kinh doanh và Thị trường tiêu dùng lần lượt đạt 0,8331 và 0,8377. Weighted-F1 (0,9187) cao hơn macro-F1 (0,9112), phù hợp với việc các lớp ít bài có kết quả thấp hơn trong bảng. Tuy nhiên, số mẫu không đủ để giải thích toàn bộ chênh lệch: Kinh doanh có 1.806 bài test, gần với 1.846 bài của Thể thao, nhưng F1 thấp hơn rõ rệt. Chất lượng cần được xem theo từng chuyên mục thay vì chỉ quy về mất cân bằng lớp.
+Thể thao được phân loại tốt nhất, còn Dân tộc -- Tôn giáo có F1 thấp nhất. Tuy nhiên, lớp ít bài không phải nguyên nhân duy nhất của kết quả thấp: Kinh doanh có số bài test gần bằng Thể thao nhưng F1 thấp hơn rõ rệt. Điều này gợi ý cần xem thêm ranh giới nội dung giữa các chuyên mục. Weighted-F1 cao hơn macro-F1 cũng cho thấy kết quả tổng hợp thay đổi khi các lớp đông bài được tính trọng số lớn hơn.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=\textwidth]{notebook-evidence/figures/test_confusion_and_class_f1.png}
-\caption{Confusion matrix chuẩn hóa theo hàng và F1 theo chuyên mục sau hiệu chỉnh. Hàng biểu diễn nhãn thật, cột biểu diễn nhãn dự đoán.}
+\includegraphics[width=\textwidth]{figures/test_confusion_and_class_f1.png}
+\caption{Confusion matrix test chuẩn hóa theo hàng và F1 theo chuyên mục của PhoBERT Base v2 sau hiệu chỉnh ở seed 42. Hàng biểu diễn nhãn thật, cột biểu diễn nhãn dự đoán.}
 \label{fig:text-confusion}
 \end{figure}
 
-Cặp nhầm lẫn có số bài lớn nhất là Thời sự thành Pháp luật: 139/1.761 bài (7,89\%). Chiều ngược lại có 49/1.778 bài (2,76\%), cho thấy nhầm lẫn giữa hai lớp không đối xứng. Đời sống thành Du lịch có 79/1.826 bài (4,33\%). Thị trường tiêu dùng thành Kinh doanh có 70/1.347 bài (5,20\%), còn Kinh doanh thành Thị trường tiêu dùng có 54/1.806 bài (2,99\%). Các cặp này xác định những ranh giới chuyên mục mà mô hình phân biệt chưa tốt. Riêng confusion matrix chưa cho biết lỗi do chủ đề giao nhau, nhãn nguồn hay thông tin bị bỏ khi rút gọn; cần đọc từng bài sai để phân biệt các khả năng đó.
+Lỗi phổ biến nhất là dự đoán Thời sự thành Pháp luật, với 89 bài; chiều ngược lại có 78 bài. Đời sống và Du lịch, cũng như Kinh doanh và Thị trường tiêu dùng, là các cặp dễ nhầm khác. Những hướng nhầm lẫn này cho thấy mô hình còn khó phân biệt một số chuyên mục gần nhau. Để xác định nguyên nhân cụ thể, cần đọc lại bài sai cùng nhãn nguồn và phần văn bản được đưa vào mô hình.
 
 \section{So sánh các mô hình}
-Hệ số $C$ được chọn theo macro-F1 trên tập validation: $C=1$ cho logistic regression và $C=0{,}5$ cho cả hai SVM. Frozen PhoBERT + Logistic regression đạt kết quả cao nhất trong nhóm baseline, với accuracy 80,9265\% và macro-F1 0,793345 trên tập test. Character TF-IDF + Linear SVM đạt kết quả nhỉnh hơn Word TF-IDF + Linear SVM ở cả hai chỉ số trên test, nhưng chênh lệch macro-F1 chỉ là 0,002237. Trên validation, thứ tự hai SVM lại đảo ngược (0,7896 với Word TF-IDF và 0,7879 với Character TF-IDF), nên lần chia này chưa cho thấy ưu thế nhất quán của một biểu diễn TF-IDF.
+Frozen PhoBERT + Logistic regression đạt kết quả tốt nhất trong bốn baseline. Hai SVM có chất lượng gần nhau: Character TF-IDF nhỉnh hơn trên test, còn Word TF-IDF nhỉnh hơn trên validation. Vì thứ tự thay đổi giữa hai tập, chưa có ưu thế rõ rệt cho một trong hai cách biểu diễn.
+
+Validation chọn $C=1$ cho logistic regression và $C=0{,}5$ cho cả hai SVM. Kết quả đầy đủ được trình bày trong bảng và hình dưới đây.
 
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{Xrr}\toprule
 Mô hình & Accuracy test & Macro-F1 test\\\midrule
 Majority baseline & 6,0021\% & 0,005960\\
-Word TF-IDF + Linear SVM & 80,1807\% & 0,783519\\
-Character TF-IDF + Linear SVM & 80,2643\% & 0,785756\\
-Frozen PhoBERT + Logistic regression & 80,9265\% & 0,793345\\
-PhoBERT fine-tuning (argmax) & 91,8312\% & 0,910653\\
-PhoBERT fine-tuning + calibration & 91,8890\% & 0,911218\\\bottomrule
+Word TF-IDF + Linear SVM & 80,1839\% & 0,783550\\
+Character TF-IDF + Linear SVM & 80,2675\% & 0,785815\\
+Frozen PhoBERT + Logistic regression & 80,9040\% & 0,793118\\
+PhoBERT fine-tuning (argmax) & 91,7862\% & 0,910280\\
+PhoBERT fine-tuning + calibration & 91,7829\% & 0,910362\\\bottomrule
 \end{tabularx}
-\caption[Kết quả các mô hình]{PhoBERT fine-tuning đạt accuracy 91,8312\% và macro-F1 0,910653, cao hơn Frozen PhoBERT + Logistic regression (80,9265\% và 0,793345). Kết quả được đánh giá trên tập test gồm 31.106 bài báo.}
+\caption[Kết quả các mô hình]{Accuracy và macro-F1 của bốn baseline và PhoBERT Base v2 trên 31.106 bài báo test của VietnamNet, với model seed 42.}
 \label{tab:text-headline-comparison}
 \end{table}
 
-So với Frozen PhoBERT + Logistic regression, PhoBERT fine-tuning trước calibration cao hơn 10,9046 điểm phần trăm accuracy và 0,117307 macro-F1. Phép so sánh thay đổi đồng thời nội dung đầu vào, độ dài token, cách tổng hợp đặc trưng và việc cập nhật encoder. Chênh lệch vì vậy mô tả hiệu quả của hai quy trình trên cùng dữ liệu, chưa tách riêng tác động của việc thêm nội dung hoặc fine-tuning.
+\begin{figure}[htbp]\centering
+\includegraphics[width=\textwidth]{figures/model_comparison.png}
+\caption{Accuracy và macro-F1 của các quy trình trên 31.106 bài báo test ở seed 42. PhoBERT fine-tuning dùng tiêu đề và nội dung đạt accuracy 91,79\%, so với 80,90\% của Frozen PhoBERT dùng tiêu đề.}
+\label{fig:text-model-comparison}
+\end{figure}
+
+PhoBERT fine-tuning cao hơn baseline Frozen PhoBERT khoảng 10,88 điểm phần trăm accuracy. Kết quả ủng hộ việc khai thác thêm nội dung và điều chỉnh encoder theo chuyên mục. Tuy nhiên, hai phương pháp khác nhau ở cả đầu vào lẫn cách học, nên phép so sánh này chưa xác định riêng mức đóng góp của từng thay đổi.
 
 \chapter{Kết luận và giới hạn}
-Trên toàn bộ 207.375 bài hợp lệ và phép chia theo nhóm đầu vào, PhoBERT đạt accuracy 91,83\% và macro-F1 0,9107 trước hiệu chỉnh. Hiệu chỉnh chỉ dùng validation đưa hai chỉ số test lên 91,89\% và 0,9112. Mức tăng tương ứng 18 bài đúng trên 31.106 bài test; khác biệt giữa các chuyên mục lớn hơn nhiều so với thay đổi tổng hợp này.
+PhoBERT fine-tuning đạt accuracy 91,79\% trên test và vượt bốn baseline chỉ dùng tiêu đề. Hiệu chỉnh bằng validation làm macro-F1 tăng rất nhẹ nhưng giảm một bài dự đoán đúng, nên không tạo cải thiện phân loại rõ rệt. Chênh lệch giữa các chuyên mục vẫn là vấn đề đáng chú ý hơn mức thay đổi do hiệu chỉnh.
 
-Thực nghiệm đánh giá một phép chia và một seed, chưa lượng hóa biến thiên giữa các lần huấn luyện. Chia theo nhóm đầu vào giống nhau hạn chế một dạng rò rỉ cụ thể nhưng không thay thế đánh giá theo thời gian hoặc đo các bài gần trùng về ngữ nghĩa. Head--Tail chỉ giữ phần đầu và cuối, còn phép loại chữ số có thể bỏ thông tin; chưa khảo sát riêng hai lựa chọn này. Vì vậy, kết quả mô tả hiệu quả của toàn bộ quy trình đã đo trên nguồn VietnamNet.
+Thực nghiệm sử dụng một cách chia dữ liệu và một seed. Cần chạy thêm để đánh giá độ ổn định, đồng thời xem xét các bài gần trùng về nội dung và khả năng phân loại tin ở thời điểm khác. Hai lựa chọn tiền xử lý cần được đối chiếu riêng là Head--Tail, vốn bỏ phần giữa bài, và loại chữ số. Các hướng này chưa được thực nghiệm trong báo cáo.
 
 Phạm vi hỗ trợ AI được trình bày trong \href{https://github.com/dathuynh1108/CO5177-PFDAV/blob/main/AI_USE_REPORT.md}{AI\_USE\_REPORT.md}.
 
