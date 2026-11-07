@@ -53,7 +53,7 @@ Bộ dữ liệu VietnamNet được công bố tại kho dữ liệu Hugging Fa
 
 Các bài có cùng đầu vào token ở tiêu đề hoặc nội dung Head--Tail được gộp nhóm trước khi chia tập. Phép chia theo nhóm tạo 145.162 bài train, 31.107 bài validation và 31.106 bài test. Đối chứng tiêu đề và mô hình toàn văn dùng chung danh sách bài và ba tập này. URL và tên chuyên mục không được đưa vào đầu vào mô hình.
 
-Đối chứng tiêu đề gồm dự đoán lớp đa số, SVM với TF-IDF theo từ hoặc ký tự và hồi quy logistic trên đặc trưng PhoBERT đóng băng. Mô hình toàn văn kết hợp tiêu đề với phần đầu và phần cuối bài, tách từ bằng PyVi và dùng Head--Tail trong giới hạn 256 token. PhoBERT được tinh chỉnh đủ bảy epoch; checkpoint epoch 7 được chọn theo macro-F1 validation. Nhiệt độ và ngưỡng từng lớp được ước lượng trên validation trước khi đánh giá test.
+Đối chứng tiêu đề gồm dự đoán lớp đa số, SVM với TF-IDF theo từ hoặc ký tự và hồi quy logistic trên đặc trưng PhoBERT đóng băng. Mô hình toàn văn kết hợp tiêu đề với phần đầu và phần cuối bài, tách từ bằng PyVi và dùng Head--Tail trong giới hạn 256 token. Mô hình này dùng đầu phân loại 19 lớp của \texttt{AutoModelForSequenceClassification}, tinh chỉnh cả encoder và đầu phân loại đủ bảy epoch; checkpoint epoch 7 được chọn theo macro-F1 validation. Nhiệt độ và ngưỡng từng lớp được ước lượng trên validation trước khi đánh giá test.
 
 \begin{table}[htbp]\centering
 \begin{tabularx}{\linewidth}{@{}Xrr@{}}\toprule

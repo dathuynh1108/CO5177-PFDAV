@@ -44,7 +44,7 @@ x=[\mathrm{CLS}]\Vert t_{1:127}\Vert t_{L-126:L}\Vert[\mathrm{SEP}].
 Chuỗi ngắn hơn được bổ sung padding; attention mask phân biệt token văn bản với padding. Việc giữ đầu và cuối giúp đưa cả hai vị trí vào đầu vào 256 token, nhưng phần giữa bài viết vẫn bị bỏ. Loại chữ số cũng có thể làm mất năm, giá tiền hoặc tỷ số; thực nghiệm chưa tách riêng ảnh hưởng của bước này.
 
 \section{PhoBERT và hàm mất mát}
-PhoBERT là mô hình ngôn ngữ tiền huấn luyện cho tiếng Việt \cite{phobert}. Thực nghiệm dùng phiên bản Base v2, gắn đầu phân loại 19 lớp và cập nhật toàn bộ encoder cùng đầu phân loại \cite{phobert-v2}. Trọng số lớp chỉ được tính từ train:
+PhoBERT là mô hình ngôn ngữ tiền huấn luyện cho tiếng Việt \cite{phobert}. Thực nghiệm dùng phiên bản Base v2 qua \texttt{AutoModelForSequenceClassification}, với đầu phân loại 19 lớp của kiến trúc RoBERTa và cập nhật toàn bộ encoder cùng đầu phân loại \cite{phobert-v2}. Đầu phân loại được khởi tạo cho bài toán chuyên mục; hồi quy logistic chỉ xuất hiện trong đối chứng tiêu đề dùng encoder đóng băng. Trọng số lớp chỉ được tính từ train:
 \[
 w_c=\frac{N_{\mathrm{train}}}{K n_c},\qquad K=19,
 \]
@@ -53,6 +53,11 @@ trong đó $n_c$ là số bài train thuộc lớp $c$. Cross-entropy trên batc
 \mathcal{L}_B=-\frac{\sum_{i\in B}w_{y_i}\log p_\theta(y_i\mid x_i)}{\sum_{i\in B}w_{y_i}}.
 \]
 Lớp ít bài có trọng số lớn hơn, làm lỗi ở lớp đó đóng góp nhiều hơn vào loss. Không áp dụng hệ số tăng cường thủ công theo chuyên mục.
+
+\section{Các mô hình đối chứng trên tiêu đề}
+Các đối chứng dùng cùng ID bài báo và cùng ba tập với mô hình toàn văn. Đầu vào chỉ gồm tiêu đề đã tách từ. Hai mô hình SVM tuyến tính dùng TF-IDF theo từ (unigram, bigram) hoặc ký tự (char-within-word, n-gram 3--5); từ vựng và IDF được học trên train, tối đa 80.000 đặc trưng.
+
+Đối chứng PhoBERT dùng encoder đóng băng, đầu vào tối đa 128 token và trung bình có attention mask của các vector token 768 chiều. Hồi quy logistic được fit trên các vector này. Cả SVM và hồi quy logistic chọn $C\in\{0{,}5;1;2\}$ bằng macro-F1 validation. Dự đoán lớp đa số làm mốc tham chiếu. Các mô hình đối chứng chỉ dùng tiêu đề, còn mô hình chính tinh chỉnh encoder và đầu phân loại trên đầu vào bài báo; sự khác biệt kết quả phản ánh cả hai thay đổi.
 
 \section{Cấu hình và lựa chọn checkpoint}
 \begin{table}[htbp]\centering
