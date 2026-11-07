@@ -1,7 +1,7 @@
-% Kết quả được tổng hợp từ 18 lượt notebook mới; độ lệch chuẩn là SD mẫu.
+% Kết quả tổng hợp từ 18 lượt train; độ lệch chuẩn là SD mẫu.
 \section{Kết quả trên tập test}
 
-Bảng~\ref{tab:new-image-results} tổng hợp accuracy và macro-F1 trên 9.998 ảnh test độc lập theo chính sách loại trùng chính xác. Ở cả hai kiến trúc, chế độ partial vượt head-only; full tiếp tục cải thiện kết quả. ResNet18 full đạt $79{,}16\pm0{,}39$\%, còn Swin-T full đạt $86{,}81\pm0{,}02$\%.
+Bảng~\ref{tab:new-image-results} tổng hợp accuracy và macro-F1 trên 9.998 ảnh trong tập test sau khi loại trùng pixel chính xác. Ở cả hai kiến trúc, chế độ partial vượt head-only; full tiếp tục cải thiện kết quả. ResNet18 full đạt $79{,}16\pm0{,}39$\%, còn Swin-T full đạt $86{,}81\pm0{,}02$\%.
 
 \begin{table}[htbp]\centering\small
 \setlength{\tabcolsep}{5pt}
@@ -20,6 +20,10 @@ Swin-T full & $86{,}81\pm0{,}02$ & $0{,}8681\pm0{,}0001$\\
 \label{tab:new-image-results}
 \end{table}
 
+Mức tăng khi mở thêm backbone khác nhau giữa hai kiến trúc. Với ResNet18, phần cải thiện lớn hơn xuất hiện từ head-only sang partial; với Swin-T, bước từ partial sang full đem lại mức tăng lớn hơn bước từ head-only sang partial. Như vậy, cập nhật riêng khối cuối chưa khai thác hết chất lượng đạt được của Swin-T trong ngân sách này. Tuy nhiên, các kết quả không xác định được tầng nào tạo ra mức cải thiện, cũng không cho phép quy toàn bộ lợi thế của Swin-T cho self-attention, vì kiến trúc và trọng số pretrained cùng thay đổi.
+
+Accuracy và macro-F1 cho cùng thứ tự xếp hạng ở cả sáu cấu hình. Điều này cho thấy kết luận về cấu hình tốt hơn không phụ thuộc vào việc dùng tỷ lệ dự đoán đúng hay F1 trung bình theo lớp. Hai chỉ số gần nhau không có nghĩa mọi lớp đều dễ phân loại như nhau; sự khác biệt giữa các lớp cần được xem qua confusion matrix.
+
 \begin{figure}[htbp]\centering
 \includegraphics[trim=0 644pt 0 0,clip,width=\textwidth]{notebook-evidence/figures/learning_curves.png}
 \caption{Accuracy và cross-entropy trên train/validation của ba cấu hình ResNet18 qua 20 epoch; đường cong tổng hợp từ các seed 42, 43 và 44.}
@@ -29,6 +33,8 @@ Swin-T full & $86{,}81\pm0{,}02$ & $0{,}8681\pm0{,}0001$\\
 \includegraphics[trim=0 0 0 644pt,clip,width=\textwidth]{notebook-evidence/figures/learning_curves.png}
 \caption{Accuracy và cross-entropy trên train/validation của ba cấu hình Swin-T qua 20 epoch; đường cong tổng hợp từ các seed 42, 43 và 44.}
 \end{figure}
+
+Các đường cong cho thấy accuracy trên tập train tiếp tục tăng trong khi mức cải thiện trên validation chậm lại. Ở epoch cuối, ResNet18 full đạt khoảng 99\% accuracy trên tập train nhưng chỉ khoảng 79\% trên validation; Swin-T full tương ứng khoảng 99\% và 87\%. Khoảng cách này cho thấy việc khớp tốt hơn với tập train không chuyển hoàn toàn thành chất lượng trên ảnh chưa dùng để cập nhật tham số. Do augmentation chỉ áp dụng trong train và số đo train được tích lũy khi tham số đang thay đổi, đây không phải phép so sánh hai tập trong điều kiện suy luận giống hệt nhau. Checkpoint vì vậy được chọn theo validation thay vì mặc định lấy epoch cuối.
 
 \section{Chi phí và so sánh ghép cặp}
 
@@ -50,20 +56,30 @@ Swin-T full & $209,6\pm0,1$ & $2454,2\pm0,0$\\
 \label{tab:new-image-cost}
 \end{table}
 
-Trong chế độ full, Swin-T mất thời gian gấp 2,63 lần và dùng peak memory gấp 4,72 lần ResNet18. Chỉ học head giảm bộ nhớ cấp phát cực đại ở cả hai backbone. Với Swin-T, thời gian train giảm từ 209,6 xuống 83,7 giây; với ResNet18, chênh lệch thời gian giữa ba mức tinh chỉnh nhỏ hơn 0,6 giây. Chi phí được đo trên cùng RTX 5090 và giao thức 20 epoch, không đại diện cho mọi phần cứng.
+Trong chế độ full, Swin-T mất thời gian gấp 2,63 lần và dùng peak memory gấp 4,72 lần ResNet18. Chỉ học head giảm bộ nhớ cấp phát cực đại ở cả hai backbone. Với Swin-T, thời gian train giảm từ 209,6 xuống 83,7 giây; với ResNet18, chênh lệch thời gian giữa ba mức fine-tuning chỉ khoảng 0,6 giây. Do thời gian đo bao gồm nạp dữ liệu và augmentation, không thể suy trực tiếp mức giảm phép tính backward từ mức giảm tổng thời gian này. Swin-T partial có accuracy gần ResNet18 full nhưng dùng nhiều thời gian và bộ nhớ hơn trong phép đo này; lợi thế accuracy rõ hơn của Swin-T xuất hiện ở full. Các tỷ lệ chi phí chỉ áp dụng cho cùng RTX 5090 và giao thức 20 epoch, chưa cho biết tốc độ suy luận hoặc hiệu quả trên phần cứng khác.
 
 \section{Phân tích nhầm lẫn}
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=.48\textwidth]{notebook-evidence/figures/resnet18_full-confusion.png}\hfill
 \includegraphics[width=.48\textwidth]{notebook-evidence/figures/swin_t_full-confusion.png}
-\caption{Confusion matrix test trung bình qua các seed 42, 43 và 44: ResNet18 full (trái), Swin-T full (phải). Số ảnh trung bình ở mỗi ô được làm tròn để hiển thị.}
+\caption{Confusion matrix test trung bình qua các seed 42, 43 và 44: ResNet18 full (trái), Swin-T full (phải). Màu biểu diễn số ảnh trung bình tại mỗi ô; trục dùng chỉ số lớp từ 0 đến 99, không ghi số ảnh trong từng ô.}
 \end{figure}
 
-Ở cả hai mô hình full, cặp nhầm lẫn oak\_tree và maple\_tree xuất hiện nhiều lần qua các seed. Các ô ngoài đường chéo lớn này cho thấy hai lớp cây vẫn khó phân biệt ở đầu vào 96 px. Confusion matrix chưa đủ để xác định nguyên nhân nằm ở đặc trưng ảnh hay kiến trúc.
+Trong confusion matrix, hàng biểu diễn nhãn đúng và cột biểu diễn nhãn dự đoán. Đường chéo ghi nhận dự đoán đúng, còn các ô ngoài đường chéo cho biết hướng nhầm lẫn cụ thể. Do hình gồm 100 lớp và không có nhãn tên lớp, Bảng~\ref{tab:image-confusion-pairs} bổ sung bốn hướng nhầm lẫn cùng chỉ số hàng, cột tương ứng.
 
-\section{Phạm vi dữ liệu và nguồn kết quả}
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\textwidth}{@{}XXrr@{}}
+\toprule
+Nhãn đúng (hàng) & Nhãn dự đoán (cột) & ResNet18 full & Swin-T full\\\midrule
+oak\_tree (52) & maple\_tree (47) & 19,00 & 23,67\\
+maple\_tree (47) & oak\_tree (52) & 18,33 & 16,00\\
+woman (98) & girl (35) & 16,67 & 9,67\\
+girl (35) & woman (98) & 15,33 & 11,33\\
+\bottomrule
+\end{tabularx}
+\caption{Số ảnh bị phân loại sai trung bình qua seed 42, 43 và 44 tại bốn ô ngoài đường chéo, làm tròn đến hai chữ số thập phân. Mỗi hàng là một hướng nhầm lẫn, không phải tổng hai chiều; chỉ số lớp bắt đầu từ 0 như trên hình.}
+\label{tab:image-confusion-pairs}
+\end{table}
 
-Cả sáu cấu hình hoàn tất qua ba seed, tổng cộng 18 lượt. Tập train giữ 44.976/45.000 ảnh ban đầu sau khi loại 24 bản trùng với validation hoặc test; validation giữ đủ 5.000 ảnh; test giữ 9.998/10.000 ảnh sau khi gộp hai nội dung trùng. Sau bước này không có nội dung RGB trùng chính xác giữa các split. Near-duplicates chưa được đánh giá.
-
-Notebook chạy đủ 21 code cell trên RTX 5090, tạo sáu hình và hoàn tất 18 lượt huấn luyện. Bản nguồn thực thi có SHA256 bắt đầu bằng \code{bae9c5ff812e}; mã trong các code cell có digest bắt đầu bằng \code{913093153ead}. Kết quả được đối chiếu từ 179.964 prediction và trạng thái của 18 checkpoint được chọn theo validation. Cấu hình, lịch sử huấn luyện và đầu ra đánh giá được lưu tại \code{notebook-evidence/}. Dữ liệu tải từ máy chủ Toronto được ghi nhận bằng hash pixel theo thứ tự trong \code{notebook_config.json}. Các phép đo CO5085 được lưu riêng.
+Nhầm lẫn oak\_tree với maple\_tree vẫn nổi bật ở cả hai mô hình. Dù accuracy tổng thể cao hơn, Swin-T full có nhiều lỗi theo hướng oak\_tree sang maple\_tree hơn ResNet18 full, trong khi số lỗi ở chiều ngược lại thấp hơn. Với hai hướng woman--girl, số lỗi đều giảm ở Swin-T full. Như vậy, cải thiện accuracy tổng thể không đồng nghĩa với cải thiện ở mọi cặp lớp. Để giải thích các khác biệt này cần xem ảnh bị phân loại sai và so sánh đặc trưng; riêng confusion matrix chưa xác định được vai trò của độ phân giải, hình dạng vật thể hay kiến trúc.

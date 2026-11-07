@@ -15,15 +15,15 @@
   {tháng 11 năm 2026}
 
 \CourseAbstract{
-Báo cáo tổng hợp ba nghiên cứu phân loại của nhóm CTG. Trên UCI Adult, histogram gradient boosting đạt 87,48\% độ chính xác và 0,8185 macro-F1. Trên VietnamNet, PhoBERT tinh chỉnh với nội dung bài viết đạt 91,89\% trên tập test riêng, so với 80,93\% của đối chứng chỉ dùng tiêu đề. Trên CIFAR-100, Swin-T tinh chỉnh toàn bộ đạt 86,81\% so với 79,16\% của ResNet18 trong cùng chế độ.
+Báo cáo tổng hợp ba nghiên cứu phân loại của nhóm CTG. Trên UCI Adult, histogram gradient boosting đạt 87,48\% độ chính xác và 0,8185 macro-F1. Trên VietnamNet, PhoBERT fine-tuning với nội dung bài viết đạt 91,89\% trên tập test riêng, so với 80,93\% của Frozen PhoBERT + Logistic regression. Trên CIFAR-100, Swin-T fine-tuning toàn bộ đạt 86,81\% so với 79,16\% của ResNet18 trong cùng chế độ.
 
 Trong thí nghiệm Text, hai cách tiếp cận dùng chung danh sách bài và cách chia tập. Checkpoint và tham số hiệu chỉnh được chọn trên tập validation. Thí nghiệm Image huấn luyện lại sau khi loại ảnh trùng pixel giữa các tập.
 }
 
 \CourseOverview{
 Tabular & UCI Adult. So sánh mô hình phân loại thu nhập và đo đánh đổi precision–recall khi cân bằng lớp.\\
-Text & VietnamNet. So sánh PhoBERT tinh chỉnh với nội dung bài viết và các đối chứng chỉ dùng tiêu đề trên cùng tập test.\\
-Image & CIFAR-100. So sánh các mức tinh chỉnh ResNet18 và Swin-T về độ chính xác, thời gian và bộ nhớ.\\
+Text & VietnamNet. So sánh PhoBERT fine-tuning với nội dung bài viết và các baseline chỉ dùng tiêu đề trên cùng tập test.\\
+Image & CIFAR-100. So sánh các chế độ fine-tuning ResNet18 và Swin-T về độ chính xác, thời gian và bộ nhớ.\\
 Tài liệu chi tiết & Trang của từng bài liên kết notebook, báo cáo riêng và mã nguồn.\\
 }
 
@@ -31,7 +31,7 @@ Tài liệu chi tiết & Trang của từng bài liên kết notebook, báo cáo
 
 \chapter{Kết quả theo loại dữ liệu}
 \section{Tabular — Phân loại thu nhập trên UCI Adult}
-UCI Adult gồm 48.842 bản ghi và 14 thuộc tính. Ba cột có giá trị thiếu là nghề nghiệp, loại hình việc làm và quốc gia xuất xứ. Sau khi loại nhóm trùng có nhãn mâu thuẫn và gộp các bản ghi lặp còn lại, 48.780 bản ghi được chia phân tầng theo tỷ lệ 70/15/15. Tham số điền thiếu, chuẩn hóa và ánh xạ mã hóa được ước lượng trên tập huấn luyện.
+UCI Adult lấy từ \href{https://archive.ics.uci.edu/dataset/2/adult}{UCI Machine Learning Repository}, gồm 48.842 bản ghi và 14 thuộc tính. Hai tệp \code{adult.data} và \code{adult.test} dùng format CSV không có header; mỗi dòng chứa 14 thuộc tính và nhãn thu nhập. Ba cột có giá trị thiếu là nghề nghiệp, loại hình việc làm và quốc gia xuất xứ. Sau khi loại nhóm trùng có nhãn mâu thuẫn và gộp các bản ghi lặp còn lại, 48.780 bản ghi được chia phân tầng theo tỷ lệ 70/15/15. Tham số điền thiếu, chuẩn hóa và ánh xạ mã hóa được ước lượng trên tập train.
 
 Thí nghiệm so sánh dự đoán lớp đa số, hồi quy logistic thường, hồi quy logistic cân bằng lớp và histogram gradient boosting. Các mô hình logistic dùng mã hóa one-hot và chuẩn hóa thuộc tính số. Gradient boosting phân nhánh trên các thuộc tính số và thuộc tính phân loại đã mã hóa.
 
@@ -49,11 +49,19 @@ Histogram gradient boosting & 87,48 & 0,8185\\\bottomrule
 Gradient boosting tăng 2,24 điểm phần trăm độ chính xác so với hồi quy logistic. Khi thêm trọng số cân bằng lớp, hồi quy logistic nhận ra nhiều bản ghi thu nhập trên 50.000 USD hơn. Recall tăng từ 59,08\% lên 84,59\% và precision giảm từ 74,03\% xuống 57,64\%. Đây là sự đánh đổi giữa bỏ sót lớp ít mẫu và dự đoán nhầm vào lớp đó. Dữ liệu điều tra năm 1994 giới hạn khả năng áp dụng kết quả cho phân bố thu nhập hiện nay.
 
 \section{Text — Phân loại chuyên mục VietnamNet}
-Bộ dữ liệu VietnamNet được công bố tại kho dữ liệu Hugging Face của sinh viên Huỳnh Thành Đạt: \href{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}{VietnamNet News}. Từ 212.705 bản ghi nguồn, các bước kiểm tra loại 1.167 tiêu đề rỗng, 3.636 bản ghi thuộc nhóm trùng có nhãn mâu thuẫn và 527 bản ghi trùng còn lại. Toàn bộ 207.375 bài hợp lệ thuộc 19 chuyên mục được giữ để mô hình hóa, không lấy mẫu giới hạn theo lớp.
+Bộ \href{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}{VietnamNet News} được công bố trên kho Hugging Face của học viên Huỳnh Thành Đạt. Các bài báo được thu thập bằng crawling từ các trang công khai của VietnamNet. Dữ liệu lưu trong 19 tệp Parquet; mỗi bản ghi có tiêu đề, nội dung, URL và nhãn chuyên mục. Từ 212.705 bản ghi nguồn, các bước kiểm tra loại 1.167 tiêu đề rỗng, 3.636 bản ghi thuộc nhóm trùng có nhãn mâu thuẫn và 527 bản ghi trùng còn lại. Toàn bộ 207.375 bài hợp lệ thuộc 19 chuyên mục được giữ để mô hình hóa, không lấy mẫu giới hạn theo lớp.
 
-Các bài có cùng đầu vào token ở tiêu đề hoặc nội dung Head--Tail được gộp nhóm trước khi chia tập. Phép chia theo nhóm tạo 145.162 bài train, 31.107 bài validation và 31.106 bài test. Các baseline và mô hình fine-tuning dùng chung danh sách bài và ba tập này. URL và tên chuyên mục không được đưa vào đầu vào mô hình.
+Các bài có cùng đầu vào token ở tiêu đề hoặc nội dung Head--Tail được gộp nhóm trước khi chia tập. Tập train gồm 145.162 bài báo; tập validation và tập test lần lượt gồm 31.107 và 31.106 bài. Mọi mô hình sử dụng cách chia dữ liệu này. URL và tên chuyên mục không được đưa vào đầu vào mô hình.
 
-Các baseline gồm dự đoán lớp đa số, SVM với TF-IDF theo từ hoặc ký tự và hồi quy logistic trên đặc trưng PhoBERT đóng băng. Mô hình toàn văn kết hợp tiêu đề với phần đầu và phần cuối bài, tách từ bằng PyVi và dùng Head--Tail trong giới hạn 256 token. Mô hình này dùng đầu phân loại 19 lớp của \texttt{AutoModelForSequenceClassification}, tinh chỉnh cả encoder và đầu phân loại đủ bảy epoch; checkpoint epoch 6 được chọn theo macro-F1 validation. Nhiệt độ và hệ số từng lớp được ước lượng trên validation trước khi đánh giá test.
+Bốn baseline được sử dụng:
+\begin{itemize}
+\item \textbf{Majority baseline:} dự đoán chuyên mục phổ biến nhất trong tập train.
+\item \textbf{Word TF-IDF + Linear SVM:} kết hợp TF-IDF theo từ với SVM tuyến tính.
+\item \textbf{Character TF-IDF + Linear SVM:} kết hợp TF-IDF theo ký tự với SVM tuyến tính.
+\item \textbf{Frozen PhoBERT + Logistic regression:} trích đặc trưng bằng PhoBERT giữ nguyên trọng số, sau đó phân loại bằng logistic regression.
+\end{itemize}
+
+Mô hình toàn văn kết hợp tiêu đề với phần đầu và phần cuối bài, tách từ bằng PyVi và dùng Head--Tail trong giới hạn 256 token. PhoBERT sử dụng đầu phân loại 19 lớp và được fine-tuning cùng encoder trong bảy epoch; checkpoint epoch 6 được chọn theo macro-F1 validation. Temperature và hệ số từng lớp được ước lượng trên validation trước khi đánh giá test.
 
 \begin{table}[htbp]\centering
 \begin{tabularx}{\linewidth}{@{}Xrr@{}}\toprule
@@ -65,24 +73,24 @@ Frozen PhoBERT + Logistic regression & 80,93 & 0,7933\\
 PhoBERT fine-tuning (argmax) & 91,83 & 0,9107\\
 PhoBERT fine-tuning + calibration & 91,89 & 0,9112\\\bottomrule
 \end{tabularx}
-\caption{Kết quả trên cùng 31.106 bài test, sau khi chia nhóm theo đầu vào token.}
+\caption{Kết quả trên tập test gồm 31.106 bài báo.}
 \end{table}
 
 Sau hiệu chỉnh, mô hình toàn văn cao hơn Frozen PhoBERT + Logistic regression 10,96 điểm phần trăm độ chính xác. Phép so sánh thay đổi cả nội dung đầu vào và cách huấn luyện, nên không tách riêng tác động của từng yếu tố. Temperature scaling giảm NLL validation từ 0,3572 xuống 0,3018; kết hợp hệ số lớp làm accuracy test tăng từ 91,83\% lên 91,89\% và macro-F1 tăng từ 0,9107 lên 0,9112. Hiệu chỉnh làm tăng ròng 18 bài đúng, gồm 123 bài được sửa đúng và 105 bài từ đúng chuyển thành sai.
 
-\section{Image — Tinh chỉnh ResNet18 và Swin-T trên CIFAR-100}
-CIFAR-100 có 60.000 ảnh thuộc 100 lớp. Kiểm tra trùng pixel giữ một đại diện cho mỗi ảnh, ưu tiên tập test, rồi tập validation và tập huấn luyện. Sau khi loại 24 ảnh huấn luyện và hai ảnh test lặp, ba tập lần lượt có 44.976, 5.000 và 9.998 ảnh. Ảnh gốc $32\times32$ được nội suy lên $96\times96$ để kiểm soát chi phí, thấp hơn kích thước cạnh ngắn 128 px mà đề khuyến nghị. Phép đệm, cắt ngẫu nhiên và lật ngang được áp dụng cho tập huấn luyện.
+\section{Image — Fine-tuning ResNet18 và Swin-T trên CIFAR-100}
+CIFAR-100 lấy từ \href{https://www.cs.toronto.edu/~kriz/cifar.html}{trang của Alex Krizhevsky, University of Toronto}, gồm 60.000 ảnh RGB $32\times32$, với 100 lớp chi tiết thuộc 20 nhóm. Bản Python lưu các mảng ảnh và nhãn bằng pickle trong các tệp \code{train}, \code{test} và \code{meta}. Kiểm tra trùng pixel giữ một đại diện cho mỗi ảnh, ưu tiên tập test, rồi tập validation và tập train. Sau khi loại 24 ảnh train và hai ảnh test lặp, ba tập lần lượt có 44.976, 5.000 và 9.998 ảnh. Ảnh gốc $32\times32$ được nội suy lên $96\times96$ để kiểm soát chi phí, thấp hơn kích thước cạnh ngắn 128 px mà đề khuyến nghị. Padding, random crop và random horizontal flip được áp dụng cho tập train.
 
 \begin{table}[htbp]\centering
 \begin{tabular}{@{}lrrr@{}}\toprule
-Kiến trúc & Chỉ học đầu ra & Tinh chỉnh khối cuối & Tinh chỉnh toàn bộ\\\midrule
+Kiến trúc & Chỉ học đầu ra & Fine-tuning khối cuối & Full fine-tuning\\\midrule
 ResNet18 & 60,91 & 73,84 & $79{,}16\pm0{,}39$\\
 Swin-T & 71,69 & 78,44 & $86{,}81\pm0{,}02$\\\bottomrule
 \end{tabular}
-\caption{Độ chính xác trên test (\%) qua ba seed, mỗi lượt 20 epoch; cột tinh chỉnh toàn bộ ghi trung bình $\pm$ SD mẫu.}
+\caption{Độ chính xác trên test (\%) qua ba seed, mỗi lượt 20 epoch; cột full fine-tuning ghi trung bình $\pm$ SD mẫu.}
 \end{table}
 
-Tinh chỉnh khối cuối cải thiện kết quả so với chỉ học bộ phân loại ở cả hai kiến trúc. Khi tinh chỉnh toàn bộ, Swin-T cao hơn ResNet18 7,66 điểm phần trăm độ chính xác, với macro-F1 lần lượt 0,8681 và 0,7915. Thời gian train của Swin-T full là $209{,}6\pm0{,}1$ giây, so với $79{,}6\pm0{,}2$ giây của ResNet18 full (gấp 2,63 lần); peak memory gấp 4,72 lần. Thực nghiệm gồm 18 lượt trên RTX 5090; mỗi cấu hình dùng ba seed và 20 epoch.
+Fine-tuning khối cuối cải thiện kết quả so với chỉ học bộ phân loại ở cả hai kiến trúc. Khi full fine-tuning, Swin-T cao hơn ResNet18 7,66 điểm phần trăm độ chính xác, với macro-F1 lần lượt 0,8681 và 0,7915. Thời gian train của Swin-T full là $209{,}6\pm0{,}1$ giây, so với $79{,}6\pm0{,}2$ giây của ResNet18 full (gấp 2,63 lần); peak memory gấp 4,72 lần. Thực nghiệm gồm 18 lượt trên RTX 5090; mỗi cấu hình dùng ba seed và 20 epoch.
 
 \section{Tài liệu của từng bài}
 \begin{itemize}

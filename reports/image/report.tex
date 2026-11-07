@@ -16,7 +16,7 @@
   {tháng 11 năm 2026}
 
 \CourseAbstract{
-Thực nghiệm so sánh ba mức tinh chỉnh của ResNet18 và Swin-T pretrained ImageNet trên CIFAR-100. Trước khi huấn luyện, các ảnh trùng pixel chính xác được loại giữa các tập theo một chính sách ưu tiên cố định, tạo tập train/validation/test gồm 44.976/5.000/9.998 ảnh. Sáu cấu hình pretrained được huấn luyện 20 epoch với ba seed. Swin-T tinh chỉnh toàn bộ đạt accuracy test $86{,}81\pm0{,}02$\%, cao hơn ResNet18 cùng chế độ $7{,}66\pm0{,}41$ điểm phần trăm khi so sánh theo cặp seed. Thời gian train trung bình của Swin-T full gấp 2,63 lần và bộ nhớ cấp phát cực đại gấp 4,72 lần ResNet18 full.
+Thực nghiệm so sánh ba mức fine-tuning của ResNet18 và Swin-T pretrained ImageNet trên CIFAR-100. Trước khi huấn luyện, các ảnh trùng pixel chính xác được loại giữa các tập theo một chính sách ưu tiên cố định, tạo tập train/validation/test gồm 44.976/5.000/9.998 ảnh. Sáu cấu hình pretrained được huấn luyện 20 epoch với ba seed. Swin-T ở chế độ full fine-tuning đạt accuracy test $86{,}81\pm0{,}02$\%, cao hơn ResNet18 cùng chế độ $7{,}66\pm0{,}41$ điểm phần trăm khi so sánh theo cặp seed. Thời gian train trung bình của Swin-T full gấp 2,63 lần và bộ nhớ cấp phát cực đại gấp 4,72 lần ResNet18 full.
 }
 
 \CourseOverview{
@@ -31,18 +31,20 @@ Kết quả chính & Swin-T full đạt $86{,}81\pm0{,}02$\% accuracy và macro-
 
 \chapter{Bài toán và dữ liệu}
 \section{Mục tiêu}
-Thực nghiệm khảo sát ảnh hưởng của mức độ cập nhật backbone khi phân loại CIFAR-100. Hai kiến trúc ResNet18 và Swin-T sử dụng trọng số ImageNet-1K phiên bản V1. Mỗi kiến trúc được đánh giá ở ba chế độ pretrained: chỉ học lớp phân loại (head-only), tinh chỉnh một phần backbone (partial) và tinh chỉnh toàn bộ (full). Tất cả sáu cấu hình được chạy với seed 42, 43 và 44.
+Thực nghiệm khảo sát ảnh hưởng của mức độ cập nhật backbone khi phân loại CIFAR-100. Hai kiến trúc ResNet18 và Swin-T sử dụng trọng số ImageNet-1K phiên bản V1. Mỗi kiến trúc được đánh giá ở ba chế độ pretrained: chỉ học lớp phân loại (head-only), fine-tuning một phần backbone (partial) và fine-tuning toàn bộ (full). Tất cả sáu cấu hình được chạy với seed 42, 43 và 44.
 
 Mục tiêu là so sánh chất lượng dự đoán và chi phí thực thi trong cùng ngân sách 20 epoch. Kết luận giới hạn ở hai kiến trúc và bộ trọng số pretrained được chọn.
 
 \section{Dữ liệu và kích thước ảnh}
-CIFAR-100 gồm 60.000 ảnh màu thuộc 100 lớp chi tiết: 50.000 ảnh train chính thức và 10.000 ảnh test chính thức \cite{cifar}. Ảnh gốc có kích thước $32\times32$; toàn bộ dữ liệu nguồn được đưa vào bước chia và loại trùng. Đề bài khuyến nghị, không bắt buộc, cạnh ngắn ít nhất 128 px \cite{assignment}. Thực nghiệm giữ đầu vào $96\times96$ từ giao thức CO5085 cho cả hai kiến trúc và mọi mức tinh chỉnh để kiểm soát điều kiện so sánh. Cạnh 96 px bằng ba lần cạnh ảnh gốc và giới hạn phần tính toán trên lưới đầu vào so với tiếp tục tăng kích thước. Nội suy song tuyến tính không bổ sung chi tiết ngoài ảnh gốc; thực nghiệm không đối chiếu 96 px với 128 px.
+CIFAR-100 do Đại học Toronto công bố, gồm 60.000 ảnh màu thuộc 100 lớp chi tiết (fine label), được nhóm thành 20 lớp tổng quát (coarse label): 50.000 ảnh train chính thức và 10.000 ảnh test chính thức \cite{cifar}. Bản Python được phân phối dưới dạng tệp pickle \code{train}, \code{test} và \code{meta}; hai tệp dữ liệu chứa các mảng pixel cùng nhãn fine/coarse, còn \code{meta} chứa tên lớp. Thực nghiệm phân loại theo 100 fine label.
 
-Từ 50.000 ảnh train, phép chia phân tầng với seed 2026 ban đầu tạo 45.000 ảnh train và 5.000 ảnh validation. Trước khi huấn luyện, SHA256 trên chuỗi byte RGB được dùng để nhóm các ảnh trùng pixel chính xác trong cả ba tập. Mỗi nhóm giữ một ảnh theo thứ tự ưu tiên test, validation, rồi train. Chính sách này loại 24 ảnh khỏi train và 2 khỏi test; validation không đổi. Tập cuối gồm 44.976/5.000/9.998 ảnh. Đối chiếu sau lọc xác nhận không còn nội dung RGB trùng chính xác giữa các tập. Phép kiểm tra chưa xét ảnh gần trùng hoặc mức độ tương đồng thị giác.
+Ảnh gốc có kích thước $32\times32$; toàn bộ dữ liệu nguồn được đưa vào bước chia và loại trùng. Đề bài khuyến nghị, không bắt buộc, cạnh ngắn ít nhất 128 px \cite{assignment}. Thực nghiệm dùng đầu vào $96\times96$ cho cả hai kiến trúc và mọi mức fine-tuning để kiểm soát điều kiện so sánh. Đây là lựa chọn cân bằng giữa kích thước đầu vào và chi phí tính toán: ảnh được phóng lớn ba lần theo mỗi chiều, nhưng số điểm ảnh đầu vào vẫn thấp hơn khi dùng 128 px. Nội suy song tuyến tính không bổ sung chi tiết ngoài ảnh gốc. Vì chưa đối chiếu trực tiếp 96 px với 128 px, kết quả không cho biết mức ảnh hưởng của lựa chọn kích thước này đến accuracy.
+
+Từ 50.000 ảnh train, phép chia phân tầng với seed 2026 ban đầu tạo 45.000 ảnh train và 5.000 ảnh validation. Trước khi train, các ảnh có nội dung pixel RGB giống hệt nhau được nhóm lại trong cả ba tập. Mỗi nhóm giữ một ảnh theo thứ tự ưu tiên test, validation, rồi train. Chính sách này loại 24 ảnh khỏi train và 2 khỏi test; validation không đổi. Tập cuối gồm 44.976/5.000/9.998 ảnh. Đối chiếu sau lọc xác nhận không còn nội dung RGB trùng chính xác giữa các tập. Phép kiểm tra chưa xét ảnh gần trùng hoặc mức độ tương đồng thị giác.
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=.91\textwidth]{notebook-evidence/figures/class_distribution.png}
-\caption{Số ảnh theo lớp sau khi loại nội dung trùng chính xác. Các lớp vẫn có quy mô gần tương đương; việc loại bỏ được xác định theo hash ảnh, không theo kết quả mô hình.}
+\caption{Số ảnh theo lớp sau khi loại nội dung trùng chính xác. Các lớp vẫn có quy mô gần tương đương; tiêu chí loại trùng là nội dung pixel RGB giống hệt nhau.}
 \end{figure}
 
 \begin{figure}[htbp]\centering
@@ -50,13 +52,22 @@ Từ 50.000 ảnh train, phép chia phân tầng với seed 2026 ban đầu tạ
 \caption{Mẫu ảnh CIFAR-100 trong tập train sau khử trùng lặp. Ảnh nguồn $32\times32$ có một số lớp khó phân biệt khi chỉ quan sát hình dạng và kết cấu tổng thể.}
 \end{figure}
 
-\section{Tiền xử lý và nguồn phép đo}
-Ảnh train được đệm 4 pixel, cắt ngẫu nhiên về $32\times32$, lật ngang với xác suất 0,5 rồi nội suy song tuyến tính lên $96\times96$. Cắt và lật ảnh làm đa dạng vị trí, hướng quan sát của vật thể. Validation và test chỉ thay đổi kích thước cố định. Các ảnh được chuẩn hóa theo trung bình và độ lệch chuẩn ImageNet. Augmentation chỉ áp dụng cho train; validation dùng chọn checkpoint và test chỉ được đánh giá sau khi giao thức đã cố định.
-
-Mã nguồn và giao thức huấn luyện ban đầu được chuyển từ A1 CO5085 tại \href{https://github.com/dathuynh1108/CO5085-deep-learning/tree/1250e569c6ce055391b5670e2f9a31faedb44b20}{commit đo gốc}. Báo cáo sử dụng 18 lượt huấn luyện mới của CO5177 sau khi loại ảnh trùng. Bộ 24 lượt CO5085 được lưu riêng để ghi nhận nguồn mã và giao thức, không tham gia tổng hợp kết quả hiện tại.
+\section{Tiền xử lý}
+Ảnh trong tập train được áp dụng padding 4 pixel, random crop về $32\times32$, random horizontal flip với xác suất 0,5 rồi resize lên $96\times96$ bằng nội suy song tuyến tính. Random crop thay đổi vị trí vật thể trong khung ảnh; random horizontal flip bổ sung các biến thể đối xứng ngang. Ảnh trong tập validation và test chỉ được resize về kích thước cố định. Sau khi chuyển giá trị pixel về $[0,1]$, cả ba tập đều được áp dụng normalization theo từng kênh màu: $x_c^{\prime}=(x_c-\mu_c)/\sigma_c$, với $\mu=(0{,}485;0{,}456;0{,}406)$ và $\sigma=(0{,}229;0{,}224;0{,}225)$. Cách xử lý này đưa đầu vào về thang giá trị tương ứng với trọng số pretrained ImageNet. Augmentation chỉ áp dụng cho train; validation dùng chọn checkpoint và test chỉ được đánh giá sau khi giao thức đã cố định.
 
 \chapter{Mô hình và thiết lập thực nghiệm}
-\section{Các mức tinh chỉnh}
+\section{Đặc trưng ảnh và cơ chế phân loại}
+ResNet18 trích xuất đặc trưng bằng các lớp convolution và các khối residual \cite{resnet}. Khi kích thước phù hợp, một khối có dạng $h_{l+1}=\operatorname{ReLU}(F_l(h_l)+h_l)$: nhánh convolution học phần biến đổi $F_l$, còn nhánh tắt giữ đường truyền trực tiếp cho đặc trưng và gradient. Sau các khối này, global average pooling tổng hợp đặc trưng không gian trước lớp phân loại.
+
+Swin-T chia ảnh thành các patch và tính self-attention trong từng cửa sổ, đồng thời luân phiên dịch cửa sổ để trao đổi thông tin giữa các vùng lân cận \cite{swin}. Với một attention head, phép tính có dạng
+\[
+\operatorname{Attention}(Q,K,V)=\operatorname{softmax}\!\left(\frac{QK^{\mathsf T}}{\sqrt{d}}+B\right)V,
+\]
+trong đó $Q,K,V$ là các phép chiếu của đặc trưng patch, $d$ là số chiều của key và $B$ biểu diễn độ lệch vị trí tương đối. Qua các stage, patch merging giảm độ phân giải không gian và tăng số kênh đặc trưng. Hai kiến trúc vì vậy khác nhau cả về cách kết hợp thông tin không gian lẫn cấu trúc backbone; phép so sánh hiện tại không tách riêng tác động của từng khác biệt.
+
+Với đặc trưng ảnh $h_\theta(x)$, lớp phân loại mới tạo 100 logit $z=Wh_\theta(x)+b$. Xác suất lớp $c$ là $p_c=\exp(z_c)/\sum_{k=1}^{100}\exp(z_k)$ và nhãn dự đoán là $\arg\max_c p_c$. Cả hai mô hình thay head ImageNet bằng lớp Linear có 100 đầu ra để phù hợp với nhãn CIFAR-100.
+
+\section{Các mức fine-tuning}
 ResNet18 sử dụng backbone torchvision pretrained \cite{resnet,torchvision}. Head-only chỉ cập nhật lớp Linear 100 chiều; partial cập nhật layer4 và head; full cập nhật toàn bộ mô hình. Swin-T cũng dùng pretrained ImageNet \cite{swin,torchvision}: head-only chỉ cập nhật head, partial cập nhật stage cuối, normalization cuối và head, còn full cập nhật toàn bộ backbone.
 
 \begin{table}[htbp]\centering
@@ -68,11 +79,21 @@ Partial & ImageNet pretrained & Khối cuối và lớp phân loại; Swin-T th�
 Full & ImageNet pretrained & Toàn bộ mô hình\\
 \bottomrule
 \end{tabularx}
-\caption{Các chế độ so sánh chính. Cả hai kiến trúc dùng cùng cách chia dữ liệu, tiền xử lý và seed.}
+\caption{Phạm vi tham số được cập nhật ở ba chế độ fine-tuning. Cả hai kiến trúc dùng cùng cách chia dữ liệu, tiền xử lý và seed.}
 \end{table}
+
+Head-only kiểm tra khả năng phân loại từ đặc trưng pretrained khi chỉ học ranh giới quyết định mới. Partial cho phép điều chỉnh đặc trưng ở khối cuối, còn full cho phép thích nghi ở mọi tầng. Các phần đóng băng được giữ ở chế độ đánh giá để không cập nhật thống kê BatchNorm hoặc kích hoạt stochastic depth trong những phần đó. Nhờ vậy, head-only thực sự giữ cố định backbone trong quá trình train.
 
 \section{Huấn luyện và đánh giá}
 Mỗi lượt chạy 20 epoch, batch size 128, AdamW với weight decay $10^{-4}$ và cosine learning-rate schedule. Learning rate ban đầu là $10^{-3}$ cho head-only và $10^{-4}$ cho partial/full. Loss là cross-entropy không label smoothing; gradient norm được clip ở 1. Autocast BF16 dùng trên GPU hỗ trợ BF16 native; tham số và trạng thái optimizer ở FP32, TF32 tắt. Checkpoint được chọn theo validation accuracy cao nhất; khi hòa chọn validation cross-entropy thấp hơn.
+
+Với batch gồm $m$ ảnh và nhãn đúng $y_i$, hàm mất mát được tối thiểu hóa là
+\[
+\mathcal{L}_{\mathrm{CE}}=-\frac{1}{m}\sum_{i=1}^{m}\log p_{i,y_i}.
+\]
+Cross-entropy phạt dự đoán gán xác suất thấp cho nhãn đúng, trong khi accuracy chỉ xét nhãn có xác suất lớn nhất. Vì thế, hai đại lượng có thể biến đổi khác nhau khi mô hình trở nên tự tin hơn. Learning rate nhỏ hơn ở partial/full nhằm hạn chế thay đổi quá mạnh các tham số pretrained. Tuy nhiên, vì head-only dùng learning rate khác, chênh lệch với chế độ này phản ánh toàn bộ thiết lập fine-tuning, chưa phải tác động riêng của số tầng được cập nhật.
+
+Accuracy là tỷ lệ ảnh được phân loại đúng. Macro-F1 tính $F1_c=2TP_c/(2TP_c+FP_c+FN_c)$ cho từng lớp rồi lấy trung bình $\frac{1}{100}\sum_c F1_c$, nên mỗi lớp có trọng số như nhau. Dù các lớp CIFAR-100 gần cân bằng, báo cáo đồng thời hai chỉ số giúp kiểm tra mức độ nhất quán giữa chất lượng dự đoán chung và chất lượng trung bình theo lớp.
 
 Kết quả được đo trên RTX 5090 với bốn worker nạp dữ liệu, PyTorch 2.10.0, torchvision 0.25.0, CUDA 13.0, NumPy 2.5.4, Matplotlib 3.11.2 và Pillow 12.3.0. Thời gian train gồm nạp dữ liệu, augmentation và lượt huấn luyện, có đồng bộ CUDA; không gồm validation, khởi tạo mô hình, ghi checkpoint hoặc xuất báo cáo. Peak memory là bộ nhớ GPU cấp phát cực đại trong train và validation của mỗi lượt. Accuracy và macro-F1 được tính trên toàn bộ lớp; các giá trị tổng hợp là trung bình và độ lệch chuẩn mẫu qua ba seed.
 
@@ -80,10 +101,10 @@ Kết quả được đo trên RTX 5090 với bốn worker nạp dữ liệu, Py
 \input{new_study_section.tex}
 
 \section{Kết luận}
-Trong sáu cấu hình pretrained được đo, fine-tuning sâu hơn cải thiện accuracy ở cả ResNet18 và Swin-T. Swin-T full đạt accuracy và macro-F1 cao nhất, đồng thời tốn thêm thời gian và bộ nhớ so với ResNet18 full. Hai mô hình thường nhầm oak\_tree với maple\_tree, dù đây chỉ là quan sát từ confusion matrix chứ không phải phép đo riêng về độ tương đồng thị giác. Kết luận áp dụng cho CIFAR-100, đầu vào 96 px, giao thức 20 epoch và phần cứng được mô tả ở trên.
+Trong sáu cấu hình pretrained được đo, fine-tuning sâu hơn cải thiện accuracy ở cả ResNet18 và Swin-T. Swin-T full đạt accuracy và macro-F1 cao nhất, đồng thời tốn thêm thời gian và bộ nhớ so với ResNet18 full. Partial giảm bộ nhớ so với full nhưng cũng làm giảm accuracy; lựa chọn giữa hai chế độ phụ thuộc vào ngân sách tính toán và mức chất lượng cần đạt. Nhầm lẫn giữa oak\_tree và maple\_tree vẫn xuất hiện ở cả hai mô hình full. Kết luận áp dụng cho CIFAR-100, đầu vào 96 px, giao thức 20 epoch và phần cứng được mô tả ở trên.
 
 \section{Giới hạn}
-Ảnh gốc $32\times32$ thấp hơn mức 128 px được khuyến nghị; resize lên 96 px không khôi phục chi tiết đã mất. Phân tích ảnh trùng chỉ phát hiện trùng pixel chính xác, chưa xét ảnh gần trùng; giấy phép dữ liệu chưa được ghi rõ. Thực nghiệm giới hạn ở một tập dữ liệu, hai kiến trúc, ba mức tinh chỉnh, ba seed và một GPU; không khảo sát scratch như đối chứng trong lượt mới hoặc thời lượng dài hơn.
+Cạnh ảnh gốc chỉ có 32 px, thấp hơn mức 128 px được khuyến nghị; resize lên 96 px không khôi phục chi tiết đã mất. Phân tích ảnh trùng chỉ phát hiện trùng pixel chính xác, chưa xét ảnh gần trùng. Thực nghiệm giới hạn ở một tập dữ liệu, hai kiến trúc, ba mức fine-tuning, ba seed và một GPU; không khảo sát train from scratch làm baseline hoặc thời lượng dài hơn. Cùng số epoch không đồng nghĩa với cùng chi phí tính toán, và chưa có tìm kiếm siêu tham số riêng cho từng kiến trúc. Ba seed chỉ phản ánh biến động do khởi tạo và quá trình train trên một cách chia dữ liệu cố định; SD nhỏ không phải khoảng tin cậy cho mọi cách chia dữ liệu hay mọi ảnh ngoài CIFAR-100.
 
 Thông tin sử dụng AI được trình bày trong \href{https://github.com/dathuynh1108/CO5177-PFDAV/blob/main/AI_USE_REPORT.md}{AI\_USE\_REPORT.md}.
 

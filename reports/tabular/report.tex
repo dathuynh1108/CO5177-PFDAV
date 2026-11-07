@@ -15,15 +15,15 @@
   {tháng 11 năm 2026}
 
 \CourseAbstract{
-Thực nghiệm dự đoán thu nhập trên 50.000 USD mỗi năm từ 14 thuộc tính trong UCI Adult. Sau khi loại các bản ghi trùng và nhóm có nhãn mâu thuẫn, dữ liệu được chia thành ba tập. Bốn cấu hình so sánh gồm dự đoán lớp đa số, hồi quy logistic thường, hồi quy logistic cân bằng lớp và histogram gradient boosting.
+Thực nghiệm dự đoán thu nhập trên 50.000 USD mỗi năm từ 14 thuộc tính trong UCI Adult. Sau khi loại các bản ghi trùng và nhóm có nhãn mâu thuẫn, dữ liệu được chia thành ba tập. Bốn cấu hình so sánh gồm dự đoán lớp đa số, logistic regression thường, logistic regression cân bằng lớp và histogram gradient boosting.
 
-Histogram gradient boosting đạt độ chính xác 87,48\% và macro-F1 0,8185 trên 7.317 mẫu test. Trọng số cân bằng lớp làm tăng recall của hồi quy logistic đối với nhóm thu nhập cao, đồng thời tăng số dự đoán dương tính giả.
+Histogram gradient boosting đạt độ chính xác 87,48\% và macro-F1 0,8185 trên 7.317 mẫu test. Trọng số cân bằng lớp làm tăng recall của logistic regression đối với nhóm thu nhập cao, đồng thời tăng số dự đoán dương tính giả.
 }
 
 \CourseOverview{
 Dữ liệu & UCI Adult với 14 thuộc tính số và phân loại.\\
 Tiền xử lý & Loại trùng trước khi chia tập, điền giá trị thiếu và mã hóa thuộc tính phân loại.\\
-Đối chứng & Dự đoán lớp đa số, hồi quy logistic và histogram gradient boosting.\\
+Đối chứng & Dự đoán lớp đa số, logistic regression và histogram gradient boosting.\\
 Kết quả chính & Histogram gradient boosting đạt độ chính xác 87,48\% và macro-F1 0,8185 trên 7.317 mẫu test.\\
 }
 
@@ -32,14 +32,14 @@ Kết quả chính & Histogram gradient boosting đạt độ chính xác 87,48\
 \chapter{Bài toán và dữ liệu}
 \section{Mục tiêu}
 Bài toán dự đoán nhãn thu nhập lớn hơn 50.000 USD/năm từ các thuộc tính trong UCI Adult.
-Phần phân tích tập trung vào dữ liệu thiếu, mã hóa thuộc tính phân loại, chuẩn hóa thuộc tính số
+Phần phân tích tập trung vào dữ liệu thiếu, mã hóa thuộc tính phân loại, normalization cho thuộc tính số
 và đánh đổi giữa accuracy với chất lượng dự đoán lớp ít mẫu. Bốn đối chứng gồm dự đoán lớp đa số,
 logistic regression, logistic regression cân bằng lớp và histogram gradient boosting.
 \section{Nguồn và cấu trúc}
 Adult gồm 48.842 bản ghi và 14 thuộc tính từ dữ liệu Census năm 1994, do Barry Becker và Ronny Kohavi cung cấp.
-Dữ liệu được UCI công bố theo giấy phép CC BY 4.0 \cite{adult}. Các thuộc tính số là tuổi, fnlwgt, số năm học,
+Dữ liệu được UCI công bố \cite{adult} dưới dạng hai tệp CSV không có hàng tên cột: \code{adult.data} gồm 32.561 bản ghi và \code{adult.test} gồm 16.281 bản ghi. Mỗi dòng chứa 14 thuộc tính đầu vào và nhãn \code{income}. Các thuộc tính số là tuổi, fnlwgt, số năm học,
 capital gain, capital loss và số giờ làm mỗi tuần. Tám thuộc tính còn lại là phân loại.
-Dấu hỏi được đọc thành giá trị thiếu. Không tạo thiếu nhân tạo.
+Dấu hỏi được đọc thành giá trị thiếu. Phân tích sử dụng các giá trị thiếu sẵn có trong dữ liệu, không tạo thiếu nhân tạo. Đích dự đoán là nhãn thu nhập, không phải giá trị thu nhập liên tục; do đó, kết quả được đánh giá như một bài toán phân loại nhị phân.
 \section{Chất lượng dữ liệu và chia tập}
 Hai tệp train/test gốc được gộp trước khi tạo một split mới. Nhóm có cùng 14 thuộc tính
 nhưng nhãn mâu thuẫn bị loại toàn bộ; nhóm trùng còn lại giữ một bản ghi.
@@ -59,29 +59,52 @@ tương ứng 2.772 và 1.618 mẫu. Số giờ làm mỗi tuần có $Q_1=40$, 
 hai ngưỡng 32,5 và 52,5 giờ đánh dấu 9.461 mẫu.
 Các ngưỡng này mô tả độ tập trung và phần đuôi của phân phối, chưa đủ để xác định bản ghi sai.
 Vì vậy, thực nghiệm giữ nguyên các giá trị và không loại thêm mẫu theo IQR.
+Đặc biệt, khi $IQR=0$, quy tắc này chỉ phân biệt giá trị 0 với giá trị dương, chứ không cho thấy mức độ bất thường của khoản thu hoặc lỗ. Với số giờ làm việc, 27,71\% mẫu train bị đánh dấu; loại toàn bộ nhóm này sẽ làm mất nhiều quan sát ngoài khoảng giờ làm phổ biến. Quyết định giữ mẫu tránh đồng nhất phần đuôi phân phối với lỗi nhập liệu. Thực nghiệm chưa so sánh với clipping hay biến đổi log, nên chưa kết luận chiến lược giữ nguyên là tối ưu.
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=\textwidth]{notebook-evidence/training_numeric_distributions.png}
-\caption{Phân bố sáu thuộc tính số trên train. Capital gain và capital loss tập trung ở 0, còn số giờ làm việc tập trung quanh một tuần làm việc thông thường. Trục số bản ghi dùng thang log để thể hiện các khoảng có ít mẫu; thuộc tính giữ ở thang đo gốc.}
+\caption{Phân bố sáu thuộc tính số trên tập train. Capital gain và capital loss tập trung ở 0, còn số giờ làm việc tập trung quanh một tuần làm việc thông thường. Trục số bản ghi dùng thang log để thể hiện các khoảng có ít mẫu; thuộc tính giữ ở thang đo gốc.}
 \label{fig:numeric-distributions}
 \end{figure}
 
 \chapter{Phương pháp và thiết lập}
-\section{Tiền xử lý}
-Split phân tầng theo nhãn với tỷ lệ 70/15/15 và seed 2026; phần 30\% còn lại được chia validation/test bằng seed 2027.
-Median imputer cho cột số và most-frequent imputer cho cột phân loại chỉ fit trên train. Các phép biến đổi được ghép bằng Pipeline và ColumnTransformer \cite{pipeline,columntransformer}.
-Logistic regression dùng StandardScaler và one-hot encoding, với các giá trị phân loại chưa gặp ở train được encoder bỏ qua khi biến đổi validation/test.
-Gradient boosting dùng ordinal encoding cho biến phân loại và khai báo đúng các vị trí categorical;
-mã -1 biểu diễn giá trị phân loại chưa gặp. Không chuẩn hóa các cột số cho cây.
+\section{Chia tập và tiền xử lý}
+Dữ liệu được chia phân tầng theo nhãn với tỷ lệ 70/15/15 và seed 2026; phần 30\% còn lại được chia validation/test bằng seed 2027. Số mẫu train/validation/test lần lượt là 34.146/7.317/7.317. Phân tầng giữ tỷ lệ hai lớp gần nhau giữa các tập, giúp so sánh mô hình trên cùng một phân bố nhãn. Tập validation dùng để chọn cấu hình; tập test chỉ dùng để đánh giá sau khi các lựa chọn đã cố định.
+
+Median imputer cho cột số và most-frequent imputer cho cột phân loại chỉ fit trên tập train. Cách điền này giữ lại các dòng có giá trị thiếu và tạo một quy trình chung cho các mô hình. Median ít chịu ảnh hưởng của giá trị lớn ở phần đuôi hơn trung bình, còn giá trị phân loại phổ biến nhất cung cấp một cách điền đơn giản. Tuy nhiên, việc điền có thể làm tăng tần suất nhóm phổ biến và không mô tả nguyên nhân thiếu dữ liệu. Các phép biến đổi được ghép bằng Pipeline và ColumnTransformer \cite{pipeline,columntransformer}, để validation và test chỉ nhận phép biến đổi đã học từ tập train.
+
+Logistic regression dùng one-hot encoding cho thuộc tính phân loại và StandardScaler cho thuộc tính số. One-hot encoding tránh gán quan hệ thứ tự giả giữa các nhóm như nghề nghiệp hoặc tình trạng hôn nhân. Với thuộc tính số $x_j$, normalization có dạng
+\[
+    z_j=\frac{x_j-\mu_j}{s_j},
+\]
+trong đó $\mu_j$ và $s_j$ được tính trên tập train. Đưa các cột về thang đo tương đương giúp hệ số và regularization ít bị chi phối bởi khác biệt đơn vị, chẳng hạn giữa tuổi và capital gain. Phép biến đổi này không làm phân phối trở thành phân phối chuẩn và không loại giá trị cực đoan. Giá trị phân loại chưa gặp ở tập train được encoder bỏ qua khi biến đổi validation/test.
+
+Histogram gradient boosting dùng ordinal encoding và khai báo các vị trí categorical, vì thế mã số được xử lý như mã nhóm. Mã $-1$ biểu diễn giá trị phân loại chưa gặp. Mô hình cây không áp dụng normalization cho thuộc tính số vì việc chia nhánh dựa trên ngưỡng, không dựa trên khoảng cách giữa các biến.
+
 \section{Các mô hình}
-Baseline luôn dự đoán lớp phổ biến nhất. Logistic regression thường và bản có class weight balanced
-chọn $C\in\{0.1,1,10\}$ theo macro-F1 validation; khi hòa giữ ứng viên xuất hiện trước \cite{logistic}.
-Giới hạn optimizer là 2.000 vòng. Histogram gradient boosting dùng 150 vòng, tối đa 31 lá,
-L2 bằng 1 và không early stopping \cite{histgradient}. Các cấu hình cố định trước khi mở test; không refit trên train cộng validation.
+Baseline luôn dự đoán lớp phổ biến nhất, cung cấp mốc so sánh để kiểm tra mức cải thiện so với việc chỉ dựa vào tỷ lệ nhãn. Hai cấu hình logistic regression dùng cùng đặc trưng và quy trình chọn siêu tham số; điểm khác nhau là trọng số lớp \cite{logistic}. Với $y=1$ ứng với thu nhập trên 50.000 USD và vector đầu vào đã tiền xử lý $\mathbf z$, mô hình có dạng
+\[
+    p(y=1\mid\mathbf z)=\sigma(\mathbf w^\top\mathbf z+b),
+    \qquad \sigma(a)=\frac{1}{1+e^{-a}}.
+\]
+Log-odds của mô hình là hàm tuyến tính trong không gian đặc trưng đã mã hóa; thực nghiệm không bổ sung các đặc trưng tương tác. Tham số $C$ điều khiển nghịch đảo mức regularization: $C$ lớn tương ứng với phạt yếu hơn. Mỗi cấu hình chọn $C\in\{0.1,1,10\}$ theo macro-F1 validation; khi hòa giữ ứng viên xuất hiện trước. Giới hạn optimizer là 2.000 vòng.
+
+Với \code{class\_weight="balanced"}, trọng số của lớp $k$ là
+\[
+    w_k=\frac{N}{2N_k},
+\]
+trong đó $N$ là số mẫu train và $N_k$ là số mẫu thuộc lớp $k$ trong tập này. Vì vậy, mỗi lỗi ở lớp ít mẫu đóng góp lớn hơn vào hàm mất mát. Cơ chế này thay đổi quá trình học mà không thêm hay loại mẫu; nó không bảo đảm mọi chỉ số trên validation hoặc test đều tăng.
+
+Histogram gradient boosting kết hợp tuần tự nhiều cây để tối ưu hàm mất mát, có thể biểu diễn quan hệ phi tuyến và tương tác mà logistic regression tuyến tính không mô hình hóa trực tiếp. Cấu hình dùng 150 vòng, tối đa 31 lá mỗi cây, L2 bằng 1 và không early stopping \cite{histgradient}. Đây là cấu hình cố định, không phải kết quả tìm kiếm toàn diện siêu tham số. Các cấu hình đều được cố định trước khi đánh giá test và không refit trên tập train cộng validation.
+
 \section{Phép đo}
-Accuracy, macro-F1, ma trận nhầm lẫn và precision/recall/F1 từng lớp được tính từ dự đoán trên test.
-Thực nghiệm sử dụng một split và model seed 42, chưa ước lượng độ biến thiên qua nhiều lượt chạy.
-Số mẫu train/validation/test là 34.146/7.317/7.317. ID và chữ ký nguồn được lưu cùng kết quả.
+Accuracy, macro-F1, confusion matrix và precision/recall/F1 từng lớp được tính từ dự đoán trên tập test. Với lớp thu nhập cao là lớp dương, $TP$ là số dự đoán đúng lớp này, $FP$ là số mẫu thu nhập thấp bị dự đoán thành thu nhập cao và $FN$ là số mẫu thu nhập cao bị bỏ sót:
+\[
+    \mathrm{precision}=\frac{TP}{TP+FP},\qquad
+    \mathrm{recall}=\frac{TP}{TP+FN},\qquad
+    F_1=\frac{2TP}{2TP+FP+FN}.
+\]
+Macro-F1 là trung bình F1 của hai lớp, gán vai trò ngang nhau cho mỗi lớp dù số mẫu khác nhau. Chỉ số này được dùng để chọn $C$ nhằm tránh việc accuracy cao che khuất khả năng dự đoán lớp thu nhập cao. Precision và recall vẫn cần được đọc riêng vì cùng một F1 có thể đi kèm những kiểu sai khác nhau. Thực nghiệm sử dụng một split và model seed 42, chưa ước lượng độ biến thiên qua nhiều lượt chạy.
 
 \chapter{Kết quả và phân tích}
 \section{So sánh mô hình}
@@ -93,29 +116,40 @@ Logistic regression & 10.0 & 0.7803 & 85.24\% & 0.7815 \\
 Balanced logistic regression & 10.0 & 0.7639 & 81.43\% & 0.7769 \\
 Histogram gradient boosting & -- & 0.8147 & 87.48\% & 0.8185 \\
 \bottomrule\end{tabularx}
-\caption{Siêu tham số $C$ được chọn theo macro-F1 trên validation; các cột test là kết quả trên tập giữ riêng. Accuracy trình bày theo phần trăm, macro-F1 theo thang 0--1.}\end{table}
+\caption{Siêu tham số $C$ được chọn theo macro-F1 trên tập validation; các cột test là kết quả trên tập test giữ riêng. Accuracy trình bày theo phần trăm, macro-F1 theo thang 0--1.}\end{table}
 \begin{figure}[htbp]\centering\includegraphics[width=.95\textwidth]{generated/scores.png}
 \caption{Histogram gradient boosting đạt accuracy 87,48\% và macro-F1 0,8185, cao nhất trong bốn mô hình trên cùng tập test. Cân bằng lớp làm accuracy của logistic regression giảm từ 85,24\% xuống 81,43\%; kết quả ứng với một split và một seed.}\end{figure}
-\section{Nhận xét}
-Histogram gradient boosting đạt accuracy 87,48\% và macro-F1 0,8185, cao hơn logistic regression 2,24 điểm phần trăm accuracy và 0,0370 macro-F1. Trong split và các cấu hình đã thử, boosting đạt kết quả cao hơn. Phép so sánh chưa tách riêng ảnh hưởng của dạng mô hình và cách mã hóa thuộc tính.
+\section{Ảnh hưởng của mất cân bằng lớp}
+Tập test có 5.565 mẫu thu nhập không quá 50.000 USD và 1.752 mẫu thu nhập cao. Vì lớp thứ nhất chiếm 76,06\%, baseline đạt accuracy 76,06\% dù bỏ sót toàn bộ lớp thu nhập cao. Macro-F1 chỉ đạt 0,4320 và recall lớp thu nhập cao bằng 0. Điều này cho thấy accuracy cần được đọc cùng các chỉ số từng lớp, thay vì dùng một mình để đánh giá chất lượng phân loại.
 
-Thêm trọng số cân bằng lớp làm recall của nhóm thu nhập trên 50.000 USD tăng từ 0,5908 lên 0,8459, trong khi precision giảm từ 0,7403 xuống 0,5764. Số dự đoán dương tính giả tăng từ 363 với hồi quy logistic thông thường lên 1.089 với bản cân bằng lớp. Như vậy, mức giảm bỏ sót đi kèm với sự gia tăng dự đoán dương tính giả.
+Logistic regression thông thường đạt accuracy 85,24\% và macro-F1 0,7815, cải thiện rõ so với baseline. Tuy vậy, mô hình chỉ nhận đúng 1.035 trong 1.752 mẫu thu nhập cao và bỏ sót 717 mẫu. Khi thêm trọng số cân bằng lớp, recall của nhóm này tăng từ 0,5908 lên 0,8459, trong khi precision giảm từ 0,7403 xuống 0,5764. Số mẫu bị bỏ sót giảm từ 717 xuống 270, nhưng số dự đoán dương tính giả tăng từ 363 lên 1.089. Cụ thể, tổng số mẫu thu nhập cao được dự đoán đúng tăng 447, còn tổng số mẫu thu nhập thấp bị dự đoán sai thành thu nhập cao tăng 726.
+
+F1 của lớp thu nhập cao tăng từ 0,6571 lên 0,6856, còn F1 của lớp thu nhập thấp giảm từ 0,9060 xuống 0,8682. Do đó, macro-F1 chung giảm nhẹ từ 0,7815 xuống 0,7769 dù recall của lớp ít mẫu tăng mạnh. Cân bằng trọng số lớp là một cách ưu tiên giảm bỏ sót, nhưng không tự động tối ưu macro-F1. Nếu mục tiêu đặt chi phí cao hơn cho bỏ sót, cấu hình balanced có thể đáng cân nhắc; nếu cần hạn chế dự đoán dương tính giả, precision thấp hơn là đánh đổi đáng kể. Thực nghiệm chưa xác định chi phí nghiệp vụ hay chọn ngưỡng dự đoán riêng cho hai mục tiêu này.
+
+\section{Kết quả của histogram gradient boosting}
+Histogram gradient boosting đạt accuracy 87,48\% và macro-F1 0,8185, cao hơn logistic regression thông thường 2,24 điểm phần trăm accuracy và 0,0370 macro-F1. Thứ hạng này cũng xuất hiện trên validation, nơi boosting đạt macro-F1 0,8147. Sự nhất quán giữa hai tập hỗ trợ lựa chọn boosting trong phạm vi cấu hình đã thử, nhưng chưa đủ để kết luận về độ ổn định qua các split khác.
+
+Confusion matrix cho thấy boosting dự đoán đúng 1.163 mẫu thu nhập cao, bỏ sót 589 mẫu và tạo 327 dương tính giả. So với logistic regression thông thường, cả số bỏ sót lẫn số dương tính giả đều giảm; precision và recall của lớp thu nhập cao lần lượt đạt 0,7805 và 0,6638. Tuy nhiên, mô hình vẫn bỏ sót khoảng một phần ba lớp thu nhập cao. Vì vậy, accuracy 87,48\% không đồng nghĩa với việc hai lớp được dự đoán tốt như nhau.
+
+Khả năng biểu diễn phi tuyến và tương tác là một khác biệt về phương pháp giữa boosting và logistic regression. Tuy nhiên, hai pipeline cũng sử dụng cách mã hóa thuộc tính phân loại khác nhau; thực nghiệm chưa tách riêng các yếu tố này nên không thể quy toàn bộ mức cải thiện cho một cơ chế cụ thể. Kết quả chỉ xác định mô hình tốt nhất trong bốn cấu hình trên cùng split, chưa chứng minh boosting luôn phù hợp hơn cho mọi dữ liệu thu nhập.
 
 \begin{figure}[htbp]\centering\includegraphics[width=.9\textwidth]{generated/confusion.png}
-\caption{Ma trận nhầm lẫn trên test của mô hình có macro-F1 validation cao nhất; hàng là nhãn thực, cột là nhãn dự đoán.}\end{figure}
+\caption{Confusion matrix trên test của mô hình có macro-F1 validation cao nhất; hàng là nhãn thực, cột là nhãn dự đoán.}\end{figure}
 \chapter{Kết luận và giới hạn}
 \section{Kết luận}
 Trên toàn bộ dữ liệu sau làm sạch và split đã cố định, histogram gradient boosting đạt kết quả cao nhất trong các cấu hình được khảo sát. Logistic regression cân bằng lớp tăng recall của nhóm thu nhập cao nhưng giảm precision và accuracy. Vì vậy, lựa chọn trọng số lớp cần gắn với mức chấp nhận bỏ sót và dự đoán dương tính giả của bài toán.
 \section{Giới hạn}
-Các kết quả phản ánh một cách chia dữ liệu và một seed.
-Nguồn điều tra năm 1994 giới hạn khả năng áp dụng cho thu nhập hiện nay. Dữ liệu không có mã hộ gia đình để chia tập theo hộ. Fnlwgt được dùng làm biến đầu vào, không làm trọng số mẫu.
-Chưa khảo sát riêng ảnh hưởng của từng chiến lược imputation, xử lý giá trị cực đoan hay hiệu quả trên từng nhóm nhân khẩu.
+Các kết quả phản ánh một cách chia dữ liệu và một seed, chưa có khoảng tin cậy hoặc phép kiểm định cho chênh lệch giữa các mô hình. Miền tìm kiếm $C$ còn hẹp và cấu hình boosting được cố định, nên so sánh chưa đại diện cho hiệu quả tối ưu của từng họ mô hình.
+
+Nguồn điều tra năm 1994 giới hạn khả năng áp dụng cho thu nhập hiện nay. Dữ liệu không có mã hộ gia đình để chia tập theo hộ; loại các vector thuộc tính trùng chỉ giải quyết một dạng trùng lặp quan sát. Fnlwgt được dùng làm biến đầu vào, không làm trọng số mẫu, nên các chỉ số phản ánh các bản ghi trong tập test chứ không phải ước lượng có trọng số cho toàn bộ dân số.
+
+Chưa khảo sát riêng ảnh hưởng của từng chiến lược imputation, xử lý giá trị cực đoan hay hiệu quả trên từng nhóm nhân khẩu. Các đặc trưng dự đoán và chênh lệch chỉ số không cung cấp bằng chứng về quan hệ nhân quả với thu nhập.
 \section{Hướng mở rộng}
-Hướng tiếp theo là so sánh các chiến lược imputation, chọn cấu hình bằng validation và đánh giá trên một tập test giữ riêng. Đây là đề xuất chưa được thực nghiệm.
+Các hướng tiếp theo gồm lặp lại trên nhiều split để đánh giá độ biến thiên, so sánh chiến lược imputation và xử lý phần đuôi phân phối, đồng thời chọn ngưỡng dự đoán theo chi phí bỏ sót và dương tính giả. Mỗi thay đổi cần được chọn bằng validation theo giao thức xác định trước, sau đó đánh giá trên tập test giữ riêng. Đây là các đề xuất chưa được thực nghiệm.
 
 Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5177-PFDAV/blob/main/AI\_USE\_REPORT.md}{AI\_USE\_REPORT.md}.
 \begin{thebibliography}{9}\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
-\bibitem{adult} B. Becker và R. Kohavi. \emph{Adult}. UCI Machine Learning Repository, 1996. DOI: 10.24432/C5XW20. \url{https://archive.ics.uci.edu/dataset/2/adult}. License CC BY 4.0.
+\bibitem{adult} B. Becker và R. Kohavi. \emph{Adult}. UCI Machine Learning Repository, 1996. DOI: 10.24432/C5XW20. \url{https://archive.ics.uci.edu/dataset/2/adult}.
 \bibitem{pipeline} Scikit-learn. \emph{Pipeline}. \url{https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html}.
 \bibitem{columntransformer} Scikit-learn. \emph{ColumnTransformer}. \url{https://scikit-learn.org/stable/modules/generated/sklearn.compose.ColumnTransformer.html}.
 \bibitem{logistic} Scikit-learn. \emph{LogisticRegression}. \url{https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html}.

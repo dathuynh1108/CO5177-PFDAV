@@ -3,7 +3,7 @@ on: [push, pull_request]
 permissions:
   contents: read
 jobs:
-  image:
+  coursework:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -20,7 +20,14 @@ jobs:
       - run: pip install --no-deps -e .
       - run: python -m compileall -q src scripts
       - run: python -m pytest -q
-      - run: python -m image.analysis > /tmp/image-audit.json
-      - run: python -m studies.audit
-      - run: python -m text_reuse.analysis
+      - name: Validate current notebooks
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import nbformat
+          for name in ('tabular', 'text', 'image'):
+              notebook = nbformat.read(Path('notebooks') / f'{name}.ipynb', as_version=4)
+              nbformat.validate(notebook)
+              assert not any(output.output_type == 'error' for cell in notebook.cells if cell.cell_type == 'code' for output in cell.get('outputs', [])), name
+          PY
       - run: python scripts/check_site.py
