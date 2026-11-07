@@ -51,24 +51,24 @@ Gradient boosting tăng 2,24 điểm phần trăm độ chính xác so với h�
 \section{Text — Phân loại chuyên mục VietnamNet}
 Bộ dữ liệu VietnamNet được công bố tại kho dữ liệu Hugging Face của sinh viên Huỳnh Thành Đạt: \href{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}{VietnamNet News}. Từ 212.705 bản ghi nguồn, các bước kiểm tra loại 1.167 tiêu đề rỗng, 3.636 bản ghi thuộc nhóm trùng có nhãn mâu thuẫn và 527 bản ghi trùng còn lại. Toàn bộ 207.375 bài hợp lệ thuộc 19 chuyên mục được giữ để mô hình hóa, không lấy mẫu giới hạn theo lớp.
 
-Các bài có cùng đầu vào token ở tiêu đề hoặc nội dung Head--Tail được gộp nhóm trước khi chia tập. Phép chia theo nhóm tạo 145.162 bài train, 31.107 bài validation và 31.106 bài test. Đối chứng tiêu đề và mô hình toàn văn dùng chung danh sách bài và ba tập này. URL và tên chuyên mục không được đưa vào đầu vào mô hình.
+Các bài có cùng đầu vào token ở tiêu đề hoặc nội dung Head--Tail được gộp nhóm trước khi chia tập. Phép chia theo nhóm tạo 145.162 bài train, 31.107 bài validation và 31.106 bài test. Các baseline và mô hình fine-tuning dùng chung danh sách bài và ba tập này. URL và tên chuyên mục không được đưa vào đầu vào mô hình.
 
-Đối chứng tiêu đề gồm dự đoán lớp đa số, SVM với TF-IDF theo từ hoặc ký tự và hồi quy logistic trên đặc trưng PhoBERT đóng băng. Mô hình toàn văn kết hợp tiêu đề với phần đầu và phần cuối bài, tách từ bằng PyVi và dùng Head--Tail trong giới hạn 256 token. Mô hình này dùng đầu phân loại 19 lớp của \texttt{AutoModelForSequenceClassification}, tinh chỉnh cả encoder và đầu phân loại đủ bảy epoch; checkpoint epoch 6 được chọn theo macro-F1 validation. Nhiệt độ và hệ số từng lớp được ước lượng trên validation trước khi đánh giá test.
+Các baseline gồm dự đoán lớp đa số, SVM với TF-IDF theo từ hoặc ký tự và hồi quy logistic trên đặc trưng PhoBERT đóng băng. Mô hình toàn văn kết hợp tiêu đề với phần đầu và phần cuối bài, tách từ bằng PyVi và dùng Head--Tail trong giới hạn 256 token. Mô hình này dùng đầu phân loại 19 lớp của \texttt{AutoModelForSequenceClassification}, tinh chỉnh cả encoder và đầu phân loại đủ bảy epoch; checkpoint epoch 6 được chọn theo macro-F1 validation. Nhiệt độ và hệ số từng lớp được ước lượng trên validation trước khi đánh giá test.
 
 \begin{table}[htbp]\centering
 \begin{tabularx}{\linewidth}{@{}Xrr@{}}\toprule
-Mô hình và đầu vào & Độ chính xác (\%) & Macro-F1\\\midrule
-Dự đoán lớp đa số & 6,00 & 0,0060\\
-TF-IDF theo từ, SVM trên tiêu đề & 80,18 & 0,7835\\
-TF-IDF theo ký tự, SVM trên tiêu đề & 80,26 & 0,7858\\
-PhoBERT đóng băng, hồi quy logistic trên tiêu đề & 80,93 & 0,7933\\
-PhoBERT tinh chỉnh trên nội dung bài, argmax & 91,83 & 0,9107\\
-PhoBERT tinh chỉnh, có hiệu chỉnh và hệ số lớp & 91,89 & 0,9112\\\bottomrule
+Mô hình & Độ chính xác (\%) & Macro-F1\\\midrule
+Majority baseline & 6,00 & 0,0060\\
+Word TF-IDF + Linear SVM & 80,18 & 0,7835\\
+Character TF-IDF + Linear SVM & 80,26 & 0,7858\\
+Frozen PhoBERT + Logistic regression & 80,93 & 0,7933\\
+PhoBERT fine-tuning (argmax) & 91,83 & 0,9107\\
+PhoBERT fine-tuning + calibration & 91,89 & 0,9112\\\bottomrule
 \end{tabularx}
 \caption{Kết quả trên cùng 31.106 bài test, sau khi chia nhóm theo đầu vào token.}
 \end{table}
 
-Sau hiệu chỉnh, mô hình toàn văn cao hơn đối chứng PhoBERT tiêu đề 10,96 điểm phần trăm độ chính xác. Phép so sánh thay đổi cả nội dung đầu vào và cách huấn luyện, nên không tách riêng tác động của từng yếu tố. Temperature scaling giảm NLL validation từ 0,3572 xuống 0,3018; kết hợp hệ số lớp làm accuracy test tăng từ 91,83\% lên 91,89\% và macro-F1 tăng từ 0,9107 lên 0,9112. Hiệu chỉnh làm tăng ròng 18 bài đúng, gồm 123 bài được sửa đúng và 105 bài từ đúng chuyển thành sai.
+Sau hiệu chỉnh, mô hình toàn văn cao hơn Frozen PhoBERT + Logistic regression 10,96 điểm phần trăm độ chính xác. Phép so sánh thay đổi cả nội dung đầu vào và cách huấn luyện, nên không tách riêng tác động của từng yếu tố. Temperature scaling giảm NLL validation từ 0,3572 xuống 0,3018; kết hợp hệ số lớp làm accuracy test tăng từ 91,83\% lên 91,89\% và macro-F1 tăng từ 0,9107 lên 0,9112. Hiệu chỉnh làm tăng ròng 18 bài đúng, gồm 123 bài được sửa đúng và 105 bài từ đúng chuyển thành sai.
 
 \section{Image — Tinh chỉnh ResNet18 và Swin-T trên CIFAR-100}
 CIFAR-100 có 60.000 ảnh thuộc 100 lớp. Kiểm tra trùng pixel giữ một đại diện cho mỗi ảnh, ưu tiên tập test, rồi tập validation và tập huấn luyện. Sau khi loại 24 ảnh huấn luyện và hai ảnh test lặp, ba tập lần lượt có 44.976, 5.000 và 9.998 ảnh. Ảnh gốc $32\times32$ được nội suy lên $96\times96$ để kiểm soát chi phí, thấp hơn kích thước cạnh ngắn 128 px mà đề khuyến nghị. Phép đệm, cắt ngẫu nhiên và lật ngang được áp dụng cho tập huấn luyện.

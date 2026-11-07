@@ -44,7 +44,7 @@ x=[\mathrm{CLS}]\Vert t_{1:127}\Vert t_{L-126:L}\Vert[\mathrm{SEP}].
 Chuỗi ngắn hơn được bổ sung padding; attention mask phân biệt token văn bản với padding. Việc giữ đầu và cuối giúp đưa cả hai vị trí vào đầu vào 256 token, nhưng phần giữa bài viết vẫn bị bỏ. Loại chữ số cũng có thể làm mất năm, giá tiền hoặc tỷ số; thực nghiệm chưa tách riêng ảnh hưởng của bước này.
 
 \section{PhoBERT và hàm mất mát}
-PhoBERT là mô hình ngôn ngữ tiền huấn luyện cho tiếng Việt \cite{phobert}. Thực nghiệm dùng phiên bản Base v2 qua \texttt{AutoModelForSequenceClassification}, với đầu phân loại 19 lớp của kiến trúc RoBERTa và cập nhật toàn bộ encoder cùng đầu phân loại \cite{phobert-v2}. Đầu phân loại được khởi tạo cho bài toán chuyên mục; hồi quy logistic chỉ xuất hiện trong đối chứng tiêu đề dùng encoder đóng băng. Trọng số lớp chỉ được tính từ train:
+PhoBERT là mô hình ngôn ngữ tiền huấn luyện cho tiếng Việt \cite{phobert}. Thực nghiệm dùng phiên bản Base v2 qua \texttt{AutoModelForSequenceClassification}, với đầu phân loại 19 lớp của kiến trúc RoBERTa và cập nhật toàn bộ encoder cùng đầu phân loại \cite{phobert-v2}. Đầu phân loại được khởi tạo cho bài toán chuyên mục; baseline Frozen PhoBERT + Logistic regression sử dụng encoder đóng băng. Trọng số lớp chỉ được tính từ train:
 \[
 w_c=\frac{N_{\mathrm{train}}}{K n_c},\qquad K=19,
 \]
@@ -54,10 +54,10 @@ trong đó $n_c$ là số bài train thuộc lớp $c$. Cross-entropy trên batc
 \]
 Lớp ít bài có trọng số lớn hơn, làm lỗi ở lớp đó đóng góp nhiều hơn vào loss. Không áp dụng hệ số tăng cường thủ công theo chuyên mục.
 
-\section{Các mô hình đối chứng trên tiêu đề}
-Các đối chứng dùng cùng ID bài báo và cùng ba tập với mô hình toàn văn. Đầu vào chỉ gồm tiêu đề đã tách từ. Hai mô hình SVM tuyến tính dùng TF-IDF theo từ (unigram, bigram) hoặc ký tự (char-within-word, n-gram 3--5); từ vựng và IDF được học trên train, tối đa 80.000 đặc trưng.
+\section{Các baseline}
+Các baseline dùng cùng ID bài báo và cùng ba tập với mô hình toàn văn. Đầu vào chỉ gồm tiêu đề đã tách từ. Hai mô hình SVM tuyến tính dùng TF-IDF theo từ (unigram, bigram) hoặc ký tự (char-within-word, n-gram 3--5); từ vựng và IDF được học trên train, tối đa 80.000 đặc trưng.
 
-Đối chứng PhoBERT dùng encoder đóng băng, đầu vào tối đa 128 token và trung bình có attention mask của các vector token 768 chiều. Hồi quy logistic được fit trên các vector này. Cả SVM và hồi quy logistic chọn $C\in\{0{,}5;1;2\}$ bằng macro-F1 validation. Dự đoán lớp đa số làm mốc tham chiếu. Các mô hình đối chứng chỉ dùng tiêu đề, còn mô hình chính tinh chỉnh encoder và đầu phân loại trên đầu vào bài báo; sự khác biệt kết quả phản ánh cả hai thay đổi.
+Frozen PhoBERT dùng encoder đóng băng, đầu vào tối đa 128 token và trung bình có attention mask của các vector token 768 chiều. Hồi quy logistic được fit trên các vector này. Cả SVM và hồi quy logistic chọn $C\in\{0{,}5;1;2\}$ bằng macro-F1 validation. Dự đoán lớp đa số làm mốc tham chiếu. Các baseline chỉ dùng tiêu đề, còn mô hình chính tinh chỉnh encoder và đầu phân loại trên đầu vào bài báo; sự khác biệt kết quả phản ánh cả hai thay đổi.
 
 \section{Cấu hình và lựa chọn checkpoint}
 \begin{table}[htbp]\centering
@@ -155,29 +155,29 @@ Thể thao có F1 cao nhất (0,9903), tiếp theo là Ô tô -- Xe máy (0,9788
 
 Cặp nhầm lẫn có số bài lớn nhất là Thời sự thành Pháp luật: 139/1.761 bài (7,89\%). Chiều ngược lại có 49/1.778 bài (2,76\%), cho thấy nhầm lẫn giữa hai lớp không đối xứng. Đời sống thành Du lịch có 79/1.826 bài (4,33\%). Thị trường tiêu dùng thành Kinh doanh có 70/1.347 bài (5,20\%), còn Kinh doanh thành Thị trường tiêu dùng có 54/1.806 bài (2,99\%). Đọc đồng thời số bài và tỷ lệ giúp phân biệt số lỗi tuyệt đối với mức nhầm lẫn trong từng lớp.
 
-\section{Đối chiếu với các mô hình tiêu đề}
+\section{So sánh các mô hình}
 Các baseline được huấn luyện lại trên cùng 145.162 bài train và chọn siêu tham số bằng cùng 31.107 bài validation. PhoBERT đóng băng kết hợp hồi quy logistic có macro-F1 validation cao nhất (0,7942), với $C=1$. Trên cùng 31.106 ID test, mô hình này đạt accuracy 80,9265\% và macro-F1 0,793345. TF-IDF từ và TF-IDF ký tự lần lượt đạt accuracy 80,1807\% và 80,2643\%, với macro-F1 0,783519 và 0,785756. Hai SVM đều chọn $C=0,5$; macro-F1 validation tương ứng là 0,7896 và 0,7879.
 
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{Xrr}\toprule
-Mô hình và đầu vào & Accuracy test & Macro-F1 test\\\midrule
-Tiêu đề: Dự đoán lớp đa số & 6,0021\% & 0,005960\\
-Tiêu đề: TF-IDF theo từ và SVM & 80,1807\% & 0,783519\\
-Tiêu đề: TF-IDF theo ký tự và SVM & 80,2643\% & 0,785756\\
-Tiêu đề: PhoBERT đóng băng và hồi quy logistic & 80,9265\% & 0,793345\\
-Bài báo: PhoBERT tinh chỉnh, argmax & 91,8312\% & 0,910653\\
-Bài báo: PhoBERT tinh chỉnh, có hiệu chỉnh & 91,8890\% & 0,911218\\\bottomrule
+Mô hình & Accuracy test & Macro-F1 test\\\midrule
+Majority baseline & 6,0021\% & 0,005960\\
+Word TF-IDF + Linear SVM & 80,1807\% & 0,783519\\
+Character TF-IDF + Linear SVM & 80,2643\% & 0,785756\\
+Frozen PhoBERT + Logistic regression & 80,9265\% & 0,793345\\
+PhoBERT fine-tuning (argmax) & 91,8312\% & 0,910653\\
+PhoBERT fine-tuning + calibration & 91,8890\% & 0,911218\\\bottomrule
 \end{tabularx}
-\caption[Đối chiếu các mô hình tiêu đề và mô hình bài báo]{Trên cùng ID test, accuracy tăng từ 80,9265\% với PhoBERT tiêu đề đóng băng lên 91,8312\% với PhoBERT bài báo tinh chỉnh trước hiệu chỉnh; macro-F1 tăng từ 0,793345 lên 0,910653. Các mô hình được chọn bằng validation. Phép so sánh thay đổi cả đầu vào và việc cập nhật encoder, nên chưa tách riêng tác động của nội dung và fine-tuning.}
+\caption[Kết quả các mô hình]{Trên cùng ID test, accuracy tăng từ 80,9265\% với Frozen PhoBERT + Logistic regression lên 91,8312\% với PhoBERT fine-tuning trước calibration; macro-F1 tăng từ 0,793345 lên 0,910653. Các mô hình được chọn bằng validation. Phép so sánh thay đổi cả đầu vào và việc cập nhật encoder, nên chưa tách riêng tác động của nội dung và fine-tuning.}
 \label{tab:text-headline-comparison}
 \end{table}
 
-So với baseline tiêu đề, mô hình bài báo trước hiệu chỉnh cao hơn 10,9046 điểm phần trăm accuracy và 0,117307 macro-F1. Phép so sánh thay đổi đồng thời nội dung đầu vào, độ dài token, cách tổng hợp đặc trưng và việc cập nhật encoder. Chênh lệch vì vậy mô tả hiệu quả của hai quy trình trên cùng dữ liệu, chưa tách riêng tác động của việc thêm nội dung hoặc fine-tuning.
+So với Frozen PhoBERT + Logistic regression, PhoBERT fine-tuning trước calibration cao hơn 10,9046 điểm phần trăm accuracy và 0,117307 macro-F1. Phép so sánh thay đổi đồng thời nội dung đầu vào, độ dài token, cách tổng hợp đặc trưng và việc cập nhật encoder. Chênh lệch vì vậy mô tả hiệu quả của hai quy trình trên cùng dữ liệu, chưa tách riêng tác động của việc thêm nội dung hoặc fine-tuning.
 
 \chapter{Kết luận và giới hạn}
 Trên toàn bộ 207.375 bài hợp lệ và phép chia theo nhóm đầu vào, PhoBERT đạt accuracy 91,83\% và macro-F1 0,9107 trước hiệu chỉnh. Hiệu chỉnh chỉ dùng validation đưa hai chỉ số test lên 91,89\% và 0,9112. Mức tăng tương ứng 18 bài đúng trên 31.106 bài test; khác biệt giữa các chuyên mục lớn hơn nhiều so với thay đổi tổng hợp này.
 
-Thực nghiệm đánh giá một phép chia và một seed, chưa lượng hóa biến thiên giữa các lần huấn luyện. Chia theo nhóm đầu vào giống nhau hạn chế một dạng rò rỉ cụ thể nhưng không thay thế đánh giá theo thời gian hoặc đo các bài gần trùng về ngữ nghĩa. Head--Tail chỉ giữ phần đầu và cuối, còn phép loại chữ số có thể bỏ thông tin; chưa có đối chứng tách riêng hai lựa chọn này. Vì vậy, kết quả mô tả hiệu quả của toàn bộ quy trình đã đo trên nguồn VietnamNet.
+Thực nghiệm đánh giá một phép chia và một seed, chưa lượng hóa biến thiên giữa các lần huấn luyện. Chia theo nhóm đầu vào giống nhau hạn chế một dạng rò rỉ cụ thể nhưng không thay thế đánh giá theo thời gian hoặc đo các bài gần trùng về ngữ nghĩa. Head--Tail chỉ giữ phần đầu và cuối, còn phép loại chữ số có thể bỏ thông tin; chưa khảo sát riêng hai lựa chọn này. Vì vậy, kết quả mô tả hiệu quả của toàn bộ quy trình đã đo trên nguồn VietnamNet.
 
 Phạm vi hỗ trợ AI được trình bày trong \href{https://github.com/dathuynh1108/CO5177-PFDAV/blob/main/AI_USE_REPORT.md}{AI\_USE\_REPORT.md}.
 
