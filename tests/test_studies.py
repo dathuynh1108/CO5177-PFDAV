@@ -8,7 +8,7 @@ import pytest
 
 from studies.evidence import audit, metrics
 from studies.tabular import CATEGORICAL, NUMERIC, clean, preprocessing
-from studies.text import canonical_url, deduplicate, normalize
+from studies.text import canonical_url, deduplicate, normalize, split_indices
 
 
 def test_news_duplicate_components_remove_conflicting_labels_transitively():
@@ -35,6 +35,50 @@ def test_news_canonical_input_removes_tracking_but_rejects_other_hosts():
     assert normalize("  a\n b  ") == "a b"
     with pytest.raises(ValueError, match="Unexpected article host"):
         canonical_url("https://example.org/article")
+
+
+def test_news_shared_bodies_are_grouped_but_missing_bodies_are_not_duplicates():
+    frame = pd.DataFrame(
+        [
+            {
+                "id": "1",
+                "url": "a",
+                "title": "first",
+                "content": "Shared body",
+                "category": "a",
+            },
+            {
+                "id": "2",
+                "url": "b",
+                "title": "second",
+                "content": " SHARED  body ",
+                "category": "b",
+            },
+            {"id": "3", "url": "c", "title": "third", "content": "", "category": "a"},
+            {"id": "4", "url": "d", "title": "fourth", "content": "", "category": "b"},
+        ]
+    )
+    retained, info = deduplicate(frame)
+    assert retained["id"].tolist() == ["3", "4"]
+    assert info["conflicting_category_rows_removed"] == 2
+    assert info["duplicate_rows_removed_after_conflicts"] == 0
+
+
+def test_news_partitioning_keeps_every_article_and_identical_input_groups_together():
+    frame = pd.DataFrame(
+        {
+            "category": np.tile(["a", "b"], 100),
+            "input_group": np.repeat(np.arange(100), 2),
+        }
+    )
+    splits = split_indices(frame, {"split_seed": 2026})
+    positions = [set(values) for values in splits.values()]
+    groups = [set(frame.iloc[values]["input_group"]) for values in splits.values()]
+    assert set.union(*positions) == set(range(len(frame)))
+    for i in range(3):
+        for j in range(i):
+            assert not positions[i] & positions[j]
+            assert not groups[i] & groups[j]
 
 
 def adult_frame():

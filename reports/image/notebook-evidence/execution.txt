@@ -1,0 +1,446 @@
+Notebook image.ipynb: bae9c5ff812eb9cd57cfb6f2eefadb45ad9a57f9a1c65fae8cafd356d255bee6
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+Executing cell 3
+Executing cell 4
+Executing cell 6
+Repository: /workspace/co5177
+Python 3.12.12 · PyTorch 2.10.0+cu130 · torchvision 0.25.0+cu130
+NumPy 2.5.4 · Matplotlib 3.11.2 · Pillow 12.3.0
+CUDA 13.0 · device NVIDIA GeForce RTX 5090 · BF16 native=True
+DATA_ROOT=/tmp/cifar100 · fixed output root=True
+Protocol: 6 configurations × 3 seed × 20 epoch
+New results directory: /workspace/co5177/runs/image-notebook-final
+Executing cell 7
+Executing cell 9
+Dataset download source: University of Toronto (torchvision official URL)
+Executing cell 11
+Executing cell 12
+Executing cell 14
+Executing cell 16
+Classes: 100 · RGB images: 32×32 · train/validation/test after deduplication: 44,976/5,000/9,998
+Images removed from the original splits: 24 train, 0 validation, 2 test
+Executing cell 18
+Executing cell 20
+Executing cell 22
+Executing cell 24
+Downloading: "https://download.pytorch.org/models/resnet18-f37072fd.pth" to /root/.cache/torch/hub/checkpoints/resnet18-f37072fd.pth
+  0%|          | 0.00/44.7M [00:00<?, ?B/s]
+ 16%|█▌        | 7.00M/44.7M [00:00<00:00, 73.1MB/s]
+ 32%|███▏      | 14.5M/44.7M [00:00<00:00, 75.7MB/s]
+ 49%|████▉     | 22.0M/44.7M [00:00<00:00, 76.6MB/s]
+ 66%|██████▌   | 29.5M/44.7M [00:00<00:00, 77.0MB/s]
+ 83%|████████▎ | 37.0M/44.7M [00:00<00:00, 77.2MB/s]
+100%|█████████▉| 44.5M/44.7M [00:00<00:00, 77.3MB/s]
+100%|██████████| 44.7M/44.7M [00:00<00:00, 76.9MB/s]
+
+resnet18_head seed=42 epoch=1/20 val_acc=0.5464
+resnet18_head seed=42 epoch=2/20 val_acc=0.5758
+resnet18_head seed=42 epoch=3/20 val_acc=0.5786
+resnet18_head seed=42 epoch=4/20 val_acc=0.5946
+resnet18_head seed=42 epoch=5/20 val_acc=0.5942
+resnet18_head seed=42 epoch=6/20 val_acc=0.6004
+resnet18_head seed=42 epoch=7/20 val_acc=0.6024
+resnet18_head seed=42 epoch=8/20 val_acc=0.6064
+resnet18_head seed=42 epoch=9/20 val_acc=0.6050
+resnet18_head seed=42 epoch=10/20 val_acc=0.6170
+resnet18_head seed=42 epoch=11/20 val_acc=0.6142
+resnet18_head seed=42 epoch=12/20 val_acc=0.6124
+resnet18_head seed=42 epoch=13/20 val_acc=0.6086
+resnet18_head seed=42 epoch=14/20 val_acc=0.6122
+resnet18_head seed=42 epoch=15/20 val_acc=0.6130
+resnet18_head seed=42 epoch=16/20 val_acc=0.6180
+resnet18_head seed=42 epoch=17/20 val_acc=0.6182
+resnet18_head seed=42 epoch=18/20 val_acc=0.6186
+resnet18_head seed=42 epoch=19/20 val_acc=0.6166
+resnet18_head seed=42 epoch=20/20 val_acc=0.6180
+resnet18_head seed=43 epoch=1/20 val_acc=0.5410
+resnet18_head seed=43 epoch=2/20 val_acc=0.5780
+resnet18_head seed=43 epoch=3/20 val_acc=0.5954
+resnet18_head seed=43 epoch=4/20 val_acc=0.5878
+resnet18_head seed=43 epoch=5/20 val_acc=0.5952
+resnet18_head seed=43 epoch=6/20 val_acc=0.5988
+resnet18_head seed=43 epoch=7/20 val_acc=0.6006
+resnet18_head seed=43 epoch=8/20 val_acc=0.6018
+resnet18_head seed=43 epoch=9/20 val_acc=0.6024
+resnet18_head seed=43 epoch=10/20 val_acc=0.6034
+resnet18_head seed=43 epoch=11/20 val_acc=0.6108
+resnet18_head seed=43 epoch=12/20 val_acc=0.6070
+resnet18_head seed=43 epoch=13/20 val_acc=0.6080
+resnet18_head seed=43 epoch=14/20 val_acc=0.6110
+resnet18_head seed=43 epoch=15/20 val_acc=0.6146
+resnet18_head seed=43 epoch=16/20 val_acc=0.6140
+resnet18_head seed=43 epoch=17/20 val_acc=0.6136
+resnet18_head seed=43 epoch=18/20 val_acc=0.6150
+resnet18_head seed=43 epoch=19/20 val_acc=0.6156
+resnet18_head seed=43 epoch=20/20 val_acc=0.6154
+resnet18_head seed=44 epoch=1/20 val_acc=0.5524
+resnet18_head seed=44 epoch=2/20 val_acc=0.5698
+resnet18_head seed=44 epoch=3/20 val_acc=0.5900
+resnet18_head seed=44 epoch=4/20 val_acc=0.5934
+resnet18_head seed=44 epoch=5/20 val_acc=0.5992
+resnet18_head seed=44 epoch=6/20 val_acc=0.5942
+resnet18_head seed=44 epoch=7/20 val_acc=0.6070
+resnet18_head seed=44 epoch=8/20 val_acc=0.6040
+resnet18_head seed=44 epoch=9/20 val_acc=0.6076
+resnet18_head seed=44 epoch=10/20 val_acc=0.6058
+resnet18_head seed=44 epoch=11/20 val_acc=0.6106
+resnet18_head seed=44 epoch=12/20 val_acc=0.6104
+resnet18_head seed=44 epoch=13/20 val_acc=0.6162
+resnet18_head seed=44 epoch=14/20 val_acc=0.6164
+resnet18_head seed=44 epoch=15/20 val_acc=0.6164
+resnet18_head seed=44 epoch=16/20 val_acc=0.6180
+resnet18_head seed=44 epoch=17/20 val_acc=0.6184
+resnet18_head seed=44 epoch=18/20 val_acc=0.6226
+resnet18_head seed=44 epoch=19/20 val_acc=0.6214
+resnet18_head seed=44 epoch=20/20 val_acc=0.6226
+resnet18_partial seed=42 epoch=1/20 val_acc=0.6376
+resnet18_partial seed=42 epoch=2/20 val_acc=0.6890
+resnet18_partial seed=42 epoch=3/20 val_acc=0.7064
+resnet18_partial seed=42 epoch=4/20 val_acc=0.7132
+resnet18_partial seed=42 epoch=5/20 val_acc=0.7232
+resnet18_partial seed=42 epoch=6/20 val_acc=0.7276
+resnet18_partial seed=42 epoch=7/20 val_acc=0.7256
+resnet18_partial seed=42 epoch=8/20 val_acc=0.7302
+resnet18_partial seed=42 epoch=9/20 val_acc=0.7350
+resnet18_partial seed=42 epoch=10/20 val_acc=0.7294
+resnet18_partial seed=42 epoch=11/20 val_acc=0.7314
+resnet18_partial seed=42 epoch=12/20 val_acc=0.7298
+resnet18_partial seed=42 epoch=13/20 val_acc=0.7410
+resnet18_partial seed=42 epoch=14/20 val_acc=0.7394
+resnet18_partial seed=42 epoch=15/20 val_acc=0.7404
+resnet18_partial seed=42 epoch=16/20 val_acc=0.7368
+resnet18_partial seed=42 epoch=17/20 val_acc=0.7404
+resnet18_partial seed=42 epoch=18/20 val_acc=0.7378
+resnet18_partial seed=42 epoch=19/20 val_acc=0.7376
+resnet18_partial seed=42 epoch=20/20 val_acc=0.7380
+resnet18_partial seed=43 epoch=1/20 val_acc=0.6458
+resnet18_partial seed=43 epoch=2/20 val_acc=0.6876
+resnet18_partial seed=43 epoch=3/20 val_acc=0.7116
+resnet18_partial seed=43 epoch=4/20 val_acc=0.7100
+resnet18_partial seed=43 epoch=5/20 val_acc=0.7246
+resnet18_partial seed=43 epoch=6/20 val_acc=0.7280
+resnet18_partial seed=43 epoch=7/20 val_acc=0.7302
+resnet18_partial seed=43 epoch=8/20 val_acc=0.7308
+resnet18_partial seed=43 epoch=9/20 val_acc=0.7338
+resnet18_partial seed=43 epoch=10/20 val_acc=0.7358
+resnet18_partial seed=43 epoch=11/20 val_acc=0.7338
+resnet18_partial seed=43 epoch=12/20 val_acc=0.7366
+resnet18_partial seed=43 epoch=13/20 val_acc=0.7356
+resnet18_partial seed=43 epoch=14/20 val_acc=0.7386
+resnet18_partial seed=43 epoch=15/20 val_acc=0.7388
+resnet18_partial seed=43 epoch=16/20 val_acc=0.7356
+resnet18_partial seed=43 epoch=17/20 val_acc=0.7364
+resnet18_partial seed=43 epoch=18/20 val_acc=0.7392
+resnet18_partial seed=43 epoch=19/20 val_acc=0.7334
+resnet18_partial seed=43 epoch=20/20 val_acc=0.7388
+resnet18_partial seed=44 epoch=1/20 val_acc=0.6490
+resnet18_partial seed=44 epoch=2/20 val_acc=0.6876
+resnet18_partial seed=44 epoch=3/20 val_acc=0.7096
+resnet18_partial seed=44 epoch=4/20 val_acc=0.7152
+resnet18_partial seed=44 epoch=5/20 val_acc=0.7210
+resnet18_partial seed=44 epoch=6/20 val_acc=0.7226
+resnet18_partial seed=44 epoch=7/20 val_acc=0.7280
+resnet18_partial seed=44 epoch=8/20 val_acc=0.7280
+resnet18_partial seed=44 epoch=9/20 val_acc=0.7290
+resnet18_partial seed=44 epoch=10/20 val_acc=0.7336
+resnet18_partial seed=44 epoch=11/20 val_acc=0.7338
+resnet18_partial seed=44 epoch=12/20 val_acc=0.7346
+resnet18_partial seed=44 epoch=13/20 val_acc=0.7358
+resnet18_partial seed=44 epoch=14/20 val_acc=0.7362
+resnet18_partial seed=44 epoch=15/20 val_acc=0.7374
+resnet18_partial seed=44 epoch=16/20 val_acc=0.7384
+resnet18_partial seed=44 epoch=17/20 val_acc=0.7392
+resnet18_partial seed=44 epoch=18/20 val_acc=0.7392
+resnet18_partial seed=44 epoch=19/20 val_acc=0.7402
+resnet18_partial seed=44 epoch=20/20 val_acc=0.7404
+resnet18_full seed=42 epoch=1/20 val_acc=0.6794
+resnet18_full seed=42 epoch=2/20 val_acc=0.7362
+resnet18_full seed=42 epoch=3/20 val_acc=0.7510
+resnet18_full seed=42 epoch=4/20 val_acc=0.7586
+resnet18_full seed=42 epoch=5/20 val_acc=0.7632
+resnet18_full seed=42 epoch=6/20 val_acc=0.7656
+resnet18_full seed=42 epoch=7/20 val_acc=0.7712
+resnet18_full seed=42 epoch=8/20 val_acc=0.7734
+resnet18_full seed=42 epoch=9/20 val_acc=0.7782
+resnet18_full seed=42 epoch=10/20 val_acc=0.7794
+resnet18_full seed=42 epoch=11/20 val_acc=0.7822
+resnet18_full seed=42 epoch=12/20 val_acc=0.7824
+resnet18_full seed=42 epoch=13/20 val_acc=0.7824
+resnet18_full seed=42 epoch=14/20 val_acc=0.7870
+resnet18_full seed=42 epoch=15/20 val_acc=0.7818
+resnet18_full seed=42 epoch=16/20 val_acc=0.7890
+resnet18_full seed=42 epoch=17/20 val_acc=0.7892
+resnet18_full seed=42 epoch=18/20 val_acc=0.7898
+resnet18_full seed=42 epoch=19/20 val_acc=0.7876
+resnet18_full seed=42 epoch=20/20 val_acc=0.7892
+resnet18_full seed=43 epoch=1/20 val_acc=0.6880
+resnet18_full seed=43 epoch=2/20 val_acc=0.7318
+resnet18_full seed=43 epoch=3/20 val_acc=0.7492
+resnet18_full seed=43 epoch=4/20 val_acc=0.7574
+resnet18_full seed=43 epoch=5/20 val_acc=0.7628
+resnet18_full seed=43 epoch=6/20 val_acc=0.7652
+resnet18_full seed=43 epoch=7/20 val_acc=0.7764
+resnet18_full seed=43 epoch=8/20 val_acc=0.7768
+resnet18_full seed=43 epoch=9/20 val_acc=0.7760
+resnet18_full seed=43 epoch=10/20 val_acc=0.7766
+resnet18_full seed=43 epoch=11/20 val_acc=0.7794
+resnet18_full seed=43 epoch=12/20 val_acc=0.7792
+resnet18_full seed=43 epoch=13/20 val_acc=0.7810
+resnet18_full seed=43 epoch=14/20 val_acc=0.7796
+resnet18_full seed=43 epoch=15/20 val_acc=0.7822
+resnet18_full seed=43 epoch=16/20 val_acc=0.7862
+resnet18_full seed=43 epoch=17/20 val_acc=0.7864
+resnet18_full seed=43 epoch=18/20 val_acc=0.7854
+resnet18_full seed=43 epoch=19/20 val_acc=0.7888
+resnet18_full seed=43 epoch=20/20 val_acc=0.7872
+resnet18_full seed=44 epoch=1/20 val_acc=0.6758
+resnet18_full seed=44 epoch=2/20 val_acc=0.7274
+resnet18_full seed=44 epoch=3/20 val_acc=0.7534
+resnet18_full seed=44 epoch=4/20 val_acc=0.7610
+resnet18_full seed=44 epoch=5/20 val_acc=0.7630
+resnet18_full seed=44 epoch=6/20 val_acc=0.7656
+resnet18_full seed=44 epoch=7/20 val_acc=0.7728
+resnet18_full seed=44 epoch=8/20 val_acc=0.7764
+resnet18_full seed=44 epoch=9/20 val_acc=0.7784
+resnet18_full seed=44 epoch=10/20 val_acc=0.7806
+resnet18_full seed=44 epoch=11/20 val_acc=0.7782
+resnet18_full seed=44 epoch=12/20 val_acc=0.7802
+resnet18_full seed=44 epoch=13/20 val_acc=0.7852
+resnet18_full seed=44 epoch=14/20 val_acc=0.7866
+resnet18_full seed=44 epoch=15/20 val_acc=0.7878
+resnet18_full seed=44 epoch=16/20 val_acc=0.7880
+resnet18_full seed=44 epoch=17/20 val_acc=0.7898
+resnet18_full seed=44 epoch=18/20 val_acc=0.7902
+resnet18_full seed=44 epoch=19/20 val_acc=0.7892
+resnet18_full seed=44 epoch=20/20 val_acc=0.7914
+Downloading: "https://download.pytorch.org/models/swin_t-704ceda3.pth" to /root/.cache/torch/hub/checkpoints/swin_t-704ceda3.pth
+  0%|          | 0.00/108M [00:00<?, ?B/s]
+  7%|▋         | 7.12M/108M [00:00<00:01, 73.5MB/s]
+ 14%|█▎        | 14.6M/108M [00:00<00:01, 75.8MB/s]
+ 20%|██        | 22.1M/108M [00:00<00:01, 76.6MB/s]
+ 27%|██▋       | 29.6M/108M [00:00<00:01, 77.0MB/s]
+ 34%|███▍      | 37.1M/108M [00:00<00:00, 77.2MB/s]
+ 41%|████      | 44.6M/108M [00:00<00:00, 77.3MB/s]
+ 48%|████▊     | 52.1M/108M [00:00<00:00, 77.4MB/s]
+ 55%|█████▌    | 59.6M/108M [00:00<00:00, 77.4MB/s]
+ 62%|██████▏   | 67.1M/108M [00:00<00:00, 77.5MB/s]
+ 69%|██████▉   | 74.6M/108M [00:01<00:00, 77.5MB/s]
+ 76%|███████▌  | 82.1M/108M [00:01<00:00, 77.5MB/s]
+ 83%|████████▎ | 89.6M/108M [00:01<00:00, 77.5MB/s]
+ 90%|████████▉ | 97.1M/108M [00:01<00:00, 77.5MB/s]
+ 97%|█████████▋| 105M/108M [00:01<00:00, 77.5MB/s]
+100%|██████████| 108M/108M [00:01<00:00, 77.3MB/s]
+
+swin_t_head seed=42 epoch=1/20 val_acc=0.6634
+swin_t_head seed=42 epoch=2/20 val_acc=0.6876
+swin_t_head seed=42 epoch=3/20 val_acc=0.7004
+swin_t_head seed=42 epoch=4/20 val_acc=0.7058
+swin_t_head seed=42 epoch=5/20 val_acc=0.7076
+swin_t_head seed=42 epoch=6/20 val_acc=0.7100
+swin_t_head seed=42 epoch=7/20 val_acc=0.7162
+swin_t_head seed=42 epoch=8/20 val_acc=0.7182
+swin_t_head seed=42 epoch=9/20 val_acc=0.7210
+swin_t_head seed=42 epoch=10/20 val_acc=0.7210
+swin_t_head seed=42 epoch=11/20 val_acc=0.7182
+swin_t_head seed=42 epoch=12/20 val_acc=0.7224
+swin_t_head seed=42 epoch=13/20 val_acc=0.7226
+swin_t_head seed=42 epoch=14/20 val_acc=0.7248
+swin_t_head seed=42 epoch=15/20 val_acc=0.7220
+swin_t_head seed=42 epoch=16/20 val_acc=0.7238
+swin_t_head seed=42 epoch=17/20 val_acc=0.7224
+swin_t_head seed=42 epoch=18/20 val_acc=0.7246
+swin_t_head seed=42 epoch=19/20 val_acc=0.7232
+swin_t_head seed=42 epoch=20/20 val_acc=0.7238
+swin_t_head seed=43 epoch=1/20 val_acc=0.6622
+swin_t_head seed=43 epoch=2/20 val_acc=0.6910
+swin_t_head seed=43 epoch=3/20 val_acc=0.7006
+swin_t_head seed=43 epoch=4/20 val_acc=0.7020
+swin_t_head seed=43 epoch=5/20 val_acc=0.7118
+swin_t_head seed=43 epoch=6/20 val_acc=0.7080
+swin_t_head seed=43 epoch=7/20 val_acc=0.7134
+swin_t_head seed=43 epoch=8/20 val_acc=0.7124
+swin_t_head seed=43 epoch=9/20 val_acc=0.7160
+swin_t_head seed=43 epoch=10/20 val_acc=0.7186
+swin_t_head seed=43 epoch=11/20 val_acc=0.7200
+swin_t_head seed=43 epoch=12/20 val_acc=0.7176
+swin_t_head seed=43 epoch=13/20 val_acc=0.7246
+swin_t_head seed=43 epoch=14/20 val_acc=0.7222
+swin_t_head seed=43 epoch=15/20 val_acc=0.7218
+swin_t_head seed=43 epoch=16/20 val_acc=0.7210
+swin_t_head seed=43 epoch=17/20 val_acc=0.7220
+swin_t_head seed=43 epoch=18/20 val_acc=0.7208
+swin_t_head seed=43 epoch=19/20 val_acc=0.7212
+swin_t_head seed=43 epoch=20/20 val_acc=0.7206
+swin_t_head seed=44 epoch=1/20 val_acc=0.6664
+swin_t_head seed=44 epoch=2/20 val_acc=0.6914
+swin_t_head seed=44 epoch=3/20 val_acc=0.7016
+swin_t_head seed=44 epoch=4/20 val_acc=0.7070
+swin_t_head seed=44 epoch=5/20 val_acc=0.7110
+swin_t_head seed=44 epoch=6/20 val_acc=0.7178
+swin_t_head seed=44 epoch=7/20 val_acc=0.7136
+swin_t_head seed=44 epoch=8/20 val_acc=0.7142
+swin_t_head seed=44 epoch=9/20 val_acc=0.7186
+swin_t_head seed=44 epoch=10/20 val_acc=0.7178
+swin_t_head seed=44 epoch=11/20 val_acc=0.7218
+swin_t_head seed=44 epoch=12/20 val_acc=0.7216
+swin_t_head seed=44 epoch=13/20 val_acc=0.7250
+swin_t_head seed=44 epoch=14/20 val_acc=0.7254
+swin_t_head seed=44 epoch=15/20 val_acc=0.7248
+swin_t_head seed=44 epoch=16/20 val_acc=0.7254
+swin_t_head seed=44 epoch=17/20 val_acc=0.7256
+swin_t_head seed=44 epoch=18/20 val_acc=0.7246
+swin_t_head seed=44 epoch=19/20 val_acc=0.7252
+swin_t_head seed=44 epoch=20/20 val_acc=0.7252
+swin_t_partial seed=42 epoch=1/20 val_acc=0.6784
+swin_t_partial seed=42 epoch=2/20 val_acc=0.7236
+swin_t_partial seed=42 epoch=3/20 val_acc=0.7454
+swin_t_partial seed=42 epoch=4/20 val_acc=0.7578
+swin_t_partial seed=42 epoch=5/20 val_acc=0.7594
+swin_t_partial seed=42 epoch=6/20 val_acc=0.7702
+swin_t_partial seed=42 epoch=7/20 val_acc=0.7768
+swin_t_partial seed=42 epoch=8/20 val_acc=0.7790
+swin_t_partial seed=42 epoch=9/20 val_acc=0.7796
+swin_t_partial seed=42 epoch=10/20 val_acc=0.7842
+swin_t_partial seed=42 epoch=11/20 val_acc=0.7844
+swin_t_partial seed=42 epoch=12/20 val_acc=0.7840
+swin_t_partial seed=42 epoch=13/20 val_acc=0.7856
+swin_t_partial seed=42 epoch=14/20 val_acc=0.7880
+swin_t_partial seed=42 epoch=15/20 val_acc=0.7896
+swin_t_partial seed=42 epoch=16/20 val_acc=0.7914
+swin_t_partial seed=42 epoch=17/20 val_acc=0.7906
+swin_t_partial seed=42 epoch=18/20 val_acc=0.7924
+swin_t_partial seed=42 epoch=19/20 val_acc=0.7912
+swin_t_partial seed=42 epoch=20/20 val_acc=0.7924
+swin_t_partial seed=43 epoch=1/20 val_acc=0.6916
+swin_t_partial seed=43 epoch=2/20 val_acc=0.7266
+swin_t_partial seed=43 epoch=3/20 val_acc=0.7464
+swin_t_partial seed=43 epoch=4/20 val_acc=0.7570
+swin_t_partial seed=43 epoch=5/20 val_acc=0.7626
+swin_t_partial seed=43 epoch=6/20 val_acc=0.7682
+swin_t_partial seed=43 epoch=7/20 val_acc=0.7744
+swin_t_partial seed=43 epoch=8/20 val_acc=0.7730
+swin_t_partial seed=43 epoch=9/20 val_acc=0.7744
+swin_t_partial seed=43 epoch=10/20 val_acc=0.7804
+swin_t_partial seed=43 epoch=11/20 val_acc=0.7828
+swin_t_partial seed=43 epoch=12/20 val_acc=0.7860
+swin_t_partial seed=43 epoch=13/20 val_acc=0.7846
+swin_t_partial seed=43 epoch=14/20 val_acc=0.7846
+swin_t_partial seed=43 epoch=15/20 val_acc=0.7878
+swin_t_partial seed=43 epoch=16/20 val_acc=0.7900
+swin_t_partial seed=43 epoch=17/20 val_acc=0.7892
+swin_t_partial seed=43 epoch=18/20 val_acc=0.7886
+swin_t_partial seed=43 epoch=19/20 val_acc=0.7876
+swin_t_partial seed=43 epoch=20/20 val_acc=0.7872
+swin_t_partial seed=44 epoch=1/20 val_acc=0.6876
+swin_t_partial seed=44 epoch=2/20 val_acc=0.7274
+swin_t_partial seed=44 epoch=3/20 val_acc=0.7458
+swin_t_partial seed=44 epoch=4/20 val_acc=0.7598
+swin_t_partial seed=44 epoch=5/20 val_acc=0.7610
+swin_t_partial seed=44 epoch=6/20 val_acc=0.7636
+swin_t_partial seed=44 epoch=7/20 val_acc=0.7702
+swin_t_partial seed=44 epoch=8/20 val_acc=0.7770
+swin_t_partial seed=44 epoch=9/20 val_acc=0.7798
+swin_t_partial seed=44 epoch=10/20 val_acc=0.7738
+swin_t_partial seed=44 epoch=11/20 val_acc=0.7764
+swin_t_partial seed=44 epoch=12/20 val_acc=0.7794
+swin_t_partial seed=44 epoch=13/20 val_acc=0.7842
+swin_t_partial seed=44 epoch=14/20 val_acc=0.7842
+swin_t_partial seed=44 epoch=15/20 val_acc=0.7794
+swin_t_partial seed=44 epoch=16/20 val_acc=0.7842
+swin_t_partial seed=44 epoch=17/20 val_acc=0.7864
+swin_t_partial seed=44 epoch=18/20 val_acc=0.7842
+swin_t_partial seed=44 epoch=19/20 val_acc=0.7836
+swin_t_partial seed=44 epoch=20/20 val_acc=0.7834
+swin_t_full seed=42 epoch=1/20 val_acc=0.7788
+swin_t_full seed=42 epoch=2/20 val_acc=0.8140
+swin_t_full seed=42 epoch=3/20 val_acc=0.8274
+swin_t_full seed=42 epoch=4/20 val_acc=0.8324
+swin_t_full seed=42 epoch=5/20 val_acc=0.8382
+swin_t_full seed=42 epoch=6/20 val_acc=0.8400
+swin_t_full seed=42 epoch=7/20 val_acc=0.8474
+swin_t_full seed=42 epoch=8/20 val_acc=0.8448
+swin_t_full seed=42 epoch=9/20 val_acc=0.8480
+swin_t_full seed=42 epoch=10/20 val_acc=0.8498
+swin_t_full seed=42 epoch=11/20 val_acc=0.8592
+swin_t_full seed=42 epoch=12/20 val_acc=0.8578
+swin_t_full seed=42 epoch=13/20 val_acc=0.8628
+swin_t_full seed=42 epoch=14/20 val_acc=0.8598
+swin_t_full seed=42 epoch=15/20 val_acc=0.8638
+swin_t_full seed=42 epoch=16/20 val_acc=0.8672
+swin_t_full seed=42 epoch=17/20 val_acc=0.8668
+swin_t_full seed=42 epoch=18/20 val_acc=0.8694
+swin_t_full seed=42 epoch=19/20 val_acc=0.8682
+swin_t_full seed=42 epoch=20/20 val_acc=0.8676
+swin_t_full seed=43 epoch=1/20 val_acc=0.7778
+swin_t_full seed=43 epoch=2/20 val_acc=0.8048
+swin_t_full seed=43 epoch=3/20 val_acc=0.8220
+swin_t_full seed=43 epoch=4/20 val_acc=0.8356
+swin_t_full seed=43 epoch=5/20 val_acc=0.8410
+swin_t_full seed=43 epoch=6/20 val_acc=0.8460
+swin_t_full seed=43 epoch=7/20 val_acc=0.8480
+swin_t_full seed=43 epoch=8/20 val_acc=0.8514
+swin_t_full seed=43 epoch=9/20 val_acc=0.8546
+swin_t_full seed=43 epoch=10/20 val_acc=0.8502
+swin_t_full seed=43 epoch=11/20 val_acc=0.8598
+swin_t_full seed=43 epoch=12/20 val_acc=0.8574
+swin_t_full seed=43 epoch=13/20 val_acc=0.8610
+swin_t_full seed=43 epoch=14/20 val_acc=0.8620
+swin_t_full seed=43 epoch=15/20 val_acc=0.8654
+swin_t_full seed=43 epoch=16/20 val_acc=0.8658
+swin_t_full seed=43 epoch=17/20 val_acc=0.8656
+swin_t_full seed=43 epoch=18/20 val_acc=0.8686
+swin_t_full seed=43 epoch=19/20 val_acc=0.8686
+swin_t_full seed=43 epoch=20/20 val_acc=0.8692
+swin_t_full seed=44 epoch=1/20 val_acc=0.7670
+swin_t_full seed=44 epoch=2/20 val_acc=0.8122
+swin_t_full seed=44 epoch=3/20 val_acc=0.8246
+swin_t_full seed=44 epoch=4/20 val_acc=0.8344
+swin_t_full seed=44 epoch=5/20 val_acc=0.8314
+swin_t_full seed=44 epoch=6/20 val_acc=0.8438
+swin_t_full seed=44 epoch=7/20 val_acc=0.8460
+swin_t_full seed=44 epoch=8/20 val_acc=0.8446
+swin_t_full seed=44 epoch=9/20 val_acc=0.8518
+swin_t_full seed=44 epoch=10/20 val_acc=0.8552
+swin_t_full seed=44 epoch=11/20 val_acc=0.8526
+swin_t_full seed=44 epoch=12/20 val_acc=0.8572
+swin_t_full seed=44 epoch=13/20 val_acc=0.8624
+swin_t_full seed=44 epoch=14/20 val_acc=0.8588
+swin_t_full seed=44 epoch=15/20 val_acc=0.8656
+swin_t_full seed=44 epoch=16/20 val_acc=0.8668
+swin_t_full seed=44 epoch=17/20 val_acc=0.8670
+swin_t_full seed=44 epoch=18/20 val_acc=0.8628
+swin_t_full seed=44 epoch=19/20 val_acc=0.8654
+swin_t_full seed=44 epoch=20/20 val_acc=0.8658
+Executing cell 25
+Training complete; histories, best checkpoints, configuration and logs have been saved. Test evaluation has not started.
+Executing cell 27
+resnet18_head seed=42: test acc=0.6090, macro-F1=0.6075, n=9998
+resnet18_head seed=43: test acc=0.6077, macro-F1=0.6067, n=9998
+resnet18_head seed=44: test acc=0.6104, macro-F1=0.6090, n=9998
+resnet18_partial seed=42: test acc=0.7360, macro-F1=0.7364, n=9998
+resnet18_partial seed=43: test acc=0.7384, macro-F1=0.7383, n=9998
+resnet18_partial seed=44: test acc=0.7406, macro-F1=0.7401, n=9998
+resnet18_full seed=42: test acc=0.7877, macro-F1=0.7877, n=9998
+resnet18_full seed=43: test acc=0.7954, macro-F1=0.7953, n=9998
+resnet18_full seed=44: test acc=0.7917, macro-F1=0.7915, n=9998
+swin_t_head seed=42: test acc=0.7168, macro-F1=0.7158, n=9998
+swin_t_head seed=43: test acc=0.7162, macro-F1=0.7147, n=9998
+swin_t_head seed=44: test acc=0.7176, macro-F1=0.7162, n=9998
+swin_t_partial seed=42: test acc=0.7829, macro-F1=0.7820, n=9998
+swin_t_partial seed=43: test acc=0.7860, macro-F1=0.7851, n=9998
+swin_t_partial seed=44: test acc=0.7845, macro-F1=0.7839, n=9998
+swin_t_full seed=42: test acc=0.8684, macro-F1=0.8681, n=9998
+swin_t_full seed=43: test acc=0.8680, macro-F1=0.8680, n=9998
+swin_t_full seed=44: test acc=0.8681, macro-F1=0.8682, n=9998
+Executing cell 29
+Executing cell 30
+Executing cell 32
+Executing cell 33
+resnet18_head        acc=60.91 ± 0.14%  macro-F1=0.6077 ± 0.0012  train=1.3 min  peak=252 MiB
+resnet18_partial     acc=73.84 ± 0.23%  macro-F1=0.7382 ± 0.0018  train=1.3 min  peak=347 MiB
+resnet18_full        acc=79.16 ± 0.39%  macro-F1=0.7915 ± 0.0038  train=1.3 min  peak=520 MiB
+swin_t_head          acc=71.69 ± 0.07%  macro-F1=0.7156 ± 0.0008  train=1.4 min  peak=502 MiB
+swin_t_partial       acc=78.44 ± 0.16%  macro-F1=0.7837 ± 0.0015  train=1.7 min  peak=663 MiB
+swin_t_full          acc=86.81 ± 0.02%  macro-F1=0.8681 ± 0.0001  train=3.5 min  peak=2454 MiB
+Executing cell 35
+Executing cell 37

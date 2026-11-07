@@ -1,0 +1,37 @@
+{
+  "full_source_rows": 212705,
+  "modeling_rows": 207375,
+  "split_sizes": {
+    "train": 145162,
+    "validation": 31107,
+    "test": 31106
+  },
+  "epochs_completed": 7,
+  "effective_batch_size": 64,
+  "source_sha256": "1f9d1467e6751d5fde98f88a4776c833f26f51c9c97c3b98da865ba61d9dafcf",
+  "test_rows_recomputed": 31106,
+  "raw_logits_sha256": {
+    "test": "fd352083218915d2c1a4b92632f7bf811682fec1d460e441ae359a561a369a43",
+    "validation": "d880614ad92821793e2f0dd89ce7efe6bf82430a9f794301ea3c42bb307875fa"
+  },
+  "artifacts_sha256": {
+    "metrics.json": "e9776da62710953ec154f4c15beaa041e58244071a5de51ad8a78da655e3d736",
+    "split_audit.json": "cb9adf49fd07179092a8e75e7934526fc38a7d239fda575fd00719e3b06346ec",
+    "calibration.json": "0ffd0e84dfb9038681db5ef3ad6049ac2494770e89465e402cf5faf7fa70ca79",
+    "data_audit.json": "556cbdc4a02b10f1a456522b4e4ca6afd32b13beb4f17f4cec71752c41d6ca3c",
+    "execution-source.ipynb": "1f9d1467e6751d5fde98f88a4776c833f26f51c9c97c3b98da865ba61d9dafcf",
+    "training_log.json": "b109c63987b639964d9d2857d3ac583fef334bbe35f75d2977b040ce85900e9d",
+    "run_config.json": "a7beb00ff3a8d97bd2fa3a5eee9c2423025860b1b8c505a33b46db6c7ae22259",
+    "test_predictions.csv": "8b149ec3fd88bf965206c65ae13ac7f2d67ad636d4d76919ee5a6bc698fc42bc",
+    "execution.log": "cf5a88cc72fa5537455c283a4e49cb7780724177153e4e2c0e8c36065eba0a02",
+    "split_ids.json": "ff41393fee1e470d23e3b52dee71131ef721aabc49b1afe793b44666dba2cde8",
+    "classification_report_test.csv": "8d0f4d2d1c3adb2df55f811dadc42189b8cd9caf02dd3fa5528532907ec69d60",
+    "confusion_matrix_test.csv": "f4e00498fbcd68e0105f4b4bd509722fed0e30bf980dcd050052730d9c4bb222",
+    "input_audit.json": "ab5c7db13fd83b25b755c75b03f85dc0ec402e621747a0470f90e82d2ea231a7",
+    "split_hashes.json": "0e5d915d4febfba58dddccf3ebfe6ecfe10f1b3f8f1204fe28626a22c1ce4e84",
+    "trainer_state.json": "8f34c8e37d0287ea1b95431a36fc4df4ff471ae556d77c820644ed718d593309",
+    "figures/eda.png": "1b45d3c949efa94681541f477077801ad2550517f21bc3c8907ff771a8a02dad",
+    "figures/test_confusion_and_class_f1.png": "dc1c549a07b93efafee6e092217ce430a2c1d24752252a40af2d25659614aaf7",
+    "figures/training_curves.png": "2a909667b69d0a58c37290e0bdfa10a9d5eaaff5c9a6fe049266e6108df3b1cb"
+  }
+}

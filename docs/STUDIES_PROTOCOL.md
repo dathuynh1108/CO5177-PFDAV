@@ -1,58 +1,61 @@
-# Tabular and Text experiments
+# Current experiment protocol
 
-This document describes new Tabular and headline-only Text baseline experiments. Main Text now reuses the supplied full-corpus PhoBERT notebook; see [TEXT_REUSE.md](TEXT_REUSE.md) for its training, historical results and calibration. The CIFAR-100 Image study continues to reuse CO5085 A1; its source and measurements are unchanged.
+The entry points are [Tabular](../notebooks/tabular.ipynb), [full-article Text](../notebooks/text.ipynb), [headline Text](../notebooks/text_baselines.ipynb), and [Image](../notebooks/image.ipynb). Current notebooks use English presentation and actual Jupyter outputs. Reports use Vietnamese. A fresh Google Colab Run all has not been independently verified.
 
-## Setup and commands
+## Environment and evidence
 
 ```bash
 python3.12 -m venv .venv
 .venv/bin/python -m pip install -r requirements-studies.txt
 .venv/bin/python -m pip install --no-deps -e .
-OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 .venv/bin/python -m studies.tabular
-OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 .venv/bin/python -m studies.text
-.venv/bin/python -m studies.audit --models
-.venv/bin/python scripts/write_study_reports.py
-.venv/bin/python scripts/build_report.py --track tabular
-.venv/bin/python scripts/build_report.py --track text
 ```
 
-`notebooks/tabular.ipynb` and `notebooks/text_baselines.ipynb` run these studies from top to bottom, including training. A fresh Colab session clones the public repository and installs dependencies. Colab execution itself has not been verified in this local run. No command rents hardware or submits a paid job. PhoBERT uses CUDA, MPS or CPU according to local availability; the recorded encoding used MPS on an Apple M1 Pro.
-
-Raw data and model caches stay in ignored `data/`. Eight fitted classifiers are saved under ignored `runs/tabular/` and `runs/text/`. `reports/<track>/generated/manifest.json` records classifier checksums, source/config hashes, package versions and evidence checksums. Source/config changes during a measured run stop finalization. The default audit verifies published evidence and recomputes all scores from test predictions. `--models` additionally requires the local saved classifiers. Joblib artifacts must only be loaded from this locally produced, verified run.
+Run the notebooks from fresh kernels, with a GPU for full-article fine-tuning and Image. Raw data, model caches, and weights stay outside Git. Run directories store configuration, seeds, split IDs, fitting history, metrics, predictions, and figures. Published notebook evidence is separate from imported historical evidence. Verification JSON files record the checks performed for their respective snapshots; they do not certify later notebook execution or external submission.
 
 ## Tabular: UCI Adult
 
-Source: [UCI Adult](https://archive.ics.uci.edu/dataset/2/adult), DOI `10.24432/C5XW20`, CC BY 4.0. The official zip SHA256 is pinned in `configs/tabular.json`.
+Source: [UCI Adult](https://archive.ics.uci.edu/dataset/2/adult), DOI `10.24432/C5XW20`, CC BY 4.0. The archive checksum is pinned in `configs/tabular.json`.
 
-- All 48,842 source rows and 14 features are inspected. `?` denotes genuine missing values.
-- Combine the official files and create a **new** split; these are not scores on the original official test split.
-- Before splitting, remove all 10 records in feature-identical groups with opposing labels, then remove 52 repeated records. The retained dataset has 48,780 rows.
-- Six numerical and eight categorical columns are used. Labels and record IDs are excluded by the `ColumnTransformer` feature lists.
-- Stratified train/validation/test sizes are 34,146/7,317/7,317. Seed 2026 creates the train/remaining split; seed 2027 divides validation/test.
-- Median and most-frequent imputers fit train only. Logistic models use scaling and one-hot encoding; histogram boosting uses explicit categorical feature positions and ordinal encoding.
-- Compare majority, logistic regression, balanced logistic regression and histogram gradient boosting. Select logistic C from `{0.1, 1, 10}` by validation macro-F1. Boosting is fixed at 150 iterations, 31 leaves, L2=1, no early stopping. Model seed is 42.
-- Finish all validation choices before test evaluation. Save test predictions, confusion and per-class metrics for all four models.
+- Inspect all 48,842 source rows and 14 predictors, including genuine missing values, six numerical columns, and eight categorical columns.
+- Combine the official files; remove 10 conflicting-label rows and 52 repeated rows before splitting. Use all 48,780 remaining records.
+- Stratify into 34,146/7,317/7,317 train/validation/test records using seeds 2026 and 2027. These are new partitions, not the official test split.
+- Numerical summaries, histograms, and IQR flags use train only. Retain flagged values: the flags do not establish invalid observations.
+- Fit median/most-frequent imputation on train only. Logistic models use scaling and one-hot encoding; histogram boosting uses ordinal encoding with explicit categorical positions.
+- Fit majority, logistic regression, balanced logistic regression, and histogram gradient boosting. Select logistic C from `{0.1, 1, 10}` using validation macro-F1. Boosting uses 150 iterations, 31 leaves, L2=1, no early stopping; model seed 42.
+- Finish validation selection before test predictions. Report accuracy, macro-F1, class precision/recall, and confusion. `fnlwgt` is a predictor, not a sample weight.
 
-The dataset is imbalanced; report minority-class precision/recall alongside accuracy and macro-F1. `fnlwgt` is a feature, not a sample weight. One split and seed do not supply confidence intervals. Census data describe a historical benchmark, not contemporary income estimates.
+## Text: shared full-corpus partitions
 
-## Text baseline study: VietnamNet headlines
+Source: [VietnamNet News](https://huggingface.co/datasets/dathuynh1108/vietnamnet-news), published on student Huỳnh Thành Đạt's Hugging Face account, revision `d70a9601f36dcb1e5c534d30e2d3921c2ba16284`. The 19 source parquet checksums are pinned in `configs/text.json`. Article-content redistribution terms are unspecified in the dataset card; raw articles remain outside Git.
 
-Source: [`dathuynh1108/vietnamnet-news`](https://huggingface.co/datasets/dathuynh1108/vietnamnet-news), revision `d70a9601f36dcb1e5c534d30e2d3921c2ba16284`. Use the 19 original category parquet files, **not** the separate NER configuration. All file checksums are pinned in `configs/text.json`. The dataset card does not state a redistribution license for the article content; record its status as unspecified and keep the raw corpus outside Git.
+- Inspect all 212,705 source rows. Remove 1,167 empty headlines, 3,636 rows in conflicting-category components, and 527 other duplicates. Keep all 207,375 valid articles, including seven with empty bodies; apply no sampling cap.
+- Deduplication uses connected components of canonical URL, normalized casefolded headline, or nonempty normalized casefolded body.
+- Prepare final headline and Head–Tail article token IDs. Union records sharing either input into 207,108 groups. This grouping removes no rows.
+- Use 20-fold `StratifiedGroupKFold`, shuffle enabled, seed 2026. Assign 14/3/3 folds to train/validation/test: 145,162/31,107/31,106 records. Equal input groups remain together. Both Text notebooks share these IDs and splits.
 
-- Stream all 212,705 source articles to inspect class counts, empty headlines and body lengths. Modeling uses **headlines only**.
-- Normalize NFC/whitespace, canonicalize article URLs, then union records sharing a URL or casefolded headline. Remove entire components with conflicting categories before retaining one record per remaining component.
-- Remove 1,167 empty headlines, 3,628 conflicting-category rows and 296 other duplicates; 207,614 usable records remain. Near duplicates are not measured.
-- Select a fixed, hash-ranked cohort of 400 headlines per class, 7,600 total. This meets the course minimum but is **not full-corpus training**. The original distribution is retained in the audit; this balanced cohort changes the class priors.
-- Use the same stratified 5,320/1,140/1,140 split for all models, with the same split seeds as Tabular. Each class contributes 280/60/60 headlines. URL, body and category fields are excluded from the model input.
-- Segment with PyVi 0.1.1. Verify that segmentation does not merge distinct selected inputs.
-- Word TF-IDF uses n-grams 1–2; character-within-word TF-IDF uses n-grams 3–5. Both use min-df=2, max-df=.98, sublinear TF and at most 80,000 features; vocabulary/IDF fit train only. Both classifiers are Linear SVM.
-- PhoBERT: `vinai/phobert-base-v2`, revision `86cd7fd4c148980922ac11a2cf5e257f2ba639e1`, model-card license AGPL-3.0. Backbone is frozen/eval; masked mean pooling includes BOS/EOS and excludes padding. FP32, maximum length 128, batch 16. No selected headline was truncated. Fit logistic regression on the 768-dimensional vectors; this is **not backbone fine-tuning**.
-- Select classifier C from `{0.5, 1, 2}` using validation macro-F1, model seed 42. A majority classifier supplies a baseline. All choices finish before held-out prediction.
+### Headline classifiers
 
-The NER repository initially inspected `dathuynh1108/ner-phobert-base-v2-finetuned` at revision `98f4f3ea72e5fefb125d08421216b29a9508fe39` contains only `.gitattributes`. It has no available configuration, tokenizer or weights, so this separate headline study uses the pinned VinAI pretrained model. The actual news-classification checkpoint and full training notebook were subsequently supplied; they are the main Text study documented in TEXT_REUSE.md. Existing Electra NER evaluation metrics are not reused as news-classification results.
+Fit four classifiers on titles only: majority, word TF-IDF + Linear SVM, character TF-IDF + Linear SVM, and frozen PhoBERT + logistic regression. URL, body, and category strings are excluded from headline inputs.
 
-PhoBERT feature identity includes the ordered segmented inputs, model revision, length and pooling settings. Cached vectors, model/tokenizer checksums, actual device and encoding time are recorded. Encoding uses a fixed pretrained model and learns no corpus statistics from validation/test. Report encoding cost separately from classifier fitting. Section labels may overlap in meaning; the error CSV stores source URLs for inspection without copying full articles.
+TF-IDF vocabulary and IDF fit train only: word n-grams 1–2 or character-within-word n-grams 3–5, min-df=2, max-df=.98, sublinear TF, at most 80,000 features. Select C from `{0.5, 1, 2}` using validation macro-F1; model seed 42.
 
-## Verification and remaining submission items
+PhoBERT uses `vinai/phobert-base-v2`, revision `86cd7fd4c148980922ac11a2cf5e257f2ba639e1`, PyVi segmentation, maximum length 128, and masked mean pooling including BOS/EOS. The encoder remains frozen. The completed notebook fits all four classifiers on CPU using a verified cache of frozen embeddings originally encoded on RTX 5090; it contains 19 executed code cells and two PNG outputs.
 
-The notebooks, classifier replay, tests, PDF rendering and site checks are summarized in `docs/STUDIES_VERIFICATION.json`. The [submission checklist](SUBMISSION_REVIEW.md) records the group information, consolidated report and remaining external submission items.
+| Headline classifier | Test accuracy | Test macro-F1 |
+| --- | ---: | ---: |
+| Majority | 6.002057% | 0.005960 |
+| Word TF-IDF + Linear SVM | 80.190317% | 0.783883 |
+| Character TF-IDF + Linear SVM | 80.251398% | 0.785580 |
+| Frozen PhoBERT + logistic regression | 80.981161% | 0.794315 |
+
+### Full-article fine-tuning
+
+The current RTX 5090 run completes all seven epochs with effective batch size 64. Article input combines the title with the first 220 and last 80 body words, followed by Head–Tail token selection to maximum length 256. Class weights use train only. Checkpoint selection uses validation macro-F1 and selects epoch 7. Temperature and class thresholds fit validation before test evaluation.
+
+Test accuracy/macro-F1 are 91.840802%/0.910916 before calibration and 91.892239%/0.911448 after validation calibration. [Published metrics](../reports/text/notebook-evidence/metrics.json), [input audit](../reports/text/notebook-evidence/input_audit.json), and [split audit](../reports/text/notebook-evidence/split_audit.json) record this run. Headline-only and article inputs differ, so the comparison does not isolate backbone fine-tuning alone.
+
+## Image and historical material
+
+Image completes six pretrained configurations × three seeds × 20 epochs on RTX 5090 GPUs, using 44,976/5,000/9,998 images after exact-pixel deduplication. The executed notebook contains 21 code cells, six PNG outputs, and no errors; see its [execution receipt](../reports/image/notebook-evidence/execution-receipt.json).
+
+[TEXT_REUSE.md](TEXT_REUSE.md) and [IMAGE_REUSE.md](IMAGE_REUSE.md) distinguish current results from the byte-preserved Kaggle notebook and imported CO5085 A1 evidence. The [submission checklist](SUBMISSION_REVIEW.md) records unverified Colab and external submission items.

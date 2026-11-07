@@ -84,8 +84,6 @@
   "old_model_repository": "dathuynh1108/ner-phobert-base-v2-finetuned",
   "old_model_revision": "98f4f3ea72e5fefb125d08421216b29a9508fe39",
   "old_model_status": "Only .gitattributes exists; no configuration, tokenizer or checkpoint is available",
-  "max_per_class": 400,
-  "sample_seed": 2026,
   "split_seed": 2026,
   "model_seed": 42,
   "classifier_c": [
@@ -98,5 +96,5 @@
   "batch_size": 16,
   "cpu_threads": 4,
   "device": "auto",
-  "protocol": "Full-corpus streaming audit, connected URL/headline deduplication with conflict removal, deterministic capped cohort, identical 70/15/15 split and headline inputs for all models. TF-IDF and classifiers fit train only. Frozen encoder has no corpus adaptation. Select C by validation macro-F1 before held-out evaluation."
+  "protocol": "All usable full-corpus records after documented URL/headline/body deduplication and conflicting-label removal, without sampling. Group equal final headline or Head-Tail article token inputs before 20-fold stratified group partitioning: 14 train, 3 validation, 3 test folds. Headline baselines and article fine-tuning share identical IDs. Fit preprocessing and classifiers on train, select settings by validation, then evaluate held-out test."
 }

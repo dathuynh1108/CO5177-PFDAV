@@ -29,11 +29,11 @@ Course project website for **Programming Foundations for Data Analysis and Visua
 | 02 | [Text](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/text.html) | Required | Corpus exploration, text representations and analysis. |
 | 03 | [Image](https://dathuynh1108.github.io/CO5177-PFDAV/assignments/image.html) | Selected elective | Visual exploration, feature extraction and model evaluation. |
 
-Each assignment has its own notebook and report. The notebooks are the primary workflow: open the current notebook in Colab, choose a GPU runtime for the full Text and Image experiments, then use **Runtime → Run all**. Each experiment prints its data audit, configuration and seeds, validation/training log, metrics and charts. Tabular and the separate headline baseline have both been executed locally from fresh kernels. The current full Text run was fine-tuned on an RTX 5090. All 18 Image runs completed on RTX 5090 GPUs after exact-pixel deduplication. The prior PhoBERT notebook is preserved separately as [`text_historical.ipynb`](notebooks/text_historical.ipynb) for provenance. The [cross-course comparison](docs/COURSE_REUSE.md) and [submission checklist](docs/SUBMISSION_REVIEW.md) explain evidence status. YouTube fields remain blank pending presentation links.
+Each assignment has a notebook and a Vietnamese report. The landing page links to the notebooks as the experiment entry points. Current notebooks contain English Markdown, code presentation, and actual Jupyter outputs. Tabular fits four classifiers on all cleaned Adult records; Text fine-tunes on all valid articles and includes four headline classifiers; Image completes 18 training runs on RTX 5090 GPUs. A fresh Google Colab Run all has not been independently verified. The prior PhoBERT notebook remains byte-identical at [`text_historical.ipynb`](notebooks/text_historical.ipynb). See the [reuse record](docs/COURSE_REUSE.md) and [submission checklist](docs/SUBMISSION_REVIEW.md). YouTube fields are intentionally blank.
 
 ## Technology
 
-The website uses static HTML5, CSS3 and vanilla JavaScript; it needs no backend, package installation or build step. The interface is in English. Notebooks and reports are in Vietnamese. Python dependencies are needed for the experiments and their checks.
+The website uses static HTML5, CSS3 and vanilla JavaScript; it needs no backend, package installation or build step. The interface is in English. Current notebooks are in English; reports are in Vietnamese. The historical notebook preserves its original language and outputs. Python dependencies are needed for the experiments and their checks.
 
 ## Repository structure
 
@@ -115,12 +115,12 @@ Requirements are summarized from **Course Assignment v4.0, dated 14 September 20
 | Study | Data and model | Accuracy | Macro-F1 | Evaluation |
 | --- | --- | --- | --- | --- |
 | Tabular | 48,780 deduplicated UCI Adult rows; histogram gradient boosting | 87.4812% | 0.818526 | Fresh local notebook run; 34,146/7,317/7,317 train/validation/test split |
-| Text · full articles | 7,600 VietnamNet articles; PhoBERT fine-tuning | 83.7719% | 0.835296 | RTX 5090 run; shared 5,320/1,140/1,140 split |
-| Text · validation calibrated | Same full-article model with validation-fitted calibration | 83.2456% | 0.829602 | Same held-out test split; calibrated decisions |
-| Text · headline baseline | 7,600 headlines; frozen PhoBERT + logistic regression | 77.5439% | 0.773780 | Fresh local notebook run; 5,320/1,140/1,140 split |
-| Image | CIFAR-100; Swin-T full fine-tuning | 86.81% | 0.8681 | 9,998 held-out images after exact-pixel deduplication |
+| Text · full articles | All 207,375 valid VietnamNet articles; PhoBERT fine-tuning | 91.840802% | 0.910916 | RTX 5090; seven epochs; 145,162/31,107/31,106 grouped split |
+| Text · validation calibrated | Same full-article model; calibration fitted on validation | 91.892239% | 0.911448 | Same held-out test records |
+| Text · headline baseline | All 207,375 headlines; frozen PhoBERT + logistic regression | 80.981161% | 0.794315 | Four classifiers fitted on CPU using the same grouped split |
+| Image | CIFAR-100; Swin-T full fine-tuning | 86.81% | 0.8681 | Three-seed mean; 9,998 held-out images after exact-pixel deduplication |
 
-The full Text study uses 7,600 articles collected by Huỳnh Thành Đạt from public VietnamNet URLs and published as the [`vietnamnet-news` dataset](https://huggingface.co/datasets/dathuynh1108/vietnamnet-news). It fine-tunes PhoBERT and uses the same stratified 5,320/1,140/1,140 split as the separate headline comparison. Calibration is fit on validation; its test metrics are listed separately. The headline baseline uses headlines only and frozen PhoBERT features, so it is not a direct model comparison with full-article fine-tuning.
+Text uses the [`vietnamnet-news` dataset](https://huggingface.co/datasets/dathuynh1108/vietnamnet-news) published on the Hugging Face account of student Huỳnh Thành Đạt. This records the dataset publisher, without attributing article collection. All 207,375 valid records from 212,705 source rows are retained. Equal final headline token IDs or Head–Tail article token IDs form 207,108 groups; grouping removes no rows. A 20-fold `StratifiedGroupKFold` with seed 2026 assigns 14/3/3 folds to training/validation/test. Both Text notebooks use identical article IDs and partitions. Fine-tuning completes all seven epochs with effective batch size 64 and selects epoch 7 by validation macro-F1. Temperature and class thresholds are fitted on validation before test evaluation. Headline-only and article inputs differ, so the comparison does not isolate the effect of fine-tuning alone.
 
 | Notebook | Run in Colab |
 | --- | --- |
@@ -129,7 +129,7 @@ The full Text study uses 7,600 articles collected by Huỳnh Thành Đạt from 
 | [Text · headline baseline](notebooks/text_baselines.ipynb) | [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/text_baselines.ipynb) |
 | [Image · CIFAR-100](notebooks/image.ipynb) | [Open in Colab](https://colab.research.google.com/github/dathuynh1108/CO5177-PFDAV/blob/main/notebooks/image.ipynb) |
 
-The Text run requires a GPU for practical fine-tuning; Image trains six configurations over three seeds and 20 epochs. A full Colab Run all has not been independently verified. New Tabular and headline-baseline runs save their configuration, seeds, fit history, metrics, predictions and plots to a fresh ignored `artifacts/notebook-runs/` directory. The Text archive [`text_historical.ipynb`](notebooks/text_historical.ipynb) preserves the prior Kaggle/Tesla T4 run and its original outputs; it is historical evidence, not a current result. Further provenance is recorded in [TEXT_REUSE.md](docs/TEXT_REUSE.md).
+Text fine-tuning uses a GPU; Image trains six configurations over three seeds for 20 epochs each. The executed Image notebook contains 21 code cells, six PNG outputs, and no error outputs. Fresh run directories retain configurations, seeds, fitting history, metrics, predictions, and plots. [Text evidence](reports/text/notebook-evidence/metrics.json) and [Image execution receipt](reports/image/notebook-evidence/execution-receipt.json) accompany the reports. The Text archive [`text_historical.ipynb`](notebooks/text_historical.ipynb) preserves the prior Kaggle/Tesla T4 run and its original outputs; it is historical evidence, not a current result. Further provenance is recorded in [TEXT_REUSE.md](docs/TEXT_REUSE.md).
 
 [Tabular PDF](reports/tabular/tabular.pdf) · [Full Text PDF](reports/text/text.pdf) · [Headline baseline PDF](reports/text/baselines.pdf) · [Image PDF](reports/image/image.pdf) · [New-study protocol](docs/STUDIES_PROTOCOL.md)
 

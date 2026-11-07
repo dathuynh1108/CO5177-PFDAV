@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import re
 import time
 import unicodedata
 from collections import Counter
@@ -17,7 +19,7 @@ import pyarrow.parquet as pq
 from sklearn.dummy import DummyClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedGroupKFold
 from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
 
@@ -45,7 +47,7 @@ def canonical_url(value: str) -> str:
 
 
 def deduplicate(frame: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
-    """Union equal URLs or normalized model inputs before sampling/splitting."""
+    """Group identical URLs, headlines or article bodies before splitting."""
     parent = list(range(len(frame)))
 
     def find(index):
@@ -56,7 +58,13 @@ def deduplicate(frame: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
 
     seen = {}
     for i, row in enumerate(frame.itertuples()):
-        for key in [("url", row.url), ("headline", normalize(row.title).casefold())]:
+        keys = [("url", row.url), ("headline", normalize(row.title).casefold())]
+        if hasattr(row, "content") and row.content:
+            body_hash = hashlib.sha256(
+                normalize(row.content).casefold().encode()
+            ).hexdigest()
+            keys.append(("body", body_hash))
+        for key in keys:
             if key in seen:
                 parent[find(i)] = find(seen[key])
             else:
@@ -105,22 +113,11 @@ def prepare(config: dict) -> tuple[pd.DataFrame, dict]:
                         "category": row["class"],
                         "url": url_value,
                         "title": title,
+                        "content": normalize(row["content"] or ""),
                     }
                 )
     frame, duplicate_audit = deduplicate(pd.DataFrame(records))
-    # Rank IDs with a fixed salt. Sampling is independent of validation/test scores.
-    frame["sample_rank"] = frame["id"].map(
-        lambda value: hashlib.sha256(
-            f"{config['sample_seed']}:{value}".encode()
-        ).hexdigest()
-    )
-    selected = (
-        frame.sort_values("sample_rank")
-        .groupby("category", sort=True)
-        .head(config["max_per_class"])
-        .sort_values("id")
-        .reset_index(drop=True)
-    )
+    selected = frame.sort_values("id").reset_index(drop=True)
     if len(selected) < 2000 or selected["category"].nunique() != len(config["files"]):
         raise ValueError("Text cohort fails sample-count or category coverage contract")
     audit_data = {
@@ -130,7 +127,6 @@ def prepare(config: dict) -> tuple[pd.DataFrame, dict]:
         **duplicate_audit,
         "unique_usable_rows": len(frame),
         "modeling_rows": len(selected),
-        "max_per_class": config["max_per_class"],
         "selected_class_counts": {
             k: int(v)
             for k, v in selected["category"].value_counts().sort_index().items()
@@ -139,9 +135,10 @@ def prepare(config: dict) -> tuple[pd.DataFrame, dict]:
             str(q): float(np.quantile(lengths, q))
             for q in [0, 0.25, 0.5, 0.75, 0.95, 1]
         },
-        "input": "Headline only; URLs, body and category strings are excluded from model inputs",
-        "sampling": "Deterministic capped cohort after full-corpus quality audit, not full-corpus training",
-        "duplicate_scope": "Connected components of canonical URL OR normalized casefolded headline; conflicting-category components removed",
+        "empty_bodies_retained": int((selected["content"] == "").sum()),
+        "input": "Shared full-article cohort; headline baseline uses titles only, fine-tuning uses titles and bodies. URLs and category strings are excluded from model inputs",
+        "sampling": "None; all usable records after documented quality checks are retained",
+        "duplicate_scope": "Connected components of canonical URL OR normalized casefolded headline OR nonempty normalized casefolded body; conflicting-category components removed",
     }
     return selected, audit_data
 
@@ -156,6 +153,132 @@ def segmented_headlines(frame: pd.DataFrame) -> list[str]:
             "Word segmentation merged distinct input identities; revise grouping before splitting"
         )
     return texts
+
+
+def _model_texts(title: str, body: str) -> tuple[str, str]:
+    from pyvi import ViTokenizer
+
+    words = body.split()
+    if len(words) > 300:
+        body = " ".join(words[:220] + words[-80:])
+    article = unicodedata.normalize("NFC", f"{title} {body}").lower()
+    article = re.sub(r"[^\w\s]|[0-9]+", " ", article, flags=re.UNICODE)
+    article = ViTokenizer.tokenize(" ".join(article.split()))
+    return ViTokenizer.tokenize(title), article
+
+
+def prepare_inputs(frame: pd.DataFrame, config: dict) -> tuple[pd.DataFrame, dict]:
+    """Construct both model inputs and group token-identical articles before splitting."""
+    from joblib import Parallel, delayed
+    from transformers import AutoTokenizer
+
+    from studies.evidence import sha256
+
+    identity = {
+        "article_ids_sha256": hashlib.sha256(
+            "\n".join(frame["id"]).encode()
+        ).hexdigest(),
+        "source_sha256": sha256(Path(__file__)),
+        "data_revision": config["revision"],
+        "model_revision": config["model_revision"],
+        "headline_max_tokens": config["max_length"],
+        "article_max_tokens": 256,
+    }
+    key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
+    cache = ROOT / "data/text-inputs" / key
+    path = cache / "inputs.parquet"
+    metadata_path = cache / "metadata.json"
+    if path.is_file() and metadata_path.is_file():
+        audit = json.loads(metadata_path.read_text())
+        if sha256(path) != audit["inputs_sha256"]:
+            raise ValueError("Prepared input checksum mismatch")
+        inputs = pd.read_parquet(path)
+        if inputs["id"].tolist() != frame["id"].tolist():
+            raise ValueError("Prepared input article IDs differ")
+        result = frame.copy()
+        for column in ("headline_text", "article_text", "input_group"):
+            result[column] = inputs[column].to_numpy()
+        return result, audit
+
+    workers = min(8, os.cpu_count() or 1)
+    print(
+        f"Preparing both model inputs for all {len(frame):,} articles with {workers} workers",
+        flush=True,
+    )
+    texts = Parallel(n_jobs=workers)(
+        delayed(_model_texts)(title, body)
+        for title, body in zip(frame["title"], frame["content"])
+    )
+    result = frame.copy()
+    result["headline_text"] = [pair[0] for pair in texts]
+    result["article_text"] = [pair[1] for pair in texts]
+    tokenizer = AutoTokenizer.from_pretrained(
+        config["phobert"], revision=config["model_revision"], use_fast=False
+    )
+    parent = list(range(len(result)))
+
+    def find(index):
+        while parent[index] != index:
+            parent[index] = parent[parent[index]]
+            index = parent[index]
+        return index
+
+    seen = {}
+    for i, (headline, article) in enumerate(texts):
+        headline_ids = tokenizer.encode(
+            headline, max_length=config["max_length"], truncation=True
+        )
+        article_ids = tokenizer.encode(
+            article, add_special_tokens=False, truncation=False
+        )
+        if len(article_ids) > 254:
+            article_ids = article_ids[:127] + article_ids[-127:]
+        article_ids = [tokenizer.cls_token_id] + article_ids + [tokenizer.sep_token_id]
+        for kind, ids in (("headline", headline_ids), ("article", article_ids)):
+            digest = hashlib.sha256(np.asarray(ids, dtype="<i4").tobytes()).digest()
+            token_key = (kind, digest)
+            if token_key in seen:
+                parent[find(i)] = find(seen[token_key])
+            else:
+                seen[token_key] = i
+        if (i + 1) % 25000 == 0:
+            print(f"Grouped token inputs: {i + 1:,}/{len(result):,}", flush=True)
+    result["input_group"] = [find(i) for i in range(len(result))]
+    sizes = result.groupby("input_group").size()
+    cache.mkdir(parents=True, exist_ok=True)
+    result[["id", "headline_text", "article_text", "input_group"]].to_parquet(
+        path, index=False
+    )
+    audit = {
+        **identity,
+        "input_rows": len(result),
+        "input_groups": len(sizes),
+        "groups_with_multiple_articles": int((sizes > 1).sum()),
+        "largest_group": int(sizes.max()),
+        "grouping": "Union of equal final headline token IDs or final Head-Tail article token IDs",
+        "rows_removed": 0,
+        "preprocessing_workers": workers,
+        "inputs_sha256": sha256(path),
+    }
+    write_json(metadata_path, audit)
+    return result, audit
+
+
+def split_indices(frame: pd.DataFrame, config: dict) -> dict[str, np.ndarray]:
+    """Assign whole input groups to approximately 70/15/15 stratified partitions."""
+    folds = StratifiedGroupKFold(
+        n_splits=20, shuffle=True, random_state=config["split_seed"]
+    )
+    fold_id = np.empty(len(frame), dtype=np.int64)
+    for number, (_, heldout) in enumerate(
+        folds.split(np.zeros(len(frame)), frame["category"], frame["input_group"])
+    ):
+        fold_id[heldout] = number
+    return {
+        "train": np.flatnonzero(fold_id < 14),
+        "validation": np.flatnonzero((fold_id >= 14) & (fold_id < 17)),
+        "test": np.flatnonzero(fold_id >= 17),
+    }
 
 
 def embeddings(texts: list[str], config: dict) -> tuple[np.ndarray, dict]:
@@ -199,9 +322,7 @@ def embeddings(texts: list[str], config: dict) -> tuple[np.ndarray, dict]:
         device = (
             "cuda"
             if torch.cuda.is_available()
-            else "mps"
-            if torch.backends.mps.is_available()
-            else "cpu"
+            else "mps" if torch.backends.mps.is_available() else "cpu"
         )
     if device not in {"cpu", "mps", "cuda"}:
         raise ValueError("Unsupported explicit inference device")
@@ -268,7 +389,7 @@ def embeddings(texts: list[str], config: dict) -> tuple[np.ndarray, dict]:
         "model": config["phobert"],
         "revision": config["model_revision"],
         "device": device,
-        "feature_cache_key": key,
+        "feature_cache_sha256": key,
         "encoder_source_sha256": encoder_source,
         "features_sha256": sha256(features_path),
         "rows": len(texts),
@@ -292,22 +413,14 @@ def run() -> dict:
     output = ROOT / "reports/text/generated"
     output.mkdir(parents=True, exist_ok=True)
     frame, data_audit = prepare(config)
-    texts = np.array(segmented_headlines(frame), dtype=object)
+    frame, input_audit = prepare_inputs(frame, config)
+    data_audit["model_input_grouping"] = input_audit
+    texts = frame["headline_text"].to_numpy(dtype=object)
     labels = sorted(frame["category"].unique())
     label_ids = {label: i for i, label in enumerate(labels)}
     target = frame["category"].map(label_ids).to_numpy()
-    train, other = train_test_split(
-        np.arange(len(frame)),
-        test_size=0.30,
-        random_state=config["split_seed"],
-        stratify=target,
-    )
-    val, test = train_test_split(
-        other,
-        test_size=0.5,
-        random_state=config["split_seed"] + 1,
-        stratify=target[other],
-    )
+    indices = split_indices(frame, config)
+    train, val, test = (indices[name] for name in ("train", "validation", "test"))
     splits = {
         name: frame.iloc[idx]["id"].tolist()
         for name, idx in [("train", train), ("validation", val), ("test", test)]

@@ -15,6 +15,15 @@ def write(track):
     directory = ROOT / "reports" / track
     data = json.loads((directory / "generated/data-audit.json").read_text())
     summary = json.loads((directory / "generated/summary.json").read_text())
+    if track == "text":
+        manifest = json.loads((directory / "generated/manifest.json").read_text())
+        text_config = manifest["config"]
+        input_audit = data["model_input_grouping"]
+        if data["modeling_rows"] != data["unique_usable_rows"]:
+            raise ValueError("Text report requires all eligible full-corpus records")
+        if input_audit["input_rows"] != data["modeling_rows"] or input_audit["rows_removed"] != 0:
+            raise ValueError("Text grouping must retain every eligible record")
+        text_rows = f"{data['modeling_rows']:,}".replace(",", ".")
     assets = directory / "assets"
     assets.mkdir(exist_ok=True)
     shutil.copyfile(
@@ -73,15 +82,15 @@ def write(track):
         ]
     else:
         abstract = (
-            "Thực nghiệm so sánh các cách biểu diễn trên cùng tập 7.600 tiêu đề VietnamNet thuộc 19 chuyên mục. "
+            "Thực nghiệm so sánh các cách biểu diễn trên toàn bộ tập tiêu đề VietnamNet hợp lệ thuộc 19 chuyên mục. "
             "TF-IDF theo từ và theo ký tự được kết hợp với SVM tuyến tính. Đặc trưng từ PhoBERT đóng băng "
             "được đưa vào hồi quy logistic. Bộ phân loại được chọn bằng macro-F1 trên tập validation.\n\n"
             + best_result
             + " Kết quả phản ánh hiệu quả của từng cặp biểu diễn và bộ phân loại. "
-            "Tập tiêu đề cân bằng và cách chia riêng xác định phạm vi của phép so sánh."
+            "Dữ liệu giữ phân bố chuyên mục sau làm sạch; các mô hình dùng cùng tập test được chia theo nhóm đầu vào."
         )
         overview = [
-            ("Dữ liệu", "7.600 tiêu đề được chọn từ bộ dữ liệu VietnamNet do nhóm thu thập."),
+            ("Dữ liệu", f"Toàn bộ {text_rows} tiêu đề hợp lệ từ VietnamNet News."),
             ("Biểu diễn", "TF-IDF theo từ, TF-IDF theo ký tự và đặc trưng PhoBERT đóng băng."),
             ("Phép đo", "Độ chính xác, macro-F1 và lỗi theo chuyên mục trên tập test giữ riêng."),
             ("Kết quả chính", best_result),
@@ -142,61 +151,77 @@ Phân bố số liệu có thể chứa giá trị cực đoan, nhưng thí nghi
     else:
         parts.append(r"""
 \chapter{Bài toán và dữ liệu}
-\section{Mục tiêu}
-Bài toán phân loại chuyên mục của bài báo từ tiêu đề tiếng Việt. Các cách biểu diễn được so sánh
-trên cùng dữ liệu và split: TF-IDF từ, TF-IDF ký tự và đặc trưng PhoBERT đóng băng.
-Baseline lớp đa số cung cấp mức đối chứng; mô hình không dùng URL, body hoặc tên chuyên mục làm input.
-\section{Nguồn VietnamNet}
-Bộ \code{dathuynh1108/vietnamnet-news} do nhóm thu thập chứa 212.705 bài trong 19 tệp chuyên mục.
-Bài này dùng các tệp parquet gốc, không dùng config NER có nhãn thực thể.
-Revision nguồn được cố định ở \code{d70a9601f36dcb1e5c534d30e2d3921c2ba16284}; SHA256 từng tệp nằm trong config.
-Dataset card không nêu license phân phối nội dung báo chí; tình trạng license được ghi là chưa rõ.
-Dữ liệu thô và trọng số mô hình không được đưa vào Git \cite{vietnamnet}.
-\section{Làm sạch và tập mô hình}
-Tiêu đề được chuẩn hóa NFC và khoảng trắng. URL được bỏ query/fragment để nhận diện bài.
-Các bản ghi có cùng URL hoặc cùng tiêu đề đã casefold được nối thành nhóm liên thông;
-nhóm có nhiều chuyên mục bị loại toàn bộ, nhóm còn lại giữ một bản ghi.
-Quy tắc loại trùng được áp dụng trước bước lấy mẫu và chia tập.
+\section{Mục tiêu và nguồn dữ liệu}
+Bài toán phân loại 19 chuyên mục từ tiêu đề tiếng Việt, với các đối chứng gồm lớp đa số,
+TF-IDF từ, TF-IDF ký tự và đặc trưng PhoBERT đóng băng.
+Nguồn là bộ VietnamNet News trên kho Hugging Face của sinh viên Huỳnh Thành Đạt \cite{vietnamnet}.
+Dữ liệu gồm tiêu đề, nội dung, URL và chuyên mục. Mô hình baseline chỉ nhận tiêu đề;
+nội dung và URL tham gia kiểm tra chất lượng và xác định nhóm trước khi chia tập.
+\section{Làm sạch toàn bộ dữ liệu}
+Tiêu đề và nội dung được chuẩn hóa Unicode NFC và khoảng trắng. URL được chuẩn hóa,
+bỏ query và fragment. Các bản ghi có cùng URL, tiêu đề chuẩn hóa không phân biệt hoa thường,
+hoặc nội dung không rỗng giống nhau được nối thành nhóm liên thông.
+Nhóm có chuyên mục mâu thuẫn bị loại toàn bộ; các nhóm còn lại giữ một bản ghi.
 """)
         parts.append(
-            f"Có {data['empty_headlines_removed']:,} tiêu đề rỗng, {data['conflicting_category_rows_removed']:,} dòng thuộc nhóm chuyên mục mâu thuẫn và {data['duplicate_rows_removed_after_conflicts']} dòng trùng còn lại bị loại. Corpus còn {data['unique_usable_rows']:,} bài có thể sử dụng.\n"
+            f"Từ {data['raw_rows']:,} bài nguồn, loại {data['empty_headlines_removed']:,} tiêu đề rỗng, "
+            f"{data['conflicting_category_rows_removed']:,} dòng thuộc nhóm nhãn mâu thuẫn và "
+            f"{data['duplicate_rows_removed_after_conflicts']:,} dòng trùng còn lại; giữ toàn bộ {text_rows} bài hợp lệ. "
+            f"Có {data['empty_bodies_retained']} bài không có nội dung nhưng vẫn có tiêu đề hợp lệ. "
+            "Không lấy mẫu hoặc giới hạn số bài theo chuyên mục.\n"
         )
         parts.append(r"""
-Chọn tối đa 400 bài mỗi lớp bằng thứ tự SHA256 của ID với seed 2026, trước khi xem chỉ số mô hình.
-Tập mô hình có 7.600 tiêu đề, đủ 19 lớp. Đây là một cohort cân bằng từ corpus đã kiểm tra đầy đủ,
-không phải huấn luyện trên toàn bộ 212.705 bài. Lựa chọn này giới hạn chi phí mã hóa và cho phép so sánh
-các cách biểu diễn trên cùng dữ liệu. Phân bố nguồn vốn không cân bằng được lưu trong audit.
 \begin{figure}[htbp]\centering\includegraphics[width=.95\textwidth]{generated/class_counts.png}
-\caption{Mỗi lớp có 400 tiêu đề trong tập mô hình.}\end{figure}
+\caption{Phân bố chuyên mục trong toàn bộ dữ liệu nguồn và tập bài hợp lệ sau làm sạch.}\end{figure}
 \chapter{Biểu diễn và mô hình}
-\section{Split và tách từ}
-Split phân tầng 70/15/15 dùng seed 2026, tiếp tục chia validation/test bằng seed 2027.
-Ba tập có 5.320/1.140/1.140 tiêu đề; mỗi lớp có 280/60/60 mẫu.
-PyVi tách từ cho cùng chuỗi đầu vào của mọi mô hình. Sau tách từ còn kiểm tra tính duy nhất của input.
-\section{TF-IDF và Linear SVM}
-TF-IDF từ dùng unigram/bigram; bản ký tự dùng char-within-word n-gram 3--5.
-Mỗi vectorizer có tối đa 80.000 đặc trưng, min-df 2, max-df 0,98 và sublinear TF.
-Từ vựng và IDF chỉ fit trên train. Linear SVM chọn $C\in\{0.5,1,2\}$ bằng macro-F1 validation,
-tối đa 5.000 vòng, model seed 42.
+\section{Chia tập theo nhóm đầu vào}
+PyVi tách từ cho tiêu đề và đầu vào bài báo. Trước khi chia tập, các bài có cùng chuỗi token
+cuối cùng của tiêu đề (tối đa 128 token) hoặc cùng đầu vào Head--Tail của bài báo (256 token)
+được gộp vào cùng nhóm liên thông. Cách này giữ các đầu vào giống nhau ở cùng một phía
+của phép chia cho cả baseline tiêu đề và mô hình bài báo.
+""")
+        parts.append(
+            f"Có {input_audit['input_groups']:,} nhóm đầu vào, trong đó {input_audit['groups_with_multiple_articles']} nhóm "
+            f"có nhiều bài và nhóm lớn nhất có {input_audit['largest_group']} bài. Bước nhóm không loại thêm bài. "
+            f"StratifiedGroupKFold với 20 fold và seed {text_config['split_seed']} chia 14/3/3 fold cho train/validation/test, "
+            "xấp xỉ tỷ lệ 70/15/15. Baseline và mô hình bài báo dùng cùng ID trong từng tập.\n"
+        )
+        parts.append(r"""
+\section{TF-IDF và SVM tuyến tính}
+TF-IDF từ dùng unigram và bigram; bản ký tự dùng char-within-word n-gram 3--5.
+Từ vựng và IDF chỉ được học từ train. Cả hai biểu diễn dùng min-df 2, max-df 0,98,
+sublinear TF và SVM tuyến tính với tối đa 5.000 vòng tối ưu.
+""")
+        c_values = ",".join(f"{value:g}" for value in text_config["classifier_c"])
+        parts.append(
+            f"Mỗi vectorizer có tối đa {text_config['max_features']:,} đặc trưng. "
+            rf"Hệ số $C\in\{{{c_values}\}}$ được chọn theo macro-F1 validation; "
+            f"seed mô hình là {text_config['model_seed']}.\n"
+        )
+        parts.append(r"""
 \section{PhoBERT đóng băng}
-Dùng \code{vinai/phobert-base-v2}. Revision model:
-
-\code{86cd7fd4c148980922ac11a2cf5e257f2ba639e1}.
-
-PhoBERT yêu cầu input đã tách từ \cite{phobert}.
-Encoder ở eval, mọi trọng số requires-grad bằng false; không cập nhật backbone bằng corpus.
-Đặc trưng 768 chiều được mean-pool theo attention mask, gồm token BOS/EOS và không gồm padding.
-Input tối đa 128 token, batch 16, FP32. Không có tiêu đề nào bị cắt trong cohort đã đo.
-Logistic regression trên đặc trưng cố định chọn cùng tập C bằng macro-F1 validation, tối đa 2.000 vòng.
-Các vector test được tạo bằng encoder cố định, không dùng để học từ vựng, thống kê chuẩn hóa hoặc tham số classifier.
-\section{Đánh giá}
-Tất cả lựa chọn classifier hoàn tất bằng validation trước khi dự đoán test.
-Đo accuracy, macro-F1 và F1 theo chuyên mục trên cùng 1.140 tiêu đề; không chọn mô hình theo test.
-Thời gian classifier gồm toàn bộ fit/validation của các ứng viên, tách khỏi thời gian mã hóa PhoBERT.
+PhoBERT Base v2 nhận tiêu đề đã tách từ \cite{phobert,pyvi}.
+Encoder ở chế độ đánh giá và không cập nhật trọng số. Đặc trưng 768 chiều là trung bình
+có attention mask của các token, gồm BOS/EOS và không gồm padding.
+Hồi quy logistic được huấn luyện trên các vector này với tối đa 2.000 vòng;
+$C$ được chọn từ cùng tập ứng viên bằng macro-F1 validation.
 """)
         info = summary["pretrained"]
         parts.append(
-            f"Lần mã hóa đã đo dùng {code(info['device'])} trên Apple M1 Pro, mất {info['encoding_seconds']:.2f} giây cho 7.600 tiêu đề. Các feature được cache cùng hash; tải model, tách từ và fit classifier nằm ngoài khoảng thời gian này.\n"
+            f"Đầu vào tối đa {text_config['max_length']} token, batch mã hóa {text_config['batch_size']}, FP32. "
+            f"Số tiêu đề bị cắt trong lần mã hóa là {info['truncated_headlines']:,}. "
+            "Các vector validation/test được tạo bằng encoder cố định, không tham gia học từ vựng hoặc bộ phân loại.\n"
+        )
+        parts.append(r"""
+\section{Đánh giá}
+Mọi siêu tham số được chọn bằng validation trước khi dự đoán test.
+Accuracy, macro-F1, weighted-F1 và precision/recall/F1 theo chuyên mục được tính
+trên cùng tập test. Các giá trị $C$ thực sự được chọn được trình bày trong bảng kết quả.
+Chi phí mã hóa PhoBERT được tách khỏi thời gian fit các ứng viên của bộ phân loại.
+""")
+        parts.append(
+            f"Mã hóa {text_rows} tiêu đề trên {code(info['device'])} mất {info['encoding_seconds']:.2f} giây; "
+            "khoảng thời gian này không gồm tải mô hình, tách từ hoặc fit classifier.\n"
         )
     sizes = data["split_sizes"]
     parts.append(
@@ -239,10 +264,10 @@ Mô hình & C & Val macro-F1 & Test accuracy & Test macro-F1\\\midrule
         char = models["character"]
         word = models["word"]
         parts.append(
-            f"PhoBERT đóng băng với logistic regression đạt accuracy {100 * phi['test']['accuracy']:.2f}\\% và macro-F1 {phi['test']['macro_f1']:.4f}. So với TF-IDF ký tự, accuracy tăng {100 * (phi['test']['accuracy'] - char['test']['accuracy']):.2f} điểm phần trăm và macro-F1 tăng {phi['test']['macro_f1'] - char['test']['macro_f1']:.4f}. Đây là so sánh giữa toàn bộ pipeline đã đo; thí nghiệm chưa cô lập ảnh hưởng của encoder, pooling hoặc classifier.\n\n"
+            f"PhoBERT đóng băng với logistic regression đạt accuracy {100 * phi['test']['accuracy']:.2f}\\% và macro-F1 {phi['test']['macro_f1']:.4f}. So với TF-IDF ký tự, chênh lệch accuracy là {100 * (phi['test']['accuracy'] - char['test']['accuracy']):.2f} điểm phần trăm và chênh lệch macro-F1 là {phi['test']['macro_f1'] - char['test']['macro_f1']:.4f}. Đây là so sánh giữa toàn bộ pipeline đã đo; thí nghiệm chưa cô lập ảnh hưởng của encoder, pooling hoặc classifier.\n\n"
         )
         parts.append(
-            f"TF-IDF ký tự đạt {100 * char['test']['accuracy']:.2f}\\%, so với {100 * word['test']['accuracy']:.2f}\\% của TF-IDF từ. Chênh lệch quan sát được nhỏ hơn mức tăng từ PhoBERT; một split chưa đủ để suy ra ưu thế ổn định giữa hai baseline.\n"
+            f"TF-IDF ký tự đạt {100 * char['test']['accuracy']:.2f}\\%, so với {100 * word['test']['accuracy']:.2f}\\% của TF-IDF từ. Một split chưa đủ để suy ra ưu thế ổn định giữa hai baseline.\n"
         )
         chosen = max(summary["models"], key=lambda m: m["validation"]["macro_f1"])
         weakest = sorted(
@@ -268,10 +293,10 @@ Nguồn điều tra năm 1994 giới hạn khả năng áp dụng cho thu nhập
 Chưa khảo sát riêng ảnh hưởng của từng chiến lược imputation, xử lý giá trị cực đoan hay hiệu quả trên từng nhóm nhân khẩu.
 """)
     else:
-        parts.append(r"""Chỉ dùng tiêu đề trên cohort cân bằng, nên kết quả không mô tả việc đọc toàn bài hoặc phân bố triển khai tự nhiên.
-Chuyên mục nguồn có thể giao nhau; 3.628 dòng có mâu thuẫn trong nhóm trùng đã bị loại, nhưng chưa kiểm tra nhãn từng bài.
-Đã xử lý exact URL/headline duplicates; near duplicates và split theo thời gian chưa được khảo sát.
-Không có nhiều split/seed để mô tả độ bất định. PhoBERT không được fine-tune trong thực nghiệm này.
+        parts.append(r"""Kết quả phản ánh toàn bộ tập bài hợp lệ sau làm sạch, với đầu vào chỉ gồm tiêu đề.
+Các chuyên mục nguồn có thể giao nhau về nội dung. Nhóm token giống nhau đã được giữ cùng tập,
+nhưng chưa đo near duplicates hoặc khả năng khái quát sang giai đoạn xuất bản khác.
+Một split và seed chưa mô tả độ bất định giữa các lần chạy. PhoBERT giữ nguyên trọng số encoder trong phép so sánh này.
 """)
     parts.append(r"""
 Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5177-PFDAV/blob/main/AI\_USE\_REPORT.md}{AI\_USE\_REPORT.md}.
@@ -281,7 +306,7 @@ Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.co
         parts.append(r"""\bibitem{adult} B. Becker và R. Kohavi. \emph{Adult}. UCI Machine Learning Repository, 1996. DOI: 10.24432/C5XW20. \url{https://archive.ics.uci.edu/dataset/2/adult}. License CC BY 4.0.
 """)
     else:
-        parts.append(r"""\bibitem{vietnamnet} Nhóm thực hiện. \emph{VietnamNet News}. \url{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}. Revision và checksums trong config.
+        parts.append(r"""\bibitem{vietnamnet} \emph{VietnamNet News}. Bộ dữ liệu trên kho Hugging Face của sinh viên Huỳnh Thành Đạt. \url{https://huggingface.co/datasets/dathuynh1108/vietnamnet-news}. Revision và checksums trong config.
 \bibitem{phobert} D. Q. Nguyen và A. T. Nguyen. \emph{PhoBERT: Pre-trained language models for Vietnamese}. Findings of EMNLP, 2020. \url{https://huggingface.co/vinai/phobert-base-v2}. Model card nêu license AGPL-3.0 cho phiên bản base-v2.
 \bibitem{pyvi} PyVi 0.1.1. Vietnamese word segmentation. \url{https://pypi.org/project/pyvi/}.
 """)

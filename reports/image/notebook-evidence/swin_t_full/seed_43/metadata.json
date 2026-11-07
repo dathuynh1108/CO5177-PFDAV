@@ -9,8 +9,8 @@
   "seed": 43,
   "device": "cuda",
   "environment": {
-    "python": "3.12.3",
-    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "python": "3.12.12",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
     "torch": "2.10.0+cu130",
     "cuda_runtime": "13.0",
     "cudnn": 91501,
@@ -31,8 +31,8 @@
     "macro_f1": 0.8688357738581824,
     "state_sha256": "d4a95a7b4a1547fdaf8e9b345a1ceb8c328993c4d03b067a61f208c373b8cb01"
   },
-  "train_seconds": 214.0384529682342,
-  "epoch_seconds": 226.86640235059895,
+  "train_seconds": 209.67107459378894,
+  "epoch_seconds": 222.5780533729121,
   "peak_gpu_memory_bytes": 2573466624,
   "retained_train": 44976,
   "retained_validation": 5000,

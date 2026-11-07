@@ -10,12 +10,12 @@ AI được sử dụng để tra cứu tài liệu và API của scikit-learn, 
 
 | Bài | Nội dung có hỗ trợ |
 | --- | --- |
-| Tabular | Hỗ trợ xây dựng quy trình xử lý dữ liệu thiếu, mã hóa và chuẩn hóa thuộc tính, chia tập và so sánh các bộ phân loại trên UCI Adult. Đối chiếu chỉ số và phân tích sự đánh đổi giữa precision và recall. |
-| Text | Hỗ trợ tra cứu API PhoBERT, chuẩn bị đối chứng TF-IDF và embedding, tách tập validation và tập test, đối chiếu ma trận nhầm lẫn và phân tích hiệu chỉnh. Dữ liệu được Huỳnh Thành Đạt thu thập bằng crawling từ URL công khai của VietnamNet. |
-| Image | Hỗ trợ sử dụng API trọng số tiền huấn luyện, kiểm tra ảnh trùng pixel, triển khai quy trình huấn luyện trong notebook và đối chiếu các chỉ số với dự đoán kiểm tra. Kết quả 18 lượt của notebook được lưu riêng với hồ sơ A1 CO5085. |
-| Trình bày | Hỗ trợ biên tập Markdown, LaTeX, PDF và nội dung GitHub Pages. Phần phân công do nhóm cung cấp. |
+| Tabular | Hỗ trợ hiện thực xử lý dữ liệu thiếu, mã hóa, chuẩn hóa, chia tập, khảo sát phân bố và IQR trên train, so sánh bốn bộ phân loại trên toàn bộ 48.780 dòng hợp lệ. Đối chiếu chỉ số và phân tích đánh đổi giữa precision và recall. |
+| Text | Hỗ trợ hiện thực và kiểm tra tiền xử lý, nhóm các đầu vào token trùng nhau trước khi chia tập, fine-tuning PhoBERT đủ bảy epoch trên 207.375 bài hợp lệ, bốn đối chứng tiêu đề và hiệu chỉnh bằng validation. Hỗ trợ thực thi notebook, đối chiếu dự đoán, ma trận nhầm lẫn và số liệu báo cáo. Bộ VietnamNet News được công bố trên tài khoản Hugging Face của học viên Huỳnh Thành Đạt; thông tin này không xác định người thu thập bài báo. |
+| Image | Hỗ trợ sử dụng API trọng số tiền huấn luyện, kiểm tra ảnh trùng pixel, hiện thực và thực thi 18 lượt huấn luyện đủ 20 epoch trên RTX 5090, kiểm tra checkpoint và đối chiếu chỉ số với dự đoán test. Notebook thực thi có 21 cell mã và sáu hình PNG; kết quả được lưu riêng với hồ sơ A1 CO5085. |
+| Trình bày | Hỗ trợ chuyển phần trình bày notebook hiện tại sang tiếng Anh, chia cell, biên tập Markdown, LaTeX, PDF và nội dung GitHub Pages. Phần phân công do nhóm cung cấp. |
 
-Bảng và hình sử dụng số liệu từ các lượt thực nghiệm có lưu cấu hình và lịch sử. Hai thí nghiệm Text hiện tại dùng chung danh sách bài kiểm tra độc lập. Lượt toàn văn Kaggle trước đó được lưu riêng vì dùng chung tập đánh giá để chọn checkpoint và hiệu chỉnh.
+Bảng và hình sử dụng số liệu từ các lượt thực nghiệm có lưu cấu hình, lịch sử và đầu ra Jupyter. Hai thí nghiệm Text hiện tại dùng chung split 145.162/31.107/31.106; nhóm đầu vào token được giữ trong cùng một tập. Lượt toàn văn Kaggle bảy epoch trước đó được lưu nguyên byte riêng vì dùng chung tập đánh giá để chọn checkpoint và hiệu chỉnh. Các kiểm tra hiện có không xác nhận thay cho Run all trên Google Colab hoặc việc nộp bài trên LMS.
 
 ## Tài liệu đối chiếu
 

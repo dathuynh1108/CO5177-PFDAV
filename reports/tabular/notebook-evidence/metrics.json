@@ -1,6 +1,6 @@
 {
   "track": "tabular",
-  "run_id": "20261106T191810Z",
+  "run_id": "20261107T075821Z",
   "seed": 42,
   "split_seed": 2026,
   "split_sizes": {
@@ -21,7 +21,7 @@
           "C": null,
           "validation_accuracy": 0.7606942736094028,
           "validation_macro_f1": 0.4320422261895521,
-          "fit_seconds": 0.07058608399893274
+          "fit_seconds": 0.06754987499880372
         }
       ],
       "validation_macro_f1": 0.4320422261895521,
@@ -75,19 +75,19 @@
           "C": 0.1,
           "validation_accuracy": 0.8502118354516879,
           "validation_macro_f1": 0.779629073523586,
-          "fit_seconds": 0.15245558300011908
+          "fit_seconds": 0.14141329099948052
         },
         {
           "C": 1.0,
           "validation_accuracy": 0.8495284952849529,
           "validation_macro_f1": 0.7797733031187463,
-          "fit_seconds": 0.1596704170005978
+          "fit_seconds": 0.15324949999921955
         },
         {
           "C": 10.0,
           "validation_accuracy": 0.8498018313516469,
           "validation_macro_f1": 0.780272269612676,
-          "fit_seconds": 0.1616447500000504
+          "fit_seconds": 0.15206050000415416
         }
       ],
       "validation_macro_f1": 0.780272269612676,
@@ -141,19 +141,19 @@
           "C": 0.1,
           "validation_accuracy": 0.8006013393467268,
           "validation_macro_f1": 0.7634420465528993,
-          "fit_seconds": 0.14416570799949113
+          "fit_seconds": 0.1436623750050785
         },
         {
           "C": 1.0,
           "validation_accuracy": 0.8010113434467678,
           "validation_macro_f1": 0.7637156270959088,
-          "fit_seconds": 0.15802512499976729
+          "fit_seconds": 0.15113550000387477
         },
         {
           "C": 10.0,
           "validation_accuracy": 0.8011480114801148,
           "validation_macro_f1": 0.7639083486982081,
-          "fit_seconds": 0.18516749999980675
+          "fit_seconds": 0.17757241700019222
         }
       ],
       "validation_macro_f1": 0.7639083486982081,
@@ -207,7 +207,7 @@
           "C": null,
           "validation_accuracy": 0.8719420527538608,
           "validation_macro_f1": 0.8146511483618553,
-          "fit_seconds": 1.8731281250002212
+          "fit_seconds": 0.4182820830028504
         }
       ],
       "validation_macro_f1": 0.8146511483618553,

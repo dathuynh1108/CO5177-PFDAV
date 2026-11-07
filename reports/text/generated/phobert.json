@@ -1,11 +1,11 @@
 {
   "model": "vinai/phobert-base-v2",
   "revision": "86cd7fd4c148980922ac11a2cf5e257f2ba639e1",
-  "device": "mps",
-  "feature_cache_key": "bdc0521dfbbe93ecc863011dde7ca0af3ad6ebf1777d2256a545abfb3157b30e",
-  "encoder_source_sha256": "b5bdbb568d8a57bb8545be75dca31d45cf90a2906eb97f2da5e44c08b0c6e88c",
-  "features_sha256": "b193895d9044bfd62b672aaed436c23bafe000fb320082eb7a82562e701c9501",
-  "rows": 7600,
+  "device": "cuda",
+  "feature_cache_sha256": "84ed314cb5d70ae7f8ad4a82dda66a9a7f69bcb997d941031c1bf7fc5c70a651",
+  "encoder_source_sha256": "9fdfb28e4349190076cd3e2e7f03bfe8115c98eee110624aef111dd8ea248992",
+  "features_sha256": "268eb7186dfb55c7e05ee044c9f867100d7ac4e2a3d0808f517f05c22bffaaf2",
+  "rows": 207375,
   "max_length": 128,
   "batch_size": 16,
   "pooling": "Attention-mask mean including BOS/EOS",
@@ -18,5 +18,6 @@
   },
   "segmentation": "pyvi.ViTokenizer",
   "truncated_headlines": 0,
-  "encoding_seconds": 19.190076958038844
+  "encoding_seconds": 74.11572916805744,
+  "verified_embedding_cache_reused": true
 }

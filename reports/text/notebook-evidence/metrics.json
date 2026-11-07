@@ -1,24 +1,26 @@
 {
   "test_before_calibration": {
-    "accuracy": 0.8377192982456141,
-    "f1_macro": 0.8352962303501604,
-    "f1_weighted": 0.8352962303501605
+    "accuracy": 0.9184080241754002,
+    "f1_macro": 0.9109162292586996,
+    "f1_weighted": 0.9182410953196649
   },
   "test_after_validation_calibration": {
-    "accuracy": 0.8324561403508772,
-    "f1_macro": 0.8296017877906506,
-    "f1_weighted": 0.8296017877906507
+    "accuracy": 0.9189223943933646,
+    "f1_macro": 0.9114480093777803,
+    "f1_weighted": 0.9187606334643256
   },
   "calibration": {
-    "temperature": 0.5801735310834987,
-    "validation_nll_before": 0.9738530516624451,
-    "validation_nll_after": 0.6810587644577026
+    "temperature": 1.4935224419278215,
+    "validation_nll_before": 0.3781189024448395,
+    "validation_nll_after": 0.30984124541282654
   },
   "split_sizes": {
-    "train": 5320,
-    "validation": 1140,
-    "test": 1140
+    "train": 145162,
+    "validation": 31107,
+    "test": 31106
   },
-  "train_seconds": 84.93680167198181,
-  "epochs_completed": 4.0
+  "train_seconds": 1454.0726828575134,
+  "epochs_completed": 7.0,
+  "best_model_checkpoint": "/workspace/co5177/runs/text-full-final/checkpoints/checkpoint-15883",
+  "best_validation_macro_f1": 0.9081119255156661
 }

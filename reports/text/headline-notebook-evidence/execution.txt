@@ -1,0 +1,54 @@
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+Executing cell 0
+Executing cell 1
+Executing cell 2
+Executing cell 3
+Executing cell 4
+Study checkout: /Users/huynhthanhdat/Workspace/research/CO5177-PFDAV
+Executing cell 5
+Executing cell 6
+Executing cell 7
+Run ID: 20261107T093640Z | seed: 42 | split seed: 2026
+Run directory: /Users/huynhthanhdat/Workspace/research/CO5177-PFDAV/artifacts/notebook-rerun-english/text-baseline-inline
+Executing cell 8
+Executing cell 9
+Executing cell 10
+Executing cell 11
+Source corpus: 212,705; empty headlines: 1,167; conflicting-label rows: 3,636; articles after cleaning: 207,375; cohort: 207,375
+Executing cell 12
+Executing cell 13
+Executing cell 14
+Executing cell 15
+Executing cell 16
+Executing cell 17
+Train / validation / test: 145162 31107 31106
+Executing cell 18
+Executing cell 19
+PhoBERT: {'model': 'vinai/phobert-base-v2', 'revision': '86cd7fd4c148980922ac11a2cf5e257f2ba639e1', 'device': 'cuda', 'rows': 207375, 'max_length': 128, 'pooling': 'Attention-mask mean including BOS/EOS', 'encoding_seconds': 74.11572916805744}
+Verified embedding cache reused: True
+Executing cell 20
+Executing cell 21
+Majority baseline C=None: validation macro-F1=0.0060; fit=0.01s
+Word TF-IDF + Linear SVM C=0.5: validation macro-F1=0.7904; fit=15.94s
+Word TF-IDF + Linear SVM C=1.0: validation macro-F1=0.7864; fit=16.80s
+Word TF-IDF + Linear SVM C=2.0: validation macro-F1=0.7789; fit=18.09s
+Character TF-IDF + Linear SVM C=0.5: validation macro-F1=0.7882; fit=61.67s
+Character TF-IDF + Linear SVM C=1.0: validation macro-F1=0.7871; fit=64.19s
+Character TF-IDF + Linear SVM C=2.0: validation macro-F1=0.7822; fit=71.13s
+Frozen PhoBERT + Logistic regression C=0.5: validation macro-F1=0.7939; fit=35.14s
+Frozen PhoBERT + Logistic regression C=1.0: validation macro-F1=0.7938; fit=37.38s
+Frozen PhoBERT + Logistic regression C=2.0: validation macro-F1=0.7933; fit=44.31s
+Executing cell 22
+Executing cell 23
+Executing cell 24
+Executing cell 25
+Executing cell 26
+Executing cell 27
+Executing cell 28
+Executing cell 29
+Executing cell 30
+Executing cell 31
+Predictions, classifiers, configuration, fitting history, metrics, errors and plots saved to /Users/huynhthanhdat/Workspace/research/CO5177-PFDAV/artifacts/notebook-rerun-english/text-baseline-inline
+Executing cell 32
+Executing cell 33
+Published 19 executed code cells and 2 plots

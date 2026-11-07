@@ -86,8 +86,6 @@
     "old_model_repository": "dathuynh1108/ner-phobert-base-v2-finetuned",
     "old_model_revision": "98f4f3ea72e5fefb125d08421216b29a9508fe39",
     "old_model_status": "Only .gitattributes exists; no configuration, tokenizer or checkpoint is available",
-    "max_per_class": 400,
-    "sample_seed": 2026,
     "split_seed": 2026,
     "model_seed": 42,
     "classifier_c": [
@@ -100,64 +98,90 @@
     "batch_size": 16,
     "cpu_threads": 4,
     "device": "auto",
-    "protocol": "Full-corpus streaming audit, connected URL/headline deduplication with conflict removal, deterministic capped cohort, identical 70/15/15 split and headline inputs for all models. TF-IDF and classifiers fit train only. Frozen encoder has no corpus adaptation. Select C by validation macro-F1 before held-out evaluation."
+    "protocol": "All usable full-corpus records after documented URL/headline/body deduplication and conflicting-label removal, without sampling. Group equal final headline or Head-Tail article token inputs before 20-fold stratified group partitioning: 14 train, 3 validation, 3 test folds. Headline baselines and article fine-tuning share identical IDs. Fit preprocessing and classifiers on train, select settings by validation, then evaluate held-out test."
   },
   "source_sha256": {
-    "configs/text.json": "a66b7955b55ecd9eba43a2f8d2ffa88210d364ecdf41fde5efcfdc261fec86d9",
-    "src/studies/__init__.py": "bcdc91280a398496583faca9434384379281295f577e600418a317a92ee84c1e",
-    "src/studies/audit.py": "85ef6b7a0d6f8d8bfc068bef2ab72057c1b79adfaec7720d249a6d31a66837d3",
-    "src/studies/evidence.py": "e117763238bf351d03a7b76fb85b6915d51f5e0134bf06814b8105c526c4c436",
-    "src/studies/tabular.py": "e46dcb7ba059acef9681d78b51716ddb2c818e375a99e4613e443adf414d6530",
-    "src/studies/text.py": "b5bdbb568d8a57bb8545be75dca31d45cf90a2906eb97f2da5e44c08b0c6e88c"
+    "src/studies/text.py": "9fdfb28e4349190076cd3e2e7f03bfe8115c98eee110624aef111dd8ea248992",
+    "configs/text.json": "e05f5130fbd1c22cbe40f8702a7d8d1fc442ae04f54fd4acb64bef5ec8d192ba",
+    "notebooks/text_baselines.ipynb": "aea8d37d2b68490804f521273c8b46de4867a53cb25264aade1fa95b89479b76"
   },
   "artifacts_sha256": {
-    "class_counts.png": "2912e6c6e49765b8780c964a5c6445a329f1389f1d8b8c69ec05293b764b7817",
-    "confusion.png": "2b281caa9809a5291b0ff43218cbde04bfb7469086519a0838453b56988f21c8",
-    "data-audit.json": "155fef9103e97e88baa15ace7629d804048b128fba431b3669bd4f35212aef5c",
-    "errors.csv": "c18fe37dcf1ebadd028761f50c6d199ada3d79406a399a2fc925018762124b02",
-    "phobert.json": "faab059082494b57d085bd025ddf18f0bc07893381f3200c6c9f8ecfd47549b6",
-    "predictions.csv": "8506580a2e133cd488c3454505aff64dc5662be2c34036175e227852cea844e9",
-    "scores.png": "868211356ec69400c1d63864e7a5dc6535b1bdbae42d320376c7b9302c08bbda",
-    "splits.json": "5f27190c930457ef2f33dcddd13d4e80c343e5e1fd8e421575af8fb45b0d64b1",
-    "summary.json": "5d53a5f8f97d0245189d780aac2bf8d1d06909280458ad92af3f93a340b802b5"
+    "class_counts.png": "098f9d8e6372e8be81e480cda8dff80b0332690391fc7ebad079dbc02b8850c2",
+    "config.json": "e05f5130fbd1c22cbe40f8702a7d8d1fc442ae04f54fd4acb64bef5ec8d192ba",
+    "confusion.png": "65838d60c110e26ca211f1663339a133e126c31bed2368e80a929931142a146b",
+    "data-audit.json": "583696a69b08dc8f5c8a2d947f4fd02b88553024832b8f5caae6e6fea13baae9",
+    "errors.csv": "fb63b26eeb10e2c9100728d364786bf5412e848b8927310986bb15cabccc82d8",
+    "fit-history.json": "ea10f6d6838750c31785228612bf028a2f01ced38a35d10c42a284d9fc42bc9d",
+    "input-audit.json": "ab5c7db13fd83b25b755c75b03f85dc0ec402e621747a0470f90e82d2ea231a7",
+    "phobert.json": "f9971c412730fbc1fbcd9390256ecb56750102fcd599814c3563f4eb5ccd9bba",
+    "predictions.csv": "ec670999c9f1fb61e68043f213f869546f4d60d87d406af8f64acd08e28fc1d5",
+    "provenance.json": "cc8e51845a8b35d2c3ee160f8de12b21331fc2844ce9c22ce582846c872fbeff",
+    "scores.png": "29cefc40325c4a64487d5b7df7dba4bde5f3c58299f7356cfac7a75bbb9f42f4",
+    "split-audit.json": "cb9adf49fd07179092a8e75e7934526fc38a7d239fda575fd00719e3b06346ec",
+    "split-hashes.json": "de471508903217305b2c45279960398405ed389bbfedebd347deebc255dc106a",
+    "splits.json": "9e7254164f832a3bcf0361725aec0c3575226bc54e41cd22faa0d612939b1e3d",
+    "summary.json": "f091c47a9b19c20287ad9511e1e2fdab54c222a102bb296306505ab88cfdad65"
   },
-  "python": "3.12.0",
-  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "python": "3.12.0 (main, Oct  2 2023, 20:56:14) [Clang 16.0.3 ]",
+  "platform": "macOS-27.2-arm64-arm-64bit",
   "packages": {
     "numpy": "2.5.4",
     "pandas": "2.3.3",
     "scikit-learn": "1.8.0",
-    "pyarrow": "26.0.0",
-    "torch": "2.10.0",
     "transformers": "4.57.6",
-    "pyvi": "0.1.1"
+    "torch": "2.10.0",
+    "pyvi": "0.1.1",
+    "pyarrow": "26.0.0"
   },
   "runtime": {
-    "model": "vinai/phobert-base-v2",
-    "revision": "86cd7fd4c148980922ac11a2cf5e257f2ba639e1",
-    "device": "mps",
-    "feature_cache_key": "bdc0521dfbbe93ecc863011dde7ca0af3ad6ebf1777d2256a545abfb3157b30e",
-    "encoder_source_sha256": "b5bdbb568d8a57bb8545be75dca31d45cf90a2906eb97f2da5e44c08b0c6e88c",
-    "features_sha256": "b193895d9044bfd62b672aaed436c23bafe000fb320082eb7a82562e701c9501",
-    "rows": 7600,
-    "max_length": 128,
-    "batch_size": 16,
-    "pooling": "Attention-mask mean including BOS/EOS",
-    "frozen": true,
-    "model_artifacts_sha256": {
-      "pytorch_model.bin": "7ba09eb4c244a5b3a49ad76d52d129ac085b61f5c6287de7f99508b02be589f9",
-      "config.json": "26d21a304fdea8fada88e7c6b7c7fef15c902c690bfb0fa47f60bdb61c68307a",
-      "vocab.txt": "dffd7543c401fb6567253ae7c3313004532c33d062525250049c616544bad777",
-      "bpe.codes": "9dfe53fb8abbddd3387da99641c36e00bee757a3679aad9cf0a7cdc4b30f6ef8"
+    "classifier_fitting": {
+      "device": "cpu",
+      "platform": "macOS-27.2-arm64-arm-64bit",
+      "python": "3.12.0 (main, Oct  2 2023, 20:56:14) [Clang 16.0.3 ]",
+      "packages": {
+        "numpy": "2.5.4",
+        "pandas": "2.3.3",
+        "scikit-learn": "1.8.0",
+        "transformers": "4.57.6",
+        "torch": "2.10.0",
+        "pyvi": "0.1.1",
+        "pyarrow": "26.0.0"
+      }
     },
-    "segmentation": "pyvi.ViTokenizer",
-    "truncated_headlines": 0,
-    "encoding_seconds": 19.190076958038844
+    "frozen_feature_extraction": {
+      "model": "vinai/phobert-base-v2",
+      "revision": "86cd7fd4c148980922ac11a2cf5e257f2ba639e1",
+      "device": "cuda",
+      "feature_cache_sha256": "84ed314cb5d70ae7f8ad4a82dda66a9a7f69bcb997d941031c1bf7fc5c70a651",
+      "encoder_source_sha256": "9fdfb28e4349190076cd3e2e7f03bfe8115c98eee110624aef111dd8ea248992",
+      "features_sha256": "268eb7186dfb55c7e05ee044c9f867100d7ac4e2a3d0808f517f05c22bffaaf2",
+      "rows": 207375,
+      "max_length": 128,
+      "batch_size": 16,
+      "pooling": "Attention-mask mean including BOS/EOS",
+      "frozen": true,
+      "model_artifacts_sha256": {
+        "pytorch_model.bin": "7ba09eb4c244a5b3a49ad76d52d129ac085b61f5c6287de7f99508b02be589f9",
+        "config.json": "26d21a304fdea8fada88e7c6b7c7fef15c902c690bfb0fa47f60bdb61c68307a",
+        "vocab.txt": "dffd7543c401fb6567253ae7c3313004532c33d062525250049c616544bad777",
+        "bpe.codes": "9dfe53fb8abbddd3387da99641c36e00bee757a3679aad9cf0a7cdc4b30f6ef8"
+      },
+      "segmentation": "pyvi.ViTokenizer",
+      "truncated_headlines": 0,
+      "encoding_seconds": 74.11572916805744,
+      "verified_embedding_cache_reused": true,
+      "device_name": "NVIDIA GeForce RTX 5090",
+      "execution_scope": "Original full-corpus CUDA feature extraction; verified fixed features reused for this CPU classifier run"
+    },
+    "execution_source": "reports/text/headline-notebook-evidence/input-source.ipynb",
+    "execution_notebook": "reports/text/headline-notebook-evidence/executed.ipynb",
+    "execution_log": "reports/text/headline-notebook-evidence/execution.txt",
+    "classifier_fit_time_scope": "Sum of CPU model.fit durations across validation candidates; excludes validation prediction and original CUDA embedding extraction"
   },
   "model_artifacts_sha256": {
-    "runs/text/majority.joblib": "4d839bf3bc828d4eabfa43d26e95d73435a832711546c854d492127b17ddba64",
-    "runs/text/word.joblib": "ca44552bffb39a6aec367595d4c47d6035badefb1ff0408ccf72f17b2ce9baf7",
-    "runs/text/character.joblib": "7e969179f81d8a2c839b84b6ea2871410b4d915ae6f7cfbc7a6f7e0d2a751f95",
-    "runs/text/phobert.joblib": "63aa829625a859a898b3b7402cc53da729667c080da02e2c043153a0c1b3d271"
+    "artifacts/notebook-rerun-english/text-baseline-inline/majority.joblib": "f463ed64365c089a7a56956ca8e1e8c1254a910e98a2630087bab652e85a66b9",
+    "artifacts/notebook-rerun-english/text-baseline-inline/word.joblib": "18cddaf9dff3b7eb9809395beb983b5bea0615a2eaeef5c0147978bc1db3831a",
+    "artifacts/notebook-rerun-english/text-baseline-inline/character.joblib": "15e4f51e0b5bdc75f23d1da8b0e5d3acc344a3a7a8bdeed8f721f8db3816e8e9",
+    "artifacts/notebook-rerun-english/text-baseline-inline/phobert.joblib": "2d97ad0999684fa544cc8ac25ed5be2804b623575604e8f9dd032171969d0a65"
   }
 }

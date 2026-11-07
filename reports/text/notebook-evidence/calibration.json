@@ -1,0 +1,25 @@
+{
+  "temperature": 1.4935224419278215,
+  "class_thresholds": {
+    "ban-doc": 1.9549999999999998,
+    "bao-ve-nguoi-tieu-dung": 0.89,
+    "bat-dong-san": 1.13,
+    "chinh-tri": 1.415,
+    "cong-nghe": 0.74,
+    "dan-toc-ton-giao": 1.475,
+    "doi-song": 1.76,
+    "du-lich": 1.16,
+    "giao-duc": 0.875,
+    "kinh-doanh": 0.845,
+    "oto-xe-may": 1.52,
+    "phap-luat": 0.53,
+    "suc-khoe": 1.13,
+    "the-gioi": 1.91,
+    "the-thao": 2.0,
+    "thi-truong-tieu-dung": 1.0699999999999998,
+    "thoi-su": 1.115,
+    "tuan-viet-nam": 0.725,
+    "van-hoa-giai-tri": 1.925
+  },
+  "fitted_on": "validation"
+}

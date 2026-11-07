@@ -1,14 +1,24 @@
 {
   "notebook": "notebooks/tabular.ipynb",
-  "run_id": "20261106T191810Z",
+  "run_id": "20261107T075821Z",
   "kernel": "Jupyter",
   "python": "3.12.0",
   "platform": "Darwin",
-  "code_sha256": "c89e18edfb3f8c5d61a8db398213baca267645b36a794ca6a7060395c644e35c",
+  "code_sha256": "c6f8c797501c947962eef6c4ffdd73e9a6bc9a8c6a8540760545fbf5b179d19a",
   "artifacts_sha256": {
-    "config.json": "58edf1793c86d03a05e042574f7d134cabf21fc6898cf437856a52c036cd3626",
+    "metrics.json": "7b0e822007406888a593427b46b892ba315f719993ca51bafd5033a8c34b602b",
+    "eda.png": "796b03c8f462bae095f6b88334e1c5869d1818f28f920636cb0ab5ae61008a33",
+    "fit_history.json": "fb81a8bbb94fbce55ca276d3559366b49694e79e5e3d1fe981954b3ee2f97615",
+    "test_metrics_confusion.png": "62ef9b568f5cddf65f16c20aed2f71aca37d18326a45a5b9095ad05850316d8b",
+    "training_numeric_summary.csv": "8f1d08c3ac1a1bb36774195d1482123da84bec446bde31d0a9f486b96ca5da55",
     "data_audit.json": "9c1cfcc9c4019aaf1995dfc52b9883467f609ad2d3adee112e82ce3e741e407f",
-    "fit_history.json": "912716fa2c9cc012d6c6fc9188cbb02a04bf5bdd683393c36164356af7a54df5",
-    "metrics.json": "c2e7db4ebfa034cad6c3c402a8c502d5ab153dedb40b529d016abe95b12696b5"
-  }
+    "execution-source.ipynb": "bc2eb5442e761252d8ddcca0f5b6e0386203cc7e1721f8145efa3fe4f3e73b30",
+    "splits.json": "596fee304459c914afdd3845e0c6a05b41592df28ceae4d76f0e8b2dc0bd9e10",
+    "config.json": "58edf1793c86d03a05e042574f7d134cabf21fc6898cf437856a52c036cd3626",
+    "predictions.csv": "00080c2d11769d04243fa7042c8fac0e0702a0910d6c07c10eebd3e91bed0509",
+    "training_iqr_flags.csv": "f7057711eb0628798b1658bc5fb374a34782a7dada4e2f1043d8408f4eff6e0a",
+    "training_numeric_distributions.png": "d864411b84c0bd912c4b99f40b0d6e77e1859a882a3f81af35f083d5d20d06c1"
+  },
+  "source_sha256": "bc2eb5442e761252d8ddcca0f5b6e0386203cc7e1721f8145efa3fe4f3e73b30",
+  "executed_notebook_sha256": "136dab1a6b2c100da842830c2d71db9445a18be5a5ab56044a1c1a52f794b58f"
 }

@@ -1,15 +1,17 @@
 {
-  "notebook": "notebooks/text_baselines.ipynb",
-  "run_id": "20261106T192012Z",
-  "kernel": "Jupyter",
-  "python": "3.12.0",
-  "platform": "Darwin",
-  "code_sha256": "a8500655695087efde120df5a6018d2d13011d1ece4b9b907a2d05daf9bdcbd3",
-  "artifacts_sha256": {
-    "config.json": "a66b7955b55ecd9eba43a2f8d2ffa88210d364ecdf41fde5efcfdc261fec86d9",
-    "data_audit.json": "ea39f9bb301a0a86eac9c5938071976d3f7326478a7bb386e69c2bc81b1bcdc2",
-    "fit_history.json": "82f98ee6595425ef45fb843d85465f3da5bcf5b367176a66836de938124c4122",
-    "metrics.json": "587c89554a8c907f6d61cff55eda4b74c051b75a761895711821d2c0acb51c71"
+  "source_sha256": {
+    "src/studies/text.py": "9fdfb28e4349190076cd3e2e7f03bfe8115c98eee110624aef111dd8ea248992",
+    "configs/text.json": "e05f5130fbd1c22cbe40f8702a7d8d1fc442ae04f54fd4acb64bef5ec8d192ba",
+    "notebooks/text_baselines.ipynb": "aea8d37d2b68490804f521273c8b46de4867a53cb25264aade1fa95b89479b76"
   },
-  "source_metrics_sha256": "eeaae3b420cf47cfbc03caae89634aec3dccc546ab425a7d1044b4d464d15db2"
+  "python": "3.12.0 (main, Oct  2 2023, 20:56:14) [Clang 16.0.3 ]",
+  "packages": {
+    "numpy": "2.5.4",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.8.0",
+    "transformers": "4.57.6",
+    "torch": "2.10.0",
+    "pyvi": "0.1.1",
+    "pyarrow": "26.0.0"
+  }
 }
