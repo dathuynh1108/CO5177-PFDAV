@@ -42,9 +42,20 @@ CIFAR-100 do Đại học Toronto công bố, gồm 60.000 ảnh màu thuộc 10
 
 Từ 50.000 ảnh train, phép chia phân tầng với seed 2026 ban đầu tạo 45.000 ảnh train và 5.000 ảnh validation. Trước khi train, các ảnh có nội dung pixel RGB giống hệt nhau được nhóm lại trong cả ba tập. Mỗi nhóm giữ một ảnh theo thứ tự ưu tiên test, validation, rồi train. Chính sách này loại 24 ảnh khỏi train và 2 khỏi test; validation không đổi. Tập cuối gồm 44.976/5.000/9.998 ảnh. Đối chiếu sau lọc xác nhận không còn nội dung RGB trùng chính xác giữa các tập.
 
+\begin{table}[htbp]\centering\small
+\begin{tabular}{lrrrr}\toprule
+Kênh & Mean & SD & Min & Max\\\midrule
+R & 0,5074 & 0,2671 & 0 & 1\\
+G & 0,4869 & 0,2563 & 0 & 1\\
+B & 0,4412 & 0,2762 & 0 & 1\\\bottomrule
+\end{tabular}
+\caption{Thống kê pixel của 44.976 ảnh train CIFAR-100, sau loại trùng và trước resize, trên thang $[0,1]$. Kênh R có mean cao hơn B khoảng 0,0663; SD ba kênh nằm trong 0,2563–0,2762. Đây là thống kê mô tả, còn mô hình dùng normalization ImageNet.}
+\label{tab:image-rgb}
+\end{table}
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=.91\textwidth]{notebook-evidence/figures/class_distribution.png}
-\caption{Số ảnh theo lớp sau khi loại nội dung trùng chính xác. Các lớp vẫn có quy mô gần tương đương; tiêu chí loại trùng là nội dung pixel RGB giống hệt nhau.}
+\caption{Số ảnh của 100 lớp CIFAR-100 sau loại trùng pixel chính xác, với seed chia tập 2026. Mỗi lớp còn 441–450 ảnh train, 50 ảnh validation và 99–100 ảnh test; việc loại trùng giữ được phân bố lớp gần cân bằng.}
 \end{figure}
 
 \begin{figure}[htbp]\centering
@@ -62,11 +73,9 @@ Từ 50.000 ảnh train, phép chia phân tầng với seed 2026 ban đầu tạ
 
 Pixel được chuyển về $[0,1]$ rồi normalization theo từng kênh: $x_c^{\prime}=(x_c-\mu_c)/\sigma_c$, với $\mu=(0{,}485;0{,}456;0{,}406)$ và $\sigma=(0{,}229;0{,}224;0{,}225)$. Các hằng số ImageNet này đưa đầu vào về thang giá trị mà backbone pretrained sử dụng. Chúng được cố định cho mọi split.
 
-Trên toàn bộ 44.976 ảnh train trước resize, trung bình kênh R/G/B lần lượt là 0,5074; 0,4869; 0,4412, còn SD là 0,2671; 0,2563; 0,2762. Đây là thống kê mô tả dữ liệu, không phải các hằng số được dùng thay cho normalization ImageNet.
-
 \begin{figure}[htbp]\centering
 \includegraphics[width=\textwidth]{notebook-evidence/figures/normalization_before_after.png}
-\caption{Phân phối giá trị R/G/B của một ảnh train CIFAR-100, lấy mẫu với seed 2026, trước và sau normalization ImageNet. Phép biến đổi dịch và co giãn giá trị từng kênh; đầu ra có thể âm và không còn bị giới hạn trong $[0,1]$.}
+\caption{Phân phối giá trị R/G/B của một ảnh train CIFAR-100, lấy mẫu với seed 2026, trước và sau normalization ImageNet. Mean kênh R đổi từ 0,3746 thành $-0{,}4822$, SD từ 0,2284 thành 0,9974. Phép biến đổi thay đổi thang đo từng kênh; đầu ra có thể âm và không bị giới hạn trong $[0,1]$.}
 \end{figure}
 
 Augmentation chỉ áp dụng cho train. Validation dùng để chọn checkpoint sau mỗi epoch; test được giữ riêng và chỉ đánh giá khi toàn bộ 18 lượt train đã hoàn tất.

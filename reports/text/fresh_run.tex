@@ -22,7 +22,7 @@ Bài hợp lệ được sử dụng & 207.375\\\bottomrule
 
 Không giới hạn số bài theo chuyên mục. Bảy bài thiếu nội dung vẫn có tiêu đề hợp lệ và được giữ lại. Phân bố sau làm sạch còn mất cân bằng: Sức khỏe có 12.444 bài, còn Dân tộc -- Tôn giáo có 2.917 bài, chênh khoảng 4,27 lần. Accuracy cho biết tỷ lệ bài được phân loại đúng, nhưng có thể che khuất kết quả ở các lớp ít bài. Vì vậy, macro-F1, tức trung bình F1 của 19 lớp với trọng số bằng nhau, được dùng để chọn checkpoint; loss cũng được điều chỉnh theo tần suất lớp trong tập train.
 
-\begin{figure}[htbp]\centering
+\begin{figure}[!ht]\centering
 \includegraphics[width=\textwidth]{figures/eda.png}
 \caption{Phân bố chuyên mục trước và sau làm sạch, cùng độ dài nội dung trước rút gọn. Toàn bộ bài hợp lệ được sử dụng; sự chênh lệch số mẫu giữa các chuyên mục vẫn được giữ lại.}
 \label{fig:text-eda}
@@ -34,6 +34,13 @@ Chuẩn hóa văn bản và giới hạn token có thể khiến các bài khác
 Sau khi gộp, dữ liệu có 207.108 nhóm đầu vào, trong đó 50 nhóm chứa nhiều bài; nhóm lớn nhất có 39 bài. Mọi bài trong cùng nhóm được đưa vào một tập để tránh xuất hiện cùng đầu vào ở cả train và test.
 
 StratifiedGroupKFold chia dữ liệu thành 20 phần với seed 2026, đồng thời giữ phân bố chuyên mục gần nhau giữa các phần. Trong đó, 14 phần dành cho train, ba phần cho validation và ba phần cho test. Ba tập lần lượt có 145.162, 31.107 và 31.106 bài, tương ứng khoảng 70/15/15. Tất cả mô hình dùng chung cách chia này.
+
+Giới hạn độ dài giúp giảm chi phí xử lý nhưng làm mất một phần văn bản. Cửa sổ 220 từ đầu và 80 từ cuối áp dụng cho 84,9\% bài; Head--Tail ở mức subword áp dụng cho 47,0\% bài.
+\begin{figure}[!t]\centering
+\includegraphics[width=.98\textwidth]{figures/input_lengths_before_after.png}
+\caption{Độ dài nội dung và chuỗi subword trước, sau khi chọn cửa sổ Head--Tail. Các đường phân phối cho thấy phần lớn bài vượt giới hạn xử lý ở ít nhất một bước.}
+\label{fig:text-input-lengths}
+\end{figure}
 
 \chapter{Phương pháp và thiết lập}
 \section{PhoBERT và hàm mất mát}
@@ -150,6 +157,12 @@ Với $T=1,4531$, NLL validation giảm từ 0,3619 xuống 0,3042: xác suất 
 
 Cụ thể, hiệu chỉnh sửa đúng 130 bài nhưng làm sai thêm 131 bài, khiến số bài đúng giảm từ 28.551 xuống 28.550. Như vậy, hiệu chỉnh cải thiện NLL trên validation nhưng chưa mang lại lợi ích phân loại rõ rệt trên test. Các thay đổi nhãn đến từ hệ số lớp, vì temperature riêng lẻ giữ nguyên nhãn argmax.
 
+\begin{figure}[!ht]\centering
+\includegraphics[width=.98\textwidth]{figures/calibration_comparison.png}
+\caption{Accuracy, macro-F1 và weighted-F1 trên test trước và sau hiệu chỉnh; NLL trên validation giảm từ 0,3619 xuống 0,3042. Thay đổi xác suất trên validation không tạo cải thiện phân loại rõ rệt trên test.}
+\label{fig:text-calibration}
+\end{figure}
+
 \section{Chất lượng theo chuyên mục}
 \begin{table}[htbp]\centering\small
 \begin{tabularx}{\textwidth}{Xrrrr}\toprule
@@ -177,6 +190,18 @@ Thể thao được phân loại tốt nhất, còn Dân tộc -- Tôn giáo có
 
 Lỗi phổ biến nhất là dự đoán Thời sự thành Pháp luật, với 89 bài; chiều ngược lại có 78 bài. Đời sống và Du lịch, cũng như Kinh doanh và Thị trường tiêu dùng, là các cặp dễ nhầm khác. Những hướng nhầm lẫn này cho thấy mô hình còn khó phân biệt một số chuyên mục gần nhau. Để xác định nguyên nhân cụ thể, cần đọc lại bài sai cùng nhãn nguồn và phần văn bản được đưa vào mô hình.
 
+Bảng dưới trích ba bài dự đoán sai từ tập test, kèm nhãn nguồn và nhãn dự đoán sau hiệu chỉnh. Các ví dụ minh họa những chuyên mục có nội dung giao thoa; riêng tiêu đề chưa đủ để xác định toàn bộ ngữ cảnh của bài.
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\textwidth}{Xll}\toprule
+Tiêu đề & Nhãn đúng & Dự đoán \\\midrule
+Lật tẩy đường dây đầu tư tiền ảo ``siêu lời'', lừa đảo hơn 10.000 tỷ đồng & Thời sự & Pháp luật \\
+Cận cảnh vết nứt hở dài 4m tại chung cư có 1.800 người dân sống ở TPHCM & Thời sự & Bất động sản \\
+Thư viện điện tử vùng cao đến với thầy trò tỉnh Quảng Bình & Bạn đọc & Dân tộc -- Tôn giáo \\\bottomrule
+\end{tabularx}
+\caption{Ví dụ bài test bị phân loại sai bởi PhoBERT sau hiệu chỉnh.}
+\label{tab:text-errors}
+\end{table}
+
 \section{So sánh các mô hình}
 Frozen PhoBERT + Logistic regression đạt kết quả tốt nhất trong bốn baseline. Hai SVM có chất lượng gần nhau: Character TF-IDF nhỉnh hơn trên test, còn Word TF-IDF nhỉnh hơn trên validation. Vì thứ tự thay đổi giữa hai tập, chưa có ưu thế rõ rệt cho một trong hai cách biểu diễn.
 
@@ -198,7 +223,7 @@ PhoBERT fine-tuning + calibration & 91,7829\% & 0,910362\\\bottomrule
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=\textwidth]{figures/model_comparison.png}
-\caption{Accuracy và macro-F1 của các quy trình trên 31.106 bài báo test ở seed 42. PhoBERT fine-tuning dùng tiêu đề và nội dung đạt accuracy 91,79\%, so với 80,90\% của Frozen PhoBERT dùng tiêu đề.}
+\caption{Accuracy và macro-F1 của các quy trình trên 31.106 bài báo test ở seed 42. PhoBERT fine-tuning dùng tiêu đề và nội dung đạt accuracy 91,78\% sau hiệu chỉnh, so với 80,90\% của Frozen PhoBERT dùng tiêu đề.}
 \label{fig:text-model-comparison}
 \end{figure}
 

@@ -62,6 +62,37 @@ Với số giờ làm mỗi tuần, $Q_1=40$ và $Q_3=45$ tạo hai ngưỡng 32
 \label{fig:numeric-distributions}
 \end{figure}
 
+Boxplot cho thấy các điểm nằm ngoài râu IQR, nhưng không thể kết luận chúng là lỗi ghi nhận. Bảng áp dụng cùng quy tắc $1{,}5\,IQR$ cho sáu thuộc tính. Vì $Q_1=Q_3=0$ ở capital gain và capital loss, mọi giá trị dương đều vượt hàng rào trên; các giá trị này vẫn được giữ nguyên trong dữ liệu.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=.9\textwidth]{figures/training_numeric_boxplots.png}
+\caption{Boxplot sáu thuộc tính số trên train ở thang đo gốc. Râu dùng quy tắc $1{,}5\,IQR$; điểm ngoài râu được giữ lại và chỉ được xem là dấu hiệu cần khảo sát.}
+\label{fig:numeric-boxplots}
+\end{figure}
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\textwidth}{lrrr}\toprule
+Thuộc tính & $Q_1$ & $Q_3$ & Ngoài hàng rào (n; \%)\\\midrule
+age & 28 & 48 & 146; 0,43\\
+fnlwgt & 117.381 & 236.731 & 1.012; 2,96\\
+education\_num & 9 & 12 & 1.257; 3,68\\
+capital\_gain & 0 & 0 & 2.772; 8,12\\
+capital\_loss & 0 & 0 & 1.618; 4,74\\
+hours\_per\_week & 40 & 45 & 9.461; 27,71\\\bottomrule
+\end{tabularx}
+\caption{Số giá trị vượt hàng rào IQR trên 34.146 bản ghi train. Phần trăm tính theo số bản ghi train; đây là cờ mô tả, không phải quy tắc loại dữ liệu.}
+\label{tab:iqr-flags}
+\end{table}
+
+\section{Phân bố thuộc tính phân loại}
+Tám thuộc tính phân loại có số nhóm khác nhau: native-country có 41 nhóm, education có 16 và occupation có 14 nhóm quan sát trong train. Hình trình bày tối đa mười nhóm có tần suất cao nhất cho mỗi thuộc tính; phần còn lại được gộp thành ``Other categories''. Giá trị thiếu được hiển thị thành một nhóm riêng để không nhầm chúng với một loại đã quan sát.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=.94\textwidth]{figures/training_categorical_frequencies.png}
+\caption{Tần suất tám thuộc tính phân loại trong tập train. Các nhóm hiếm được gộp để giữ biểu đồ dễ đọc; giá trị thiếu được giữ riêng.}
+\label{fig:categorical-frequencies}
+\end{figure}
+
 \section{Thu nhập theo tuổi, số năm học và giờ làm}
 Tỷ lệ thu nhập cao tăng theo các nhóm tuổi đến 45--54 tuổi rồi giảm ở các nhóm lớn tuổi hơn. Cụ thể, tỷ lệ này là 1,10\% ở nhóm dưới 25 tuổi và 39,69\% ở nhóm 45--54 tuổi. Nhóm có nhiều năm học hơn và nhóm làm trên 40 giờ mỗi tuần cũng có tỷ lệ thu nhập cao lớn hơn, như thể hiện trong hình.
 
@@ -84,6 +115,14 @@ Logistic regression dùng one-hot encoding cho thuộc tính phân loại và st
 \]
 trong đó $\mu_j$ và $s_j$ là trung bình và độ lệch chuẩn trên tập train. Phép biến đổi đưa các cột về thang đo tương đương, giúp quá trình tối ưu logistic regression ít bị chi phối bởi khác biệt đơn vị giữa các biến. Sau biến đổi, sáu cột số có trung bình xấp xỉ 0 và độ lệch chuẩn 1, nhưng vẫn giữ dạng phân bố và các giá trị ở phần đuôi. Nhóm phân loại chưa gặp trong train được biểu diễn bằng các cột one-hot bằng 0.
 
+Biểu đồ minh họa trước và sau chuẩn hóa ở ba thuộc tính có đơn vị và độ trải khác nhau. Thống kê của cả sáu cột sau biến đổi cho thấy trung bình xấp xỉ 0 và độ lệch chuẩn bằng 1. Việc đổi thang đo không làm mất đuôi dài; validation và test sử dụng cùng các thống kê đã ước lượng trên train.
+
+\begin{figure}[H]\centering
+\includegraphics[width=.92\textwidth]{figures/numeric_before_after_scaling.png}
+\caption{Phân bố age, fnlwgt và hours-per-week trước/sau StandardScaler trên train. Các thuộc tính được dịch về trung bình 0 và đơn vị độ lệch chuẩn; hình minh họa ba trong sáu thuộc tính số.}
+\label{fig:scaling}
+\end{figure}
+
 Với histogram gradient boosting, các giá trị phân loại được ánh xạ thành mã số bằng ordinal encoding, nhưng vẫn được mô hình xử lý như các nhóm phân loại, không có thứ tự số học. Mã $-1$ biểu diễn giá trị phân loại chưa gặp và được mô hình xem là giá trị thiếu, thay vì một nhóm có thứ tự thấp hơn các nhóm khác. Mô hình cây không áp dụng normalization cho thuộc tính số vì việc chia nhánh dựa trên ngưỡng, không dựa trên khoảng cách giữa các biến.
 
 \section{Các mô hình}
@@ -93,6 +132,14 @@ Baseline luôn dự đoán lớp phổ biến nhất, cung cấp mốc so sánh 
     \qquad \sigma(a)=\frac{1}{1+e^{-a}}.
 \]
 Hàm sigmoid đưa điểm tuyến tính $\mathbf w^\top\mathbf z+b$ về một xác suất trong khoảng 0--1. Mô hình dự đoán lớp thu nhập cao khi xác suất này đạt ít nhất 0,5. Thực nghiệm không bổ sung đặc trưng tương tác cho logistic regression. Tham số $C$ điều khiển nghịch đảo mức regularization: $C$ lớn tương ứng với phạt yếu hơn. Mỗi cấu hình chọn $C\in\{0.1,1,10\}$ theo macro-F1 validation; khi hòa giữ ứng viên xuất hiện trước. Quá trình tối ưu được giới hạn ở 2.000 vòng lặp cho mỗi ứng viên.
+
+Trong ba giá trị thử, $C=10$ đạt macro-F1 validation cao nhất cho cả logistic regression thường (0,7803) và bản cân bằng lớp (0,7639). Các điểm trên hình chỉ dùng validation; cấu hình được cố định trước khi tính dự đoán test.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=.78\textwidth]{figures/validation_C_search.png}
+\caption{Macro-F1 validation theo $C$ cho hai cấu hình logistic regression. $C=10$ được chọn ở cả hai đường; test không tham gia chọn tham số.}
+\label{fig:validation-c}
+\end{figure}
 
 Ở cấu hình cân bằng lớp, trọng số của lớp $k$ là
 \[
@@ -124,24 +171,28 @@ Histogram gradient boosting & -- & 0.8147 & 87.48\% & 0.8185 \\
 \caption{Siêu tham số $C$ được chọn theo macro-F1 trên tập validation; các cột test là kết quả trên tập test giữ riêng. Accuracy trình bày theo phần trăm, macro-F1 theo thang 0--1.}\end{table}
 \begin{figure}[htbp]\centering\includegraphics[width=.95\textwidth]{figures/test_model_comparison.png}
 \caption{Accuracy và macro-F1 của bốn mô hình trên 7.317 bản ghi test của Adult ở seed 42. Histogram gradient boosting đạt accuracy cao nhất (87,48\%), so với 85,24\% của logistic regression và 81,43\% khi cân bằng lớp.}\end{figure}
+
+\subsection{Khả năng phân biệt theo ngưỡng điểm}
+Ở mức điểm xác suất, histogram gradient boosting đạt average precision (AP) 0,8334, cao hơn tỷ lệ lớp dương trên test (0,2394) và hai logistic regression (0,7713 và 0,7689). ROC-AUC của boosting là 0,9321, so với 0,9103 và 0,9100. Các đường cong mô tả thứ hạng xác suất trên test; chúng không được dùng để chọn ngưỡng mới.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=.9\textwidth]{figures/test_precision_recall_roc_curves.png}
+\caption{Precision--recall và ROC của bốn mô hình trên điểm số test. Tỷ lệ lớp dương 0,2394 là mốc của đường precision--recall; histogram boosting có AP 0,8334 và ROC-AUC 0,9321.}
+\label{fig:pr-roc}
+\end{figure}
+
 \section{Ảnh hưởng của mất cân bằng lớp}
 Lớp thu nhập không quá 50.000 USD chiếm 76,06\% tập test. Vì vậy, baseline luôn chọn lớp này vẫn đạt accuracy 76,06\%, dù bỏ sót toàn bộ nhóm thu nhập cao. Macro-F1 chỉ đạt 0,4320, cho thấy accuracy đơn lẻ dễ che khuất lỗi ở lớp ít mẫu.
 
 Cân bằng trọng số giúp logistic regression nhận ra nhiều bản ghi thu nhập cao hơn. Số bỏ sót giảm từ 717 xuống 270, nhưng số bản ghi thu nhập thấp bị dự đoán thành thu nhập cao tăng từ 363 lên 1.089. Recall tăng trong khi precision giảm; đó là sự đánh đổi giữa bỏ sót và dự đoán dương tính giả.
 
-\begin{table}[htbp]\centering
-\begin{tabularx}{\textwidth}{Xrr}\toprule
-Chỉ số trên test & Logistic regression & Cân bằng lớp\\\midrule
-Precision lớp thu nhập cao & 0,7403 & 0,5764\\
-Recall lớp thu nhập cao & 0,5908 & 0,8459\\
-F1 lớp thu nhập cao & 0,6571 & 0,6856\\
-F1 lớp thu nhập thấp & 0,9060 & 0,8682\\
-Macro-F1 & 0,7815 & 0,7769\\\bottomrule
-\end{tabularx}
-\caption{Thay đổi chất lượng từng lớp khi cân bằng trọng số trong logistic regression trên cùng tập test.}
-\end{table}
+\begin{figure}[htbp]\centering
+\includegraphics[width=.82\textwidth]{figures/class_weight_precision_recall.png}
+\caption{Precision và recall lớp trên 50.000 USD trên cùng tập test. Cân bằng trọng số đưa recall từ 0,5908 lên 0,8459, trong khi precision giảm từ 0,7403 xuống 0,5764.}
+\label{fig:class-weight-tradeoff}
+\end{figure}
 
-F1 của lớp thu nhập cao tăng, nhưng F1 của lớp còn lại giảm nhiều hơn, khiến macro-F1 chung giảm nhẹ. Cấu hình cân bằng lớp phù hợp hơn khi ưu tiên tránh bỏ sót; nó không phải lựa chọn tốt hơn ở mọi tiêu chí.
+F1 của lớp thu nhập cao tăng từ 0,6571 lên 0,6856, nhưng F1 của lớp còn lại giảm từ 0,9060 xuống 0,8682, khiến macro-F1 chung giảm từ 0,7815 xuống 0,7769. Cấu hình cân bằng lớp phù hợp hơn khi ưu tiên tránh bỏ sót; nó không phải lựa chọn tốt hơn ở mọi tiêu chí.
 
 \section{Kết quả của histogram gradient boosting}
 Histogram gradient boosting đạt kết quả tốt nhất trong bốn mô hình, với accuracy 87,48\% và macro-F1 0,8185. So với logistic regression, accuracy tăng 2,24 điểm phần trăm. Boosting cũng dẫn đầu trên validation, nên thứ hạng trên test phù hợp với kết quả lựa chọn mô hình.
@@ -152,6 +203,14 @@ Boosting có thể học quan hệ phi tuyến và tương tác giữa các thu�
 
 \begin{figure}[htbp]\centering\includegraphics[width=.9\textwidth]{figures/test_confusion_matrices.png}
 \caption{Confusion matrix của bốn mô hình trên 7.317 bản ghi test của Adult, với model seed 42. Hàng là nhãn thực, cột là nhãn dự đoán.}\end{figure}
+
+Confusion matrix được bổ sung bằng phân tích số lỗi của histogram boosting đã chọn theo validation. Trên 7.317 mẫu test, mô hình dự đoán sai 916 mẫu (12,52\%), gồm 327 false positive và 589 false negative. Tỷ lệ lỗi theo giới tính được ghi trong Census là 6,16\% ở nữ (150/2.437) và 15,70\% ở nam (766/4.880). Đây là đối chiếu mô tả trên các nhóm có quy mô và thành phần khác nhau, không xác định nguyên nhân hay đánh giá công bằng của mô hình.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=.9\textwidth]{figures/selected_model_error_analysis.png}
+\caption{Số dự đoán đúng/sai của histogram gradient boosting và tỷ lệ lỗi theo giới tính được ghi nhận trên test. Tỷ lệ quan sát là 6,16\% ở nữ và 15,70\% ở nam; kết quả không tách riêng ảnh hưởng của thành phần nhóm.}
+\label{fig:error-analysis}
+\end{figure}
 \chapter{Kết luận và giới hạn}
 \section{Kết luận}
 Trên toàn bộ dữ liệu sau làm sạch và split đã cố định, histogram gradient boosting đạt kết quả cao nhất trong các cấu hình được khảo sát. Logistic regression cân bằng lớp tăng recall của nhóm thu nhập cao nhưng giảm precision và accuracy. Vì vậy, lựa chọn trọng số lớp cần gắn với mức chấp nhận bỏ sót và dự đoán dương tính giả của bài toán.

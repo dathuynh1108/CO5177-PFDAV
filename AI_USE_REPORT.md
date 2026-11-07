@@ -13,7 +13,7 @@ AI được sử dụng trong quá trình tìm hiểu phương pháp, phát tri�
 | Tabular | Tìm hiểu và tích hợp API tiền xử lý, phân loại của scikit-learn; rà soát phân tích dữ liệu và cách diễn giải precision, recall. |
 | Text | Tìm hiểu PhoBERT và API của Transformers; hỗ trợ xây dựng quy trình tiền xử lý, huấn luyện, đánh giá và phân tích lỗi theo chuyên mục. |
 | Image | Tìm hiểu API mô hình pretrained và các mức fine-tuning trong PyTorch, torchvision; rà soát thiết lập so sánh và kết quả thực nghiệm. |
-| Trình bày | Hỗ trợ cú pháp LaTeX và kiểm tra cách trình bày công thức toán học trong báo cáo, notebook. |
+| Trình bày | Hỗ trợ cú pháp LaTeX và kiểm tra cách trình bày công thức toán học trong báo cáo, notebook; hỗ trợ xây dựng landing page nhanh chóng. |
 
 Bảng và hình trong báo cáo được tổng hợp từ các lượt thực nghiệm có lưu cấu hình, lịch sử và output notebook. Nguồn dữ liệu và các nghiên cứu liên quan được dẫn riêng trong từng báo cáo.
 
